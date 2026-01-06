@@ -56,23 +56,43 @@ create_milestone() {
   
   if [ -n "$existing" ]; then
     echo "⚠️  Milestone '$title' existe déjà (#$existing)"
+    return 0
+  fi
+  
+  echo "✅ Création milestone: $title"
+  
+  # Créer le milestone via API avec les bons paramètres
+  local api_result
+  if [ -n "$due_date" ]; then
+    api_result=$(gh api "repos/$GITHUB_REPO/milestones" \
+      -X POST \
+      -f title="$title" \
+      -f description="$description" \
+      -f due_on="${due_date}T23:59:59Z" \
+      2>&1)
   else
-    echo "✅ Création milestone: $title"
-    
-    # Construire le JSON pour la création
-    local json_data="{\"title\":\"$title\",\"description\":\"$description\""
-    if [ -n "$due_date" ]; then
-      json_data="$json_data,\"due_on\":\"${due_date}T23:59:59Z\""
-    fi
-    json_data="$json_data}"
-    
-    # Créer le milestone via API
-    if gh api "repos/$GITHUB_REPO/milestones" -X POST -f body="$json_data" 2>/dev/null > /dev/null; then
-      echo "   ✅ Créé"
-    else
-      echo "   ❌ Échec de la création (vérifiez les permissions)"
-      return 1
-    fi
+    api_result=$(gh api "repos/$GITHUB_REPO/milestones" \
+      -X POST \
+      -f title="$title" \
+      -f description="$description" \
+      2>&1)
+  fi
+  
+  # Vérifier le résultat
+  if echo "$api_result" | grep -q "number"; then
+    local milestone_num=$(echo "$api_result" | gh api --jq '.number' 2>/dev/null || echo "$api_result" | grep -o '"number":[0-9]*' | cut -d: -f2)
+    echo "   ✅ Créé (#$milestone_num)"
+    return 0
+  elif echo "$api_result" | grep -qi "permission\|forbidden\|unauthorized"; then
+    echo "   ❌ Échec: Permissions insuffisantes"
+    echo "   💡 Solution: Obtenir permissions Write ou créer manuellement"
+    return 1
+  elif echo "$api_result" | grep -qi "not found\|404"; then
+    echo "   ❌ Échec: Repository non trouvé"
+    return 1
+  else
+    echo "   ❌ Échec: $api_result"
+    return 1
   fi
 }
 
