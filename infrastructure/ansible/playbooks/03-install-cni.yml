@@ -1,0 +1,35 @@
+---
+# Playbook: Installation du CNI Plugin (Calico)
+# Description: Installe Calico pour le networking Kubernetes
+
+- name: Installer Calico CNI
+  hosts: control_plane
+  become: true
+  vars:
+    calico_version: "v3.27.0"
+
+  tasks:
+    - name: Vérifier si Calico déjà installé
+      shell: kubectl get namespace calico-system 2>/dev/null || echo "not-found"
+      register: calico_check
+      changed_when: false
+
+    - name: Installer Calico
+      shell: |
+        kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/{{ calico_version }}/manifests/calico.yaml
+      when: "'not-found' in calico_check.stdout"
+
+    - name: Attendre que Calico soit prêt
+      shell: kubectl wait --for=condition=ready pod -l k8s-app=calico-node -n kube-system --timeout=300s
+      when: "'not-found' in calico_check.stdout"
+      ignore_errors: true
+
+    - name: Vérifier installation Calico
+      shell: kubectl get pods -n kube-system | grep calico
+      register: calico_pods
+      changed_when: false
+
+    - name: Afficher status Calico
+      debug:
+        msg: "{{ calico_pods.stdout }}"
+

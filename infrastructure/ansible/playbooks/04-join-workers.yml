@@ -1,0 +1,51 @@
+---
+# Playbook: Joindre les worker nodes au cluster
+# Description: Joint les workers au cluster Kubernetes
+
+- name: Joindre workers au cluster
+  hosts: workers
+  become: true
+  vars:
+    join_command: ""
+
+  tasks:
+    - name: Récupérer commande join depuis control plane
+      slurp:
+        src: /tmp/kubeadm-join-command.sh
+      delegate_to: "{{ groups['control_plane'][0] }}"
+      register: join_command_file
+      when: join_command == ""
+
+    - name: Extraire commande join
+      set_fact:
+        join_command: "{{ join_command_file.content | b64decode | trim }}"
+      when: join_command == ""
+
+    - name: Vérifier si node déjà joint
+      shell: kubectl get nodes 2>/dev/null | grep {{ inventory_hostname }} || echo "not-joined"
+      delegate_to: "{{ groups['control_plane'][0] }}"
+      register: node_check
+      changed_when: false
+
+    - name: Joindre le cluster
+      shell: "{{ join_command }}"
+      when: 
+        - join_command != ""
+        - "'not-joined' in node_check.stdout"
+
+    - name: Attendre que le node soit prêt
+      shell: kubectl wait --for=condition=Ready node/{{ inventory_hostname }} --timeout=300s
+      delegate_to: "{{ groups['control_plane'][0] }}"
+      when: "'not-joined' in node_check.stdout"
+      ignore_errors: true
+
+    - name: Vérifier status du node
+      shell: kubectl get nodes
+      delegate_to: "{{ groups['control_plane'][0] }}"
+      register: nodes_status
+      changed_when: false
+
+    - name: Afficher status des nodes
+      debug:
+        msg: "{{ nodes_status.stdout }}"
+

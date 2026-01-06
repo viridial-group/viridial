@@ -1,0 +1,28 @@
+[
+  {
+    "id": "b1d6f8a0-0001-4c2e-9a1a-000000000001",
+    "organization_id": "org-1",
+    "agency_id": "agency-1",
+    "title": "Appartement vue mer - Nice",
+    "description": "Bel appartement avec vue sur la mer, 3 chambres",
+    "property_type": "sale",
+    "status": "listed",
+    "price": 750000,
+    "currency": "EUR",
+    "address": { "city": "Nice", "country": "FR" },
+    "language": "fr"
+  },
+  {
+    "id": "b1d6f8a0-0002-4c2e-9a1a-000000000002",
+    "organization_id": "org-1",
+    "agency_id": "agency-2",
+    "title": "Modern apartment with sea view - Nice",
+    "description": "Great apartment overlooking the sea, 3 bedrooms",
+    "property_type": "sale",
+    "status": "listed",
+    "price": 780000,
+    "currency": "EUR",
+    "address": { "city": "Nice", "country": "FR" },
+    "language": "en"
+  }
+]

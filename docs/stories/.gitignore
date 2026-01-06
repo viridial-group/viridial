@@ -1,0 +1,57 @@
+# Dependencies
+node_modules/
+vendor/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+*.lcov
+.nyc_output
+
+# Production
+dist/
+build/
+*.log
+
+# Environment
+.env
+.env.local
+.env.*.local
+*.env
+!*.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Kubernetes
+*.kubeconfig
+*.secret.yaml
+!*.secret.yaml.example
+
+# Ansible
+.ansible_facts_cache/
+*.retry
+
+# Secrets
+infrastructure/secrets/.env
+*.key
+*.pem
+*.cert
+
+# Build artifacts
+*.tar.gz
+*.zip
+
+# Local development
+docker-compose.override.yml

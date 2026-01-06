@@ -1,0 +1,26 @@
+---
+# Namespaces pour Viridial
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: viridial-staging
+  labels:
+    name: viridial-staging
+    environment: staging
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: viridial-production
+  labels:
+    name: viridial-production
+    environment: production
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: viridial-monitoring
+  labels:
+    name: viridial-monitoring
+    environment: monitoring
+

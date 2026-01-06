@@ -1,0 +1,84 @@
+---
+# Playbook: Configuration des Network Policies pour isolation multi-tenant
+# Description: Crée les Network Policies de base pour isolation
+
+- name: Configurer Network Policies
+  hosts: control_plane
+  become: true
+
+  tasks:
+    - name: Network Policy - Deny all ingress par défaut (staging)
+      k8s:
+        state: present
+        definition:
+          apiVersion: networking.k8s.io/v1
+          kind: NetworkPolicy
+          metadata:
+            name: default-deny-ingress
+            namespace: viridial-staging
+          spec:
+            podSelector: {}
+            policyTypes:
+            - Ingress
+
+    - name: Network Policy - Deny all ingress par défaut (production)
+      k8s:
+        state: present
+        definition:
+          apiVersion: networking.k8s.io/v1
+          kind: NetworkPolicy
+          metadata:
+            name: default-deny-ingress
+            namespace: viridial-production
+          spec:
+            podSelector: {}
+            policyTypes:
+            - Ingress
+
+    - name: Network Policy - Allow ingress from Ingress Controller (staging)
+      k8s:
+        state: present
+        definition:
+          apiVersion: networking.k8s.io/v1
+          kind: NetworkPolicy
+          metadata:
+            name: allow-ingress-controller
+            namespace: viridial-staging
+          spec:
+            podSelector: {}
+            policyTypes:
+            - Ingress
+            ingress:
+            - from:
+              - namespaceSelector:
+                  matchLabels:
+                    name: ingress-nginx
+
+    - name: Network Policy - Allow ingress from Ingress Controller (production)
+      k8s:
+        state: present
+        definition:
+          apiVersion: networking.k8s.io/v1
+          kind: NetworkPolicy
+          metadata:
+            name: allow-ingress-controller
+            namespace: viridial-production
+          spec:
+            podSelector: {}
+            policyTypes:
+            - Ingress
+            ingress:
+            - from:
+              - namespaceSelector:
+                  matchLabels:
+                    name: ingress-nginx
+
+    - name: Vérifier Network Policies
+      shell: kubectl get networkpolicies --all-namespaces
+      register: np_status
+      changed_when: false
+
+    - name: Afficher Network Policies
+      debug:
+        msg: "{{ np_status.stdout }}"
+

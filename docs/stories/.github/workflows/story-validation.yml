@@ -1,0 +1,66 @@
+name: Story Validation
+
+on:
+  pull_request:
+    paths:
+      - 'docs/stories/**'
+  push:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'docs/stories/**'
+
+jobs:
+  validate-stories:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate Story Format
+        run: |
+          echo "Validation du format des stories..."
+          # Vérifier que toutes les stories ont les sections requises
+          for story in docs/stories/US-*.story.md docs/stories/US-INFRA-*.story.md; do
+            if [ -f "$story" ]; then
+              echo "Validation de $story..."
+              # Vérifier présence des sections clés
+              grep -q "## Status:" "$story" || (echo "❌ $story: Section Status manquante" && exit 1)
+              grep -q "### Story" "$story" || (echo "❌ $story: Section Story manquante" && exit 1)
+              grep -q "### Acceptance Criteria" "$story" || (echo "❌ $story: Section Acceptance Criteria manquante" && exit 1)
+              grep -q "### Tasks" "$story" || (echo "❌ $story: Section Tasks manquante" && exit 1)
+              echo "✅ $story: Format valide"
+            fi
+          done
+
+      - name: Validate INDEX.md
+        run: |
+          echo "Validation de INDEX.md..."
+          # Vérifier que toutes les stories dans INDEX.md existent
+          cd docs/stories
+          for story_file in $(grep -oP 'US-[^)]+\.story\.md' INDEX.md | sort -u); do
+            if [ ! -f "$story_file" ]; then
+              echo "❌ Story référencée dans INDEX.md mais fichier manquant: $story_file"
+              exit 1
+            fi
+          done
+          echo "✅ INDEX.md: Toutes les stories référencées existent"
+
+      - name: Validate Dependencies
+        run: |
+          echo "Validation de DEPENDENCIES.md..."
+          # Vérifier que les stories référencées dans DEPENDENCIES.md existent
+          cd docs/stories
+          for story_id in $(grep -oP 'US-[A-Z0-9-]+' DEPENDENCIES.md | sort -u); do
+            story_file=$(find . -name "${story_id}*.story.md" | head -1)
+            if [ -z "$story_file" ]; then
+              echo "⚠️  Story référencée dans DEPENDENCIES.md mais fichier non trouvé: $story_id"
+            fi
+          done
+          echo "✅ DEPENDENCIES.md: Validation terminée"
+
+      - name: Markdown Lint
+        uses: DavidAnson/markdownlint-cli2-action@v15
+        with:
+          globs: 'docs/stories/**/*.md'

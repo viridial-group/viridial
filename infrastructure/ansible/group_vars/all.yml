@@ -1,0 +1,37 @@
+---
+# Variables globales pour tous les hosts
+
+# Kubernetes version
+k8s_version: "1.29"
+kubeadm_version: "1.29"
+
+# Container runtime
+container_runtime: docker
+docker_version: "24.0"
+
+# Network configuration
+pod_network_cidr: "10.244.0.0/16"
+service_cidr: "10.96.0.0/12"
+
+# CNI Plugin
+cni_plugin: calico
+calico_version: "v3.27.0"
+
+# System configuration
+swap_disabled: true
+firewall_enabled: true
+
+# Domain configuration
+domain_name: "viridial.local"
+staging_domain: "staging.viridial.local"
+# TODO: Configurer votre domaine réel (ex: viridial.com) et pointer vers 148.230.112.148
+
+# Let's Encrypt email (pour cert-manager)
+letsencrypt_email: "admin@viridial.local"
+# TODO: Mettre votre email réel pour Let's Encrypt
+
+# GitHub Repository
+github_repo: "viridial-group/viridial"
+github_url: "https://github.com/viridial-group/viridial.git"
+github_clone_url: "https://github.com/viridial-group/viridial.git"
+

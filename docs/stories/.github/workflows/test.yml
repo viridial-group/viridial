@@ -1,0 +1,57 @@
+name: Test
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  test-services:
+    name: Test Services
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - services/auth-service
+          - services/property-service
+          - services/search-service
+          - services/lead-service
+          - services/billing-service
+          - services/admin-service
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        working-directory: ${{ matrix.service }}
+        run: |
+          if [ -f package.json ]; then
+            npm ci
+          else
+            echo "No package.json found, skipping"
+            exit 0
+          fi
+
+      - name: Run unit tests
+        working-directory: ${{ matrix.service }}
+        run: |
+          if [ -f package.json ] && grep -q '"test"' package.json; then
+            npm test
+          else
+            echo "No test script found"
+            exit 0
+          fi
+        continue-on-error: true

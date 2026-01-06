@@ -1,0 +1,75 @@
+---
+# Playbook: Création des namespaces et resource quotas
+# Description: Crée les namespaces pour staging, production, monitoring
+
+- name: Créer namespaces et quotas
+  hosts: control_plane
+  become: true
+
+  tasks:
+    - name: Créer namespace staging
+      k8s:
+        name: viridial-staging
+        api_version: v1
+        kind: Namespace
+        state: present
+
+    - name: Créer namespace production
+      k8s:
+        name: viridial-production
+        api_version: v1
+        kind: Namespace
+        state: present
+
+    - name: Créer namespace monitoring
+      k8s:
+        name: viridial-monitoring
+        api_version: v1
+        kind: Namespace
+        state: present
+
+    - name: Créer ResourceQuota pour staging
+      k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: ResourceQuota
+          metadata:
+            name: staging-quota
+            namespace: viridial-staging
+          spec:
+            hard:
+              requests.cpu: "4"
+              requests.memory: 8Gi
+              limits.cpu: "8"
+              limits.memory: 16Gi
+              persistentvolumeclaims: "10"
+              services.loadbalancers: "2"
+
+    - name: Créer ResourceQuota pour production
+      k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: ResourceQuota
+          metadata:
+            name: production-quota
+            namespace: viridial-production
+          spec:
+            hard:
+              requests.cpu: "8"
+              requests.memory: 16Gi
+              limits.cpu: "16"
+              limits.memory: 32Gi
+              persistentvolumeclaims: "20"
+              services.loadbalancers: "5"
+
+    - name: Vérifier namespaces créés
+      shell: kubectl get namespaces | grep viridial
+      register: namespaces
+      changed_when: false
+
+    - name: Afficher namespaces
+      debug:
+        msg: "{{ namespaces.stdout }}"
+

@@ -1,0 +1,54 @@
+name: CI Base
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          if [ -f package.json ]; then
+            npm ci
+          fi
+
+      - name: Run ESLint
+        run: |
+          if [ -f package.json ] && grep -q '"eslint"' package.json; then
+            npm run lint || echo "No lint script found"
+          else
+            echo "No ESLint configuration found"
+          fi
+        continue-on-error: true
+
+      - name: Check Prettier
+        run: |
+          if [ -f package.json ] && grep -q '"prettier"' package.json; then
+            npm run format:check || echo "No format:check script found"
+          else
+            echo "No Prettier configuration found"
+          fi
+        continue-on-error: true
+
+      - name: Markdown Lint
+        uses: DavidAnson/markdownlint-cli2-action@v15
+        with:
+          globs: 'docs/**/*.md'

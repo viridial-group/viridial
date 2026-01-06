@@ -1,0 +1,51 @@
+---
+# Playbook Principal: Provisionnement complet du cluster Kubernetes
+# Description: Orchestre tous les playbooks pour créer un cluster complet
+
+- name: Provisionner cluster Kubernetes complet
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Exécuter préparation VPS
+      ansible.builtin.import_playbook: 01-prepare-vps.yml
+
+    - name: Exécuter initialisation cluster
+      ansible.builtin.import_playbook: 02-init-cluster.yml
+
+    - name: Exécuter installation CNI
+      ansible.builtin.import_playbook: 03-install-cni.yml
+
+    - name: Exécuter join workers
+      ansible.builtin.import_playbook: 04-join-workers.yml
+      when: groups['workers'] | length > 1 or groups['workers'][0] != groups['control_plane'][0]
+
+    - name: Exécuter installation addons
+      ansible.builtin.import_playbook: 05-install-addons.yml
+
+    - name: Exécuter création namespaces
+      ansible.builtin.import_playbook: 06-create-namespaces.yml
+
+    - name: Exécuter installation Ingress
+      ansible.builtin.import_playbook: 07-install-ingress.yml
+
+    - name: Exécuter Network Policies
+      ansible.builtin.import_playbook: 08-network-policies.yml
+
+    - name: Exécuter création secrets
+      ansible.builtin.import_playbook: 09-create-secrets.yml
+
+    - name: Résumé final
+      debug:
+        msg: |
+          ✅ Cluster Kubernetes provisionné avec succès!
+          
+          Prochaines étapes:
+          1. Récupérer kubeconfig: scp root@148.230.112.148:~/.kube/config ~/.kube/config
+          2. Vérifier cluster: kubectl get nodes
+          3. Déployer les services de base (US-INFRA-02)
+          
+          VPS: 148.230.112.148
+          Repository: https://github.com/viridial-group/viridial.git
+

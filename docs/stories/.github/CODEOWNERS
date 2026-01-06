@@ -1,0 +1,32 @@
+# Code Owners pour review automatique
+# Format: chemin @team ou @utilisateur
+
+# Services backend
+/services/auth-service/ @team-backend
+/services/property-service/ @team-backend
+/services/search-service/ @team-backend
+/services/lead-service/ @team-backend
+/services/billing-service/ @team-backend
+/services/admin-service/ @team-backend
+
+# Frontend
+/frontend/web/ @team-frontend
+/frontend/agency/ @team-frontend
+/frontend/admin/ @team-frontend
+
+# Infrastructure
+/infrastructure/ @team-devops
+/deploy/ @team-devops
+
+# Documentation
+/docs/ @team-product @team-tech-lead
+/docs/stories/ @team-product @team-tech-lead
+/docs/architecture/ @team-tech-lead
+
+# Configuration GitHub
+/.github/ @team-tech-lead
+
+# Root files
+/README.md @team-tech-lead
+/docker-compose.yml @team-devops
+/package.json @team-tech-lead

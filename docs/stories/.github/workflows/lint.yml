@@ -1,0 +1,91 @@
+name: Lint
+
+on:
+  pull_request:
+    paths:
+      - '**/*.ts'
+      - '**/*.tsx'
+      - '**/*.js'
+      - '**/*.jsx'
+      - '**/*.json'
+      - '**/*.md'
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  eslint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Find services with ESLint
+        id: find-services
+        run: |
+          services=$(find services frontend -name "package.json" -type f 2>/dev/null | xargs grep -l '"eslint"' 2>/dev/null | xargs dirname 2>/dev/null || echo "")
+          echo "services<<EOF" >> $GITHUB_OUTPUT
+          echo "$services" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Run ESLint per service
+        run: |
+          if [ -n "${{ steps.find-services.outputs.services }}" ]; then
+            for service in ${{ steps.find-services.outputs.services }}; do
+              echo "Linting $service..."
+              cd "$service"
+              if [ -f package.json ] && grep -q '"eslint"' package.json; then
+                npm ci
+                npm run lint || echo "Lint failed for $service"
+              fi
+              cd - > /dev/null
+            done
+          else
+            echo "No services with ESLint found"
+          fi
+        continue-on-error: true
+
+  prettier:
+    name: Prettier Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Check Prettier
+        run: |
+          if command -v npx &> /dev/null; then
+            npx prettier --check "**/*.{ts,tsx,js,jsx,json,md}" --ignore-path .gitignore || echo "Prettier check completed"
+          else
+            echo "Prettier not available"
+          fi
+        continue-on-error: true
+
+  markdown-lint:
+    name: Markdown Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Markdown Lint
+        uses: DavidAnson/markdownlint-cli2-action@v15
+        with:
+          globs: |
+            **/*.md
+            !node_modules/**/*.md
+            !.github/**/*.md

@@ -1,0 +1,105 @@
+# Dependabot configuration pour Viridial
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/services/auth-service"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "type:infrastructure"
+      - "service:auth"
+    commit-message:
+      prefix: "chore(auth-service)"
+      include: "scope"
+
+  - package-ecosystem: "npm"
+    directory: "/services/property-service"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "type:infrastructure"
+      - "service:property"
+
+  - package-ecosystem: "npm"
+    directory: "/services/search-service"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "type:infrastructure"
+      - "service:search"
+
+  - package-ecosystem: "npm"
+    directory: "/services/lead-service"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "type:infrastructure"
+      - "service:lead"
+
+  - package-ecosystem: "npm"
+    directory: "/services/billing-service"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "type:infrastructure"
+      - "service:billing"
+
+  - package-ecosystem: "npm"
+    directory: "/services/admin-service"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "type:infrastructure"
+      - "service:admin"
+
+  - package-ecosystem: "npm"
+    directory: "/frontend/web"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "type:infrastructure"
+      - "service:frontend"
+
+  - package-ecosystem: "npm"
+    directory: "/frontend/agency"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "type:infrastructure"
+      - "service:frontend"
+
+  - package-ecosystem: "npm"
+    directory: "/frontend/admin"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "type:infrastructure"
+      - "service:frontend"
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "type:infrastructure"
+      - "service:infra"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels:
+      - "type:infrastructure"
+      - "infra:ci-cd"

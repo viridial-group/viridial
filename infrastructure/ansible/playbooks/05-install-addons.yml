@@ -1,0 +1,54 @@
+---
+# Playbook: Installation des addons Kubernetes (CoreDNS, Metrics Server)
+# Description: Installe les composants essentiels du cluster
+
+- name: Installer addons Kubernetes
+  hosts: control_plane
+  become: true
+
+  tasks:
+    - name: Vérifier CoreDNS
+      shell: kubectl get deployment coredns -n kube-system 2>/dev/null || echo "not-found"
+      register: coredns_check
+      changed_when: false
+
+    - name: CoreDNS est déjà installé avec kubeadm
+      debug:
+        msg: "CoreDNS est installé automatiquement avec kubeadm"
+
+    - name: Vérifier Metrics Server
+      shell: kubectl get deployment metrics-server -n kube-system 2>/dev/null || echo "not-found"
+      register: metrics_check
+      changed_when: false
+
+    - name: Télécharger Metrics Server
+      get_url:
+        url: https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+        dest: /tmp/metrics-server.yaml
+      when: "'not-found' in metrics_check.stdout"
+
+    - name: Modifier Metrics Server pour ignorer TLS (pour développement)
+      replace:
+        path: /tmp/metrics-server.yaml
+        regexp: '        - --secure-port=4443'
+        replace: '        - --secure-port=4443\n        - --kubelet-insecure-tls'
+      when: "'not-found' in metrics_check.stdout"
+
+    - name: Installer Metrics Server
+      shell: kubectl apply -f /tmp/metrics-server.yaml
+      when: "'not-found' in metrics_check.stdout"
+
+    - name: Attendre que Metrics Server soit prêt
+      shell: kubectl wait --for=condition=ready pod -l k8s-app=metrics-server -n kube-system --timeout=300s
+      when: "'not-found' in metrics_check.stdout"
+      ignore_errors: true
+
+    - name: Vérifier addons
+      shell: kubectl get deployments -n kube-system
+      register: addons_status
+      changed_when: false
+
+    - name: Afficher status des addons
+      debug:
+        msg: "{{ addons_status.stdout }}"
+

@@ -1,0 +1,61 @@
+---
+# Playbook: Initialisation du cluster Kubernetes
+# Description: Initialise le cluster avec kubeadm sur le control plane
+
+- name: Initialiser le cluster Kubernetes
+  hosts: control_plane
+  become: true
+  vars:
+    pod_network_cidr: "10.244.0.0/16"
+    service_cidr: "10.96.0.0/12"
+
+  tasks:
+    - name: Vérifier si cluster déjà initialisé
+      stat:
+        path: /etc/kubernetes/admin.conf
+      register: kubeconfig
+
+    - name: Initialiser le cluster Kubernetes
+      shell: |
+        kubeadm init \
+          --pod-network-cidr={{ pod_network_cidr }} \
+          --service-cidr={{ service_cidr }} \
+          --apiserver-advertise-address={{ ansible_default_ipv4.address }} \
+          --ignore-preflight-errors=Swap
+      args:
+        creates: /etc/kubernetes/admin.conf
+      when: not kubeconfig.stat.exists
+
+    - name: Créer répertoire .kube pour utilisateur
+      file:
+        path: "{{ ansible_env.HOME }}/.kube"
+        state: directory
+        mode: '0755'
+
+    - name: Copier kubeconfig pour utilisateur
+      copy:
+        src: /etc/kubernetes/admin.conf
+        dest: "{{ ansible_env.HOME }}/.kube/config"
+        remote_src: true
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0600'
+      when: not kubeconfig.stat.exists
+
+    - name: Récupérer commande join pour workers
+      shell: kubeadm token create --print-join-command
+      register: join_command
+      changed_when: false
+      when: kubeconfig.stat.exists
+
+    - name: Afficher commande join
+      debug:
+        msg: "Commande join pour workers: {{ join_command.stdout }}"
+
+    - name: Sauvegarder commande join
+      copy:
+        content: "{{ join_command.stdout }}"
+        dest: /tmp/kubeadm-join-command.sh
+        mode: '0755'
+      when: kubeconfig.stat.exists
+

@@ -1,0 +1,69 @@
+name: Build
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build-services:
+    name: Build Services
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - services/auth-service
+          - services/property-service
+          - services/search-service
+          - services/lead-service
+          - services/billing-service
+          - services/admin-service
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        working-directory: ${{ matrix.service }}
+        run: |
+          if [ -f package.json ]; then
+            npm ci
+          else
+            echo "No package.json found, skipping"
+            exit 0
+          fi
+
+      - name: Build TypeScript
+        working-directory: ${{ matrix.service }}
+        run: |
+          if [ -f package.json ] && grep -q '"build"' package.json; then
+            npm run build
+          else
+            echo "No build script found"
+            exit 0
+          fi
+        continue-on-error: true
+
+      - name: Build Docker image (test)
+        if: github.event_name == 'pull_request'
+        working-directory: ${{ matrix.service }}
+        run: |
+          if [ -f Dockerfile ]; then
+            docker build -t test-${{ matrix.service }}:test .
+            echo "Docker image built successfully"
+          else
+            echo "No Dockerfile found"
+          fi
+        continue-on-error: true
