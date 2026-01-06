@@ -317,6 +317,7 @@ En tant qu'équipe d'ingénierie, je souhaite configurer le repository GitHub av
 - [x] Scripts pour créer labels et milestones (✅ Fait - exécuter après push)
 - [x] Documentation GitHub Projects créée (✅ Fait)
 - [x] GitHub Project "Viridial Roadmap" créé (✅ Fait)
+- [x] Repository Settings configurés (✅ Fait - description, topics, features)
 - [x] Workflows GitHub Actions de base créés (✅ 6 workflows créés)
 - [x] Documentation complète créée (✅ CONTRIBUTING.md, repository-structure.md, etc.)
 - [x] README.md mis à jour avec architecture et liens (✅ Fait)
