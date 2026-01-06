@@ -6,7 +6,7 @@
 En tant qu'équipe d'ingénierie, je souhaite provisionner un cluster Kubernetes standard sur VPS avec networking, ingress et service discovery afin de déployer les microservices de manière orchestrée et scalable.
 
 ### Acceptance Criteria
-- Given accès aux VPS (Hetzner, DigitalOcean, OVH), When j'exécute les scripts IaC, Then le cluster Kubernetes est provisionné et accessible.
+- Given accès au VPS Hostinger, When j'exécute les scripts IaC, Then le cluster Kubernetes est provisionné et accessible.
 - Given cluster Kubernetes, When je déploie un service, Then le service est accessible via service discovery (DNS).
 - Given cluster Kubernetes, When je configure l'ingress, Then les services sont accessibles via HTTPS avec TLS automatique.
 - Multi-tenant isolation au niveau réseau via Network Policies.
@@ -19,7 +19,7 @@ En tant qu'équipe d'ingénierie, je souhaite provisionner un cluster Kubernetes
 
 #### Phase 1: Infrastructure as Code (IaC)
 - [ ] Créer repo `infrastructure/` avec structure modulaire (Terraform ou Ansible)
-- [ ] Module VPS/Servers: provisioning de VMs (Hetzner, DigitalOcean, OVH) ou bare metal
+- [ ] Module VPS/Servers: provisioning de VPS Hostinger (Ubuntu/Debian)
 - [ ] Module Kubernetes: cluster Kubernetes standard via Kubeadm - 100% gratuit
 - [ ] Module Networking: Load Balancer (Nginx Ingress), DNS (Cloudflare gratuit)
 - [ ] Module Security: Firewall rules (UFW/iptables)
@@ -57,9 +57,9 @@ En tant qu'équipe d'ingénierie, je souhaite provisionner un cluster Kubernetes
   - Worker: 4GB RAM, 2 CPU, 50GB disk (minimum)
 - **Installation:** Via Kubeadm (CNCF standard)
 - **CNI Plugin:** Calico (recommandé) pour Network Policies
-- **Coût:** Seulement VPS (Hetzner CPX21: 5€/mois, DigitalOcean Regular: 12$/mois)
-- **Staging:** 3 nodes (1 control + 2 workers) = 15€/mois
-- **Production:** 5+ nodes (1 control + 4 workers) = 25€/mois
+- **Coût:** Seulement VPS Hostinger (varie selon le plan choisi)
+- **Staging:** 1 node (control plane + worker combiné) pour MVP
+- **Production:** 3+ nodes (1 control + 2+ workers) selon besoins
 
 **Kubernetes Features:**
 - Auto-scaling: HPA (Horizontal Pod Autoscaler) basé sur CPU/memory
@@ -72,7 +72,7 @@ En tant qu'équipe d'ingénierie, je souhaite provisionner un cluster Kubernetes
 - DaemonSets pour agents (monitoring, logging)
 
 **Dependencies:**
-- Nécessite accès VPS (Hetzner, DigitalOcean, OVH) ou infrastructure on-prem
+- Nécessite accès VPS Hostinger (IP: 148.230.112.148)
 - GitHub repository avec secrets configurés
 - Domain name pour staging (ex: staging.viridial.com) - Cloudflare DNS gratuit
 

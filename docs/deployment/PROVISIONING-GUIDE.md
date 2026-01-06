@@ -4,6 +4,7 @@ Ce guide vous permet de provisionner le cluster Kubernetes sur votre VPS.
 
 ## Informations VPS
 
+- **Fournisseur:** Hostinger
 - **IP:** 148.230.112.148
 - **Repository:** https://github.com/viridial-group/viridial.git
 - **Architecture:** 1 node (control plane + worker combiné) pour MVP
