@@ -164,14 +164,14 @@ En tant qu'équipe d'ingénierie, je souhaite configurer le repository GitHub av
 - [x] Créer script `scripts/create-github-labels.sh` (✅ Fait)
 - [x] Créer script `scripts/create-github-milestones.sh` (✅ Fait)
 - [x] Documenter les labels dans `docs/contributing/labels.md` (✅ Fait)
-- [x] Créer labels par catégorie (✅ Fait - créés manuellement):
+- [x] Créer labels par catégorie (✅ Fait - créés manuellement)
   - **Priority:** `priority:p0`, `priority:p1`, `priority:p2`
   - **Type:** `type:bug`, `type:feature`, `type:infrastructure`, `type:documentation`
   - **Service:** `service:auth`, `service:property`, `service:search`, `service:lead`, `service:billing`, `service:admin`, `service:frontend`, `service:infra`
   - **Epic:** `epic:foundation`, `epic:multi-tenant`, `epic:property-management`, `epic:search`, `epic:agency`, `epic:lead-management`, `epic:operations`, `epic:intelligence`, `epic:monetization`
   - **Status:** `status:ready`, `status:in-progress`, `status:review`, `status:blocked`
   - **Infrastructure:** `infra:kubernetes`, `infra:database`, `infra:observability`, `infra:security`
-- [ ] Créer milestones selon roadmap (⏳ À faire):
+- [x] Créer milestones selon roadmap (✅ Fait - créés manuellement):
   - `Sprint 1-2: Foundation`
   - `Sprint 3: Multi-tenant Setup`
   - `Sprint 4-5: Core Features`
