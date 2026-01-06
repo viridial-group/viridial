@@ -63,6 +63,8 @@ create_milestone() {
   
   # Créer le milestone via API avec les bons paramètres
   local api_result
+  local api_exit_code
+  
   if [ -n "$due_date" ]; then
     api_result=$(gh api "repos/$GITHUB_REPO/milestones" \
       -X POST \
@@ -70,25 +72,33 @@ create_milestone() {
       -f description="$description" \
       -f due_on="${due_date}T23:59:59Z" \
       2>&1)
+    api_exit_code=$?
   else
     api_result=$(gh api "repos/$GITHUB_REPO/milestones" \
       -X POST \
       -f title="$title" \
       -f description="$description" \
       2>&1)
+    api_exit_code=$?
   fi
   
   # Vérifier le résultat
-  if echo "$api_result" | grep -q "number"; then
-    local milestone_num=$(echo "$api_result" | gh api --jq '.number' 2>/dev/null || echo "$api_result" | grep -o '"number":[0-9]*' | cut -d: -f2)
+  if [ $api_exit_code -eq 0 ] && echo "$api_result" | grep -qE '"number"|"id"'; then
+    # Succès - extraire le numéro du milestone
+    local milestone_num=$(echo "$api_result" | grep -oE '"number":[0-9]+' | head -1 | cut -d: -f2 || echo "$api_result" | jq -r '.number' 2>/dev/null || echo "?")
     echo "   ✅ Créé (#$milestone_num)"
     return 0
-  elif echo "$api_result" | grep -qi "permission\|forbidden\|unauthorized"; then
-    echo "   ❌ Échec: Permissions insuffisantes"
+  elif echo "$api_result" | grep -qiE "permission|forbidden|unauthorized|403"; then
+    echo "   ❌ Échec: Permissions insuffisantes (403)"
     echo "   💡 Solution: Obtenir permissions Write ou créer manuellement"
     return 1
-  elif echo "$api_result" | grep -qi "not found\|404"; then
-    echo "   ❌ Échec: Repository non trouvé"
+  elif echo "$api_result" | grep -qiE "not found|404"; then
+    echo "   ❌ Échec: Repository non trouvé ou endpoint invalide (404)"
+    echo "   💡 Vérifiez que le repository existe et est accessible"
+    return 1
+  elif echo "$api_result" | grep -qiE "bad request|422"; then
+    echo "   ❌ Échec: Requête invalide (422)"
+    echo "   💡 Détails: $api_result"
     return 1
   else
     echo "   ❌ Échec: $api_result"
