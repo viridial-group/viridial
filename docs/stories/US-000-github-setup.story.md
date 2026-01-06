@@ -59,7 +59,7 @@ En tant qu'équipe d'ingénierie, je souhaite configurer le repository GitHub av
 
 #### Phase 2: Configuration GitHub Repository
 - [x] Configurer CODEOWNERS pour review automatique par service (✅ Fichier créé)
-- [ ] Configurer branch protection rules (⏳ Manuel - après push GitHub):
+- [x] Configurer branch protection rules (✅ Fait - main et develop):
   - `main`: Require PR reviews (2 approbations), require status checks, no force push
   - `develop`: Require PR reviews (1 approbation), require status checks
   - `release/*`: Require PR reviews (1 approbation)
