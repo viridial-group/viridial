@@ -312,7 +312,7 @@ En tant qu'équipe d'ingénierie, je souhaite configurer le repository GitHub av
 ### Definition of Done
 - [x] Structure repository microservices créée et documentée (✅ Fait)
 - [x] Templates Issues et PR créés (✅ Fait - testés après push)
-- [ ] Branch protection rules configurées (⏳ Manuel - après push GitHub)
+- [x] Branch protection rules configurées (✅ Fait - main et develop)
 - [x] CODEOWNERS configuré pour review automatique (✅ Fait)
 - [x] Scripts pour créer labels et milestones (✅ Fait - exécuter après push)
 - [x] Documentation GitHub Projects créée (✅ Fait - créer manuellement après push)
