@@ -95,6 +95,7 @@ create_label "service:frontend" "Frontend" "1d76db"
 create_label "service:infra" "Infrastructure" "1d76db"
 create_label "service:shared" "Shared Code" "1d76db"
 
+
 echo ""
 echo "📋 Création des labels Epic..."
 create_label "epic:foundation" "Epic 1: Foundation" "b60205"
