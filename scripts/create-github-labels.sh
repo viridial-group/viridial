@@ -3,7 +3,8 @@
 # Usage: ./scripts/create-github-labels.sh
 # Prérequis: GitHub CLI (gh) installé et authentifié
 
-set -e
+# Ne pas arrêter sur erreur - on veut continuer même si certains labels échouent
+set +e
 
 GITHUB_REPO="viridial-group/viridial"
 
@@ -24,18 +25,48 @@ if ! gh auth status &> /dev/null; then
   exit 1
 fi
 
+# Vérifier que le repository est accessible
+echo "🔍 Vérification de l'accès au repository..."
+if ! gh repo view "$GITHUB_REPO" &> /dev/null; then
+  echo "❌ Erreur: Impossible d'accéder au repository $GITHUB_REPO"
+  echo "   Vérifiez que:"
+  echo "   1. Le repository existe sur GitHub"
+  echo "   2. Vous avez les permissions d'écriture"
+  echo "   3. Le repository a été poussé (git push -u origin main)"
+  exit 1
+fi
+
+# Vérifier les permissions d'écriture
+echo "🔍 Vérification des permissions..."
+if ! gh api "repos/$GITHUB_REPO" --jq '.permissions.push' 2>/dev/null | grep -q "true"; then
+  echo "⚠️  Attention: Vous n'avez peut-être pas les permissions d'écriture"
+  echo "   Le script continuera mais certaines opérations peuvent échouer"
+fi
+echo "✅ Repository accessible"
+echo ""
+
 # Fonction pour créer un label (ignore si existe déjà)
 create_label() {
   local name=$1
   local description=$2
   local color=$3
 
-  if gh label list --repo "$GITHUB_REPO" | grep -q "^$name"; then
+  # Vérifier si le label existe déjà
+  if gh label list --repo "$GITHUB_REPO" 2>/dev/null | grep -q "^$name"; then
     echo "⚠️  Label '$name' existe déjà, mise à jour..."
-    gh label edit "$name" --description "$description" --color "$color" --repo "$GITHUB_REPO" || true
+    if gh label edit "$name" --description "$description" --color "$color" --repo "$GITHUB_REPO" 2>/dev/null; then
+      echo "   ✅ Mis à jour"
+    else
+      echo "   ⚠️  Échec de la mise à jour (peut être normal)"
+    fi
   else
     echo "✅ Création label: $name"
-    gh label create "$name" --description "$description" --color "$color" --repo "$GITHUB_REPO" || true
+    if gh label create "$name" --description "$description" --color "$color" --repo "$GITHUB_REPO" 2>/dev/null; then
+      echo "   ✅ Créé"
+    else
+      echo "   ❌ Échec de la création"
+      return 1
+    fi
   fi
 }
 
@@ -94,8 +125,13 @@ create_label "infra:security" "Security" "0052cc"
 create_label "infra:ci-cd" "CI/CD" "0052cc"
 
 echo ""
-echo "✅ Tous les labels ont été créés/mis à jour!"
+echo "✅ Traitement des labels terminé!"
 echo ""
-echo "Vérification:"
-gh label list --repo "$GITHUB_REPO" | head -20
+echo "📊 Vérification des labels créés:"
+echo "─────────────────────────────────"
+gh label list --repo "$GITHUB_REPO" | grep -E "(priority:|type:|service:|epic:|status:|infra:)" | head -30 || echo "Aucun label personnalisé trouvé"
+echo ""
+echo "💡 Si certains labels n'ont pas été créés, vérifiez:"
+echo "   - Vos permissions sur le repository"
+echo "   - Que le repository a été poussé (git push -u origin main)"
 
