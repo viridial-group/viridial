@@ -35,10 +35,11 @@ spec:
             secretKeyRef:
               name: minio-secret
               key: MINIO_ROOT_PASSWORD
-        command:
-        - /bin/sh
-        - -c
-        - minio server /data --console-address ":9001"
+        args:
+        - server
+        - /data
+        - --console-address
+        - ":9001"
         volumeMounts:
         - name: minio-data
           mountPath: /data
