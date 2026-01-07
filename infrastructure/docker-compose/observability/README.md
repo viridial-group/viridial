@@ -14,6 +14,53 @@ Stack complète d'observabilité pour Viridial incluant métriques, logs, traces
 - **Postgres Exporter** - Métriques PostgreSQL
 - **Redis Exporter** - Métriques Redis
 
+## Guide rapide d'accès & d'utilisation
+
+### Depuis le VPS (en SSH)
+
+- Les URLs de la table ci‑dessous fonctionnent directement avec `localhost` sur le serveur (`ssh root@srv...`).
+- Pour vérifier que tout est OK côté serveur :
+
+```bash
+cd /opt/viridial/infrastructure/docker-compose/observability
+./test-observability.sh
+```
+
+### Depuis votre navigateur (à distance)
+
+- Remplacez `localhost` par l'IP publique de votre VPS, par ex.:
+  - Grafana : `http://VOTRE_IP:3000`
+  - Prometheus : `http://VOTRE_IP:9090`
+  - Jaeger : `http://VOTRE_IP:16686`
+- Assurez‑vous que les ports nécessaires sont ouverts dans le firewall (cf. `open-ports.sh`).
+- En dev, vous pouvez aussi utiliser un tunnel SSH:
+
+```bash
+ssh -L 3000:localhost:3000 -L 9090:localhost:9090 -L 16686:localhost:16686 root@VOTRE_IP
+```
+
+Puis ouvrez dans le navigateur de votre machine : `http://localhost:3000`, `http://localhost:9090`, etc.
+
+### Utilisation rapide des services
+
+- **Grafana**
+  - URL: `http://VOTRE_IP:3000`
+  - Login: `admin / mot de passe` défini dans `.env` (`GRAFANA_ADMIN_USER` / `GRAFANA_ADMIN_PASSWORD`)
+  - Une fois connecté : onglet *Dashboards* → importez ou créez vos dashboards.
+- **Prometheus**
+  - URL: `http://VOTRE_IP:9090`
+  - Onglet *Status → Targets* pour voir tous les exporters (Node, Postgres, Redis, etc.).
+- **Loki / Promtail**
+  - Logs consultables dans Grafana : *Explore* → datasource **Loki** → requêtes `{container="viridial-api"}`, etc.
+- **Jaeger**
+  - URL: `http://VOTRE_IP:16686`
+  - Sélectionnez un service instrumenté puis lancez des recherches de traces.
+- **Alertmanager**
+  - URL: `http://VOTRE_IP:9093`
+  - Permet de visualiser les alertes actives et silencements.
+
+Pour les détails d'installation, de configuration et d'intégration avec les microservices, voir les sections ci‑dessous.
+
 ## Prérequis
 
 1. Docker et Docker Compose installés

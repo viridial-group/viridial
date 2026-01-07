@@ -1,11 +1,11 @@
 global:
   resolve_timeout: 5m
-  # SMTP configuration (uncomment and configure when email alerts are needed)  
-  # smtp_smarthost: 'smtp.hostinger.com:465'
-  # smtp_from: 'alerts@viridial.com'
-  # smtp_auth_username: 'alerts@viridial.com'
-  # smtp_auth_password: 'your_smtp_password'
-  # smtp_require_tls: true
+  # SMTP configuration  
+  smtp_smarthost: 'smtp.hostinger.com:465'
+  smtp_from: 'support@viridial.com'
+  smtp_auth_username: 'support@viridial.com'
+  smtp_auth_password: 'S@upport!19823'
+  smtp_require_tls: true
 
 # Templates for notifications
 templates:
@@ -30,20 +30,20 @@ route:
 # Receivers
 receivers:
   - name: 'default'
-    # Email notifications (uncomment when configured)
-    # email_configs:
-    #   - to: 'devops@viridial.com'
-    #     headers:
-    #       Subject: 'Viridial Alert: {{ .GroupLabels.alertname }}'
-    #     html: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+    # Email notifications
+    email_configs:
+      - to: 'devops@viridial.com'
+        headers:
+          Subject: 'Viridial Alert: {{ .GroupLabels.alertname }}'
+        html: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
 
   - name: 'critical-alerts'
     # Email notifications for critical alerts
-    # email_configs:
-    #   - to: 'oncall@viridial.com'
-    #     headers:
-    #       Subject: '🚨 CRITICAL: {{ .GroupLabels.alertname }}'
-    #     html: '{{ range .Alerts }}<b>{{ .Annotations.summary }}</b><br>{{ .Annotations.description }}{{ end }}'
+    email_configs:
+      - to: 'oncall@viridial.com'
+        headers:
+          Subject: '🚨 CRITICAL: {{ .GroupLabels.alertname }}'
+        html: '{{ range .Alerts }}<b>{{ .Annotations.summary }}</b><br>{{ .Annotations.description }}{{ end }}'
     
     # Slack notifications (uncomment when webhook is configured)
     # slack_configs:
@@ -55,11 +55,11 @@ receivers:
 
   - name: 'warning-alerts'
     # Email notifications for warnings
-    # email_configs:
-    #   - to: 'devops@viridial.com'
-    #     headers:
-    #       Subject: '⚠️ Warning: {{ .GroupLabels.alertname }}'
-    #     html: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+    email_configs:
+      - to: 'support@viridial.com'
+        headers:
+          Subject: '⚠️ Warning: {{ .GroupLabels.alertname }}'
+        html: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
 
 # Inhibition rules
 inhibit_rules:

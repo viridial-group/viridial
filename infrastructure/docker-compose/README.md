@@ -9,6 +9,76 @@ Cette solution déploie les services de base de Viridial (PostgreSQL, Redis, Mei
 - Au moins 2GB de RAM disponible
 - Au moins 10GB d'espace disque disponible
 
+## Accès & utilisation rapide des services
+
+> ℹ️ Les identifiants réels sont stockés dans le fichier `.env` (non versionné).  
+> Sur le **VPS** : `cd /opt/viridial/infrastructure/docker-compose && cat .env`
+
+### 1. PostgreSQL
+
+- **URL locale (VPS)** : `postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:$POSTGRES_PORT/$POSTGRES_DB`  
+- **Connexion depuis le VPS** :
+
+```bash
+cd /opt/viridial/infrastructure/docker-compose
+source ./.env   # charge POSTGRES_USER / POSTGRES_PASSWORD / POSTGRES_DB / POSTGRES_PORT
+docker compose exec postgres psql -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\"
+```
+
+- **Connexion depuis ton ordinateur (client psql installé)** :
+
+```bash
+psql \"postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@VOTRE_IP:$POSTGRES_PORT/$POSTGRES_DB\"
+```
+
+> Assure‑toi que le port `$POSTGRES_PORT` est ouvert dans le firewall si tu veux y accéder depuis l’extérieur.
+
+### 2. Redis
+
+- **URL locale (VPS)** : `redis://localhost:$REDIS_PORT`  
+- **Connexion depuis le VPS** :
+
+```bash
+cd /opt/viridial/infrastructure/docker-compose
+source ./.env
+redis-cli -h 127.0.0.1 -p \"$REDIS_PORT\"
+```
+
+> En prod, Redis est exposé uniquement sur le réseau Docker (`viridial-network`). Pour un accès distant, il vaut mieux passer par un tunnel SSH ou exposer un port de manière contrôlée.
+
+### 3. Meilisearch
+
+- **URL locale (VPS)** : `http://localhost:$MEILISEARCH_PORT`  
+- **Clé d’API (master key)** : dans `.env` → `MEILI_MASTER_KEY`
+
+Exemple de test depuis le VPS :
+
+```bash
+cd /opt/viridial/infrastructure/docker-compose
+source ./.env
+curl -H \"Authorization: Bearer $MEILI_MASTER_KEY\" \"http://localhost:$MEILISEARCH_PORT/health\"
+```
+
+Pour accéder à l’UI web depuis ton navigateur : `http://VOTRE_IP:$MEILISEARCH_PORT`
+
+### 4. MinIO
+
+- **Console Web** : `http://VOTRE_IP:$MINIO_CONSOLE_PORT`  
+- **Endpoint API S3** : `http://VOTRE_IP:$MINIO_API_PORT`  
+- **Identifiants** : dans `.env` → `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD`
+
+Depuis le VPS :
+
+```bash
+cd /opt/viridial/infrastructure/docker-compose
+source ./.env
+echo \"User : $MINIO_ROOT_USER\"
+echo \"Password : $MINIO_ROOT_PASSWORD\"
+```
+
+> Pour plus de sécurité, change `MINIO_ROOT_PASSWORD` dans `.env` puis redémarre :  
+> `docker compose down && docker compose up -d`
+
 ## Installation Rapide
 
 ```bash
