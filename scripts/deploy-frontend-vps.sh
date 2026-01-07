@@ -77,11 +77,34 @@ else
 fi
 echo ""
 
+# 3.5. Vérifier que auth-service est démarré
+echo "3.5️⃣  Vérification que auth-service est démarré..."
+if ! docker ps | grep -q viridial-auth-service; then
+  echo "   ⚠️  Auth-service n'est pas démarré"
+  echo "   Démarrage de auth-service..."
+  if [ -f "app-auth.yml" ]; then
+    docker compose -f app-auth.yml up -d auth-service
+    echo "   ✅ Auth-service démarré"
+  else
+    echo "   ⚠️  Fichier app-auth.yml non trouvé, assurez-vous que auth-service est démarré"
+  fi
+else
+  echo "   ✅ Auth-service est en cours d'exécution"
+fi
+echo ""
+
 # 4. Rebuild et redémarrer les services
 echo "4️⃣  Build et redémarrage du frontend..."
 docker compose -f app-frontend.yml build --no-cache frontend
-docker compose -f app-frontend.yml up -d frontend nginx
-echo "   ✅ Services redémarrés"
+docker compose -f app-frontend.yml up -d frontend
+echo "   ✅ Frontend redémarré"
+echo ""
+
+# 4.5. Démarrer nginx si configuré
+echo "4.5️⃣  Démarrage de Nginx..."
+docker compose -f app-frontend.yml up -d nginx 2>/dev/null || {
+  echo "   ⚠️  Nginx non démarré ou déjà en cours d'exécution"
+}
 echo ""
 
 # 5. Vérifier le statut

@@ -4,7 +4,7 @@ services:
       context: ../../frontend
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_AUTH_API_URL: ${FRONTEND_AUTH_API_URL:-http://148.230.112.148:8080/auth}
+        NEXT_PUBLIC_AUTH_API_URL: ${FRONTEND_AUTH_API_URL:-http://viridial.com/auth}
     image: viridial/frontend:latest
     container_name: viridial-frontend
     restart: unless-stopped
@@ -16,8 +16,7 @@ services:
       - "3000:3000"
     networks:
       - viridial-network
-    depends_on:
-      - auth-service
+    # Note: auth-service must be running separately (deploy via app-auth.yml first)
 
   # Nginx reverse proxy (optional - if you want nginx in front)
   nginx:
@@ -33,7 +32,7 @@ services:
       - viridial-network
     depends_on:
       - frontend
-      - auth-service
+    # Note: auth-service must be running (ensure via script/deployment order)
 
 networks:
   viridial-network:
