@@ -1,0 +1,34 @@
+---
+# Kustomization pour déployer tous les services de base
+# Usage: kubectl apply -k infrastructure/kubernetes/manifests/services/
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: viridial-staging
+
+resources:
+  # PostgreSQL
+  - postgres/postgres-secret.yaml
+  - postgres/postgres-configmap.yaml
+  - postgres/postgres-pvc.yaml
+  - postgres/postgres-statefulset.yaml
+  - postgres/postgres-service.yaml
+  
+  # Redis
+  - redis/redis-configmap.yaml
+  - redis/redis-deployment.yaml
+  - redis/redis-service.yaml
+  
+  # Meilisearch
+  - meilisearch/meilisearch-secret.yaml
+  - meilisearch/meilisearch-pvc.yaml
+  - meilisearch/meilisearch-deployment.yaml
+  - meilisearch/meilisearch-service.yaml
+  
+  # MinIO
+  - minio/minio-secret.yaml
+  - minio/minio-pvc.yaml
+  - minio/minio-statefulset.yaml
+  - minio/minio-service.yaml
+  - minio/minio-init-job.yaml
+
