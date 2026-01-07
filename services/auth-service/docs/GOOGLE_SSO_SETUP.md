@@ -64,8 +64,8 @@ Ajouter ces variables dans ton `.env` (local) ou sur le VPS :
 
 ```env
 # Google OAuth 2.0
-GOOGLE_CLIENT_ID=YOUR_GOOGLE_CLIENT_ID_HERE.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=YOUR_GOOGLE_CLIENT_SECRET_HERE
+GOOGLE_CLIENT_ID=xx
+GOOGLE_CLIENT_SECRET=x
 GOOGLE_CALLBACK_URL=http://localhost:3000/auth/oidc/google/callback
 # Ou en production:
 # GOOGLE_CALLBACK_URL=https://viridial.com/auth/oidc/google/callback
