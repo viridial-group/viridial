@@ -1,5 +1,5 @@
 #!/bin/bash
-# Script pour nettoyer l'ancien docker-compose.yml à la racine si nécessaire
+# Script pour nettoyer l'ancien docker-compose.yml à la racine si nécessaire 
 
 set -e
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Script d'installation des services de base avec Docker Compose
+# Script d'installation des services de base avec Docker Compose 
 
 set -e
 
