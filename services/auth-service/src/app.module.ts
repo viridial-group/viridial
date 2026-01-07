@@ -5,15 +5,33 @@ import { AuthController } from './controllers/auth.controller';
 import { AuthService } from './services/auth.service';
 import { User } from './entities/user.entity';
 
+// Helper pour parser DATABASE_URL
+function parseDatabaseUrl(url?: string) {
+  if (!url) {
+    throw new Error('DATABASE_URL is required');
+  }
+
+  try {
+    const parsed = new URL(url);
+    return {
+      type: 'postgres' as const,
+      host: parsed.hostname,
+      port: parseInt(parsed.port, 10) || 5432,
+      username: parsed.username,
+      password: parsed.password,
+      database: parsed.pathname.slice(1), // remove leading '/'
+      autoLoadEntities: true,
+      synchronize: process.env.NODE_ENV !== 'production', // OK pour dev; à désactiver en prod avec migrations
+    };
+  } catch (error) {
+    throw new Error(`Invalid DATABASE_URL: ${error}`);
+  }
+}
+
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
-      useFactory: () => ({
-        type: 'postgres',
-        url: process.env.DATABASE_URL,
-        autoLoadEntities: true,
-        synchronize: true, // OK pour dev; à désactiver en prod avec migrations
-      }),
+      useFactory: () => parseDatabaseUrl(process.env.DATABASE_URL),
     }),
     TypeOrmModule.forFeature([User]),
     JwtModule.register({}), // secrets & expiresIn gérés dans AuthService via options
