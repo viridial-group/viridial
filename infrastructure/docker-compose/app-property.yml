@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  property-service:
+    build:
+      context: ../../services/property-service
+      dockerfile: Dockerfile
+    image: viridial/property-service:latest
+    container_name: viridial-property-service
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DATABASE_URL: ${DATABASE_URL}
+      # Frontend URL for CORS
+      FRONTEND_URL: ${FRONTEND_URL:-https://viridial.com}
+    ports:
+      - "3001:3001"
+    networks:
+      - viridial-network
+    depends_on:
+      - db
+    # Health check
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001/properties/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  db:
+    image: postgres:15-alpine
+    container_name: viridial-db-property
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-viridial}
+      POSTGRES_USER: ${POSTGRES_USER:-viridial}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - viridial-db-data:/var/lib/postgresql/data
+      # Mount migration script
+      - ../../services/property-service/src/migrations:/docker-entrypoint-initdb.d
+    networks:
+      - viridial-network
+    # Note: In production, use external database or shared database service
+
+volumes:
+  viridial-db-data:
+
+networks:
+  viridial-network:
+    external: true
+
+# Note: 
+# - Property service uses the same database as auth-service (shared DATABASE_URL)
+# - Apply migrations manually: psql $DATABASE_URL < services/property-service/src/migrations/create-properties-tables.sql
+# - Or enable synchronize: true in dev mode (NOT recommended for production)
+
