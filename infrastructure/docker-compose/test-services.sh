@@ -1,5 +1,5 @@
 #!/bin/bash
-# Script de test de connectivité aux services
+# Script de test de connectivité aux services 
 
 set -e
 
