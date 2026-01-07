@@ -31,3 +31,9 @@ En tant que designer et gestionnaire de contenu, je veux un espace pour uploader
 - [ ] Accessibility checks passed for image content
 
 ```
+
+## Inspiration & References
+- Référence: UI media kit et gallery du site fourni (voir pièces jointes). Utiliser les layouts de cards, thumbnails et panels metrics comme guide.
+- Voir le brief designer: docs/communication/designer-brief.md
+- Voir le brief developer: docs/communication/developer-brief.md
+

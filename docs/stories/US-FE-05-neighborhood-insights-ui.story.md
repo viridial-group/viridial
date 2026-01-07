@@ -27,3 +27,9 @@ En tant que visiteur, je veux visualiser des informations sur le quartier via un
 - [ ] Accessibility checklist passed
 
 ```
+
+## Inspiration & References
+- Le style des panels d'insights et des mini‑maps doit suivre les modèles visuels fournis (pièces jointes).
+- Voir le brief designer: docs/communication/designer-brief.md
+- Voir le brief developer: docs/communication/developer-brief.md
+

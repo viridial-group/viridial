@@ -32,3 +32,9 @@ En tant qu'utilisateur (agent / propriétaire / admin), je veux centraliser l'up
 - [ ] Guide d'utilisation et règles de permission rédigés
 
 ```
+
+## Inspiration & References
+- UI patterns: three‑column layout (filters / list / detail) and document cards like in provided images.
+- Voir le brief designer: docs/communication/designer-brief.md
+- Voir le brief developer: docs/communication/developer-brief.md
+
