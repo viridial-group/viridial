@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Button Demo</title>
+  <link rel="stylesheet" href="../tokens.css">
+  <style>
+    body{font-family:Inter,system-ui,Arial;background:var(--neutral-200);color:var(--color-primary);margin:0}
+    .wrap{max-width:1100px;margin:28px auto;padding:24px}
+    h1{margin:0 0 12px}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+    .card{background:var(--neutral-100);padding:16px;border-radius:10px;border:1px solid var(--neutral-400)}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    pre{background:#f3f4f6;padding:8px;border-radius:6px}
+    .note{font-size:13px;color:var(--color-muted);margin-top:8px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Button Component Demo</h1>
+    <p class="note">Shows default, outline, light, icon, social and block (full-width) variants.</p>
+
+    <div class="grid">
+      <div class="card">
+        <h3>Primary / Semantic</h3>
+        <div class="row" style="margin-bottom:8px">
+          <button class="btn btn--default btn--md">Primary</button>
+          <button class="btn btn--secondary btn--md">Secondary</button>
+          <button class="btn btn--success btn--md">Success</button>
+          <button class="btn btn--danger btn--md">Danger</button>
+        </div>
+        <div class="row">
+          <button class="btn" style="background:var(--color-purple);color:white">Purple</button>
+          <button class="btn" style="background:var(--color-teal);color:white">Teal</button>
+          <button class="btn" style="background:var(--color-orange);color:white">Orange</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Light / Outline / Disabled</h3>
+        <div class="row" style="margin-bottom:8px">
+          <button class="btn btn--light btn--md">Light</button>
+          <button class="btn btn--outline btn--md">Outline</button>
+          <button class="btn btn--outline btn--danger btn--md">Outline Danger</button>
+        </div>
+        <div class="row">
+          <button class="btn btn--default btn--md" disabled>Disabled</button>
+          <button class="btn btn--default btn--md" aria-disabled="true">Disabled (aria)</button>
+          <!-- Accessible anchor example: behaves like a link but disabled -->
+          <a href="#" class="btn btn--default btn--md" data-disabled="true">Disabled anchor</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Icon Buttons & Sizes</h3>
+        <div class="row" style="margin-bottom:8px">
+          <button class="btn btn--icon btn--sm" aria-label="close">✕</button>
+          <button class="btn btn--icon btn--md" aria-label="close">✕</button>
+          <button class="btn btn--icon btn--lg" aria-label="close">✕</button>
+        </div>
+        <div class="row">
+          <button class="btn btn--default btn--sm">Small</button>
+          <button class="btn btn--default btn--md">Medium</button>
+          <button class="btn btn--default btn--lg">Large</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Social Buttons</h3>
+        <div class="row" style="margin-bottom:8px">
+          <button class="btn btn--social--facebook btn--md">Facebook</button>
+          <button class="btn btn--social--twitter btn--md">Twitter</button>
+          <button class="btn btn--social--linkedin btn--md">LinkedIn</button>
+        </div>
+        <div class="row">
+          <button class="btn btn--social--facebook btn--outline btn--md">Ghost</button>
+          <button class="btn btn--social--twitter btn--outline btn--md">Ghost</button>
+        </div>
+      </div>
+
+      <div class="card" style="grid-column:1 / -1">
+        <h3>Block / Full-width Buttons</h3>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <button class="btn btn--default btn--block btn--md">Primary block button</button>
+          <button class="btn btn--light btn--block btn--md">Light block button</button>
+          <button class="btn btn--outline btn--block btn--md">Outline block button</button>
+        </div>
+      </div>
+
+    </div>
+
+    <p class="note">Developer tip: import <code>docs/design/tokens.css</code> into your app global stylesheet to use these classes.</p>
+  </div>
+
+  <script>
+    // Prevent activation of anchors marked data-disabled
+    document.addEventListener('click', function(e){
+      var a = e.target.closest('a[data-disabled]');
+      if(a){ e.preventDefault(); }
+    });
+    // keyboard support for anchors: treat Enter/Space as click but prevented when disabled
+    document.addEventListener('keydown', function(e){
+      if((e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter')){
+        var a = document.activeElement;
+          if(a && a.tagName === 'A' && a.dataset.disabled !== undefined){ e.preventDefault(); }
+      }
+    });
+  </script>
+</body>
+</html>

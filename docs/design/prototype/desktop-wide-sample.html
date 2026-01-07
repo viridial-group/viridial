@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Listing - Wide Layout Sample</title>
+  <link rel="stylesheet" href="../tokens.css">
+  <style>
+    :root{
+      --color-primary:#0B1220;--color-accent:#FF3B30;--neutral-100:#FFFFFF;--neutral-200:#F7F7F9;--neutral-400:#E6E7EA;--radius:10px;--space:18px
+    }
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;color:var(--color-primary);background:var(--neutral-200)}
+    .wrap{max-width:1600px;margin:28px auto;padding:18px}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    header .brand{display:flex;align-items:center;gap:12px}
+    .searchbar{flex:1;max-width:720px;margin:0 24px}
+    .searchbar input{width:100%;height:44px;border-radius:8px;border:1px solid var(--neutral-400);padding:0 12px}
+
+    .chip-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+    .chip{background:var(--neutral-100);border-radius:999px;padding:8px 12px;border:1px solid var(--neutral-400);font-size:13px}
+
+    .layout{display:grid;grid-template-columns:320px 1fr 360px;gap:18px}
+    .panel{background:var(--neutral-100);border-radius:var(--radius);padding:14px;border:1px solid var(--neutral-400);box-shadow:0 4px 12px rgba(11,18,32,0.04)}
+
+    /* Filter panel */
+    .filter-panel .section{margin-bottom:14px}
+    label{display:block;font-size:13px;margin-bottom:6px;color:#374151}
+    input[type=search],select,input{width:100%;height:44px;border-radius:8px;border:1px solid var(--neutral-400);padding:8px 10px;font-size:14px}
+
+    /* Main results */
+    .results .controls{display:flex;align-items:center;gap:12px;justify-content:space-between;margin-bottom:12px}
+    .results-grid{display:flex;flex-direction:column;gap:12px}
+    .card{display:flex;gap:14px;align-items:center;padding:14px;border-radius:8px;background:var(--neutral-100);border:1px solid var(--neutral-400)}
+    .thumb{width:84px;height:84px;border-radius:6px;background:#ddd;flex:0 0 84px}
+    .meta{flex:1}
+    .title{font-size:18px;margin:0 0 6px}
+    .desc{font-size:13px;color:#6B7280;margin:0}
+    .meta .tags{margin-top:8px;font-size:12px;color:#9AA0A6}
+
+    .actions{display:flex;flex-direction:column;gap:8px}
+    .btn{padding:8px 12px;border-radius:8px;border:1px solid var(--neutral-400);background:#fff}
+    .btn--accent{background:var(--color-accent);color:#fff;border:none}
+
+    /* Right details */
+    .detail-title{font-size:16px;margin:0 0 8px}
+    .metrics{display:flex;gap:10px;flex-wrap:wrap}
+    .metric{background:var(--neutral-200);padding:8px 10px;border-radius:8px;font-size:13px}
+
+    footer{margin-top:18px;text-align:center;color:#9AA0A6;font-size:13px}
+
+    /* Button library grid */
+    .button-library{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .button-demo{padding:12px;background:var(--neutral-100);border-radius:8px;border:1px solid var(--neutral-400)}
+    .button-demo h5{margin:0 0 8px;font-size:13px}
+
+    /* Button focus outline */
+    .btn:focus{outline:none;box-shadow:0 0 0 3px rgba(37,99,235,0.12)}
+
+    /* Responsive */
+    @media (max-width:1100px){.layout{grid-template-columns:1fr}.filter-panel{order:2}.wrap{padding:12px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand"><img src="" alt="logo" style="width:28px;height:28px;border-radius:6px;background:#FF3B30"><strong>meetsponsors — inspired</strong></div>
+      <div class="searchbar"><input type="search" placeholder="Search sponsors, creators, topics (⌘K)"></div>
+      <div><button class="btn">Login</button> <button class="btn btn--accent">Create Free Account</button></div>
+    </header>
+
+    <div class="chip-row">
+      <div class="chip">Sponsors working with less than 20 creators</div>
+      <div class="chip">Small Tech Sponsors French</div>
+      <div class="chip">Home DIY</div>
+      <div class="chip">Foods for pets</div>
+      <div class="chip">+ Create</div>
+    </div>
+
+    <div class="layout">
+      <aside class="panel filter-panel" aria-label="Filters">
+        <div style="display:flex;gap:10px;margin-bottom:10px">
+          <button class="btn" style="flex:1;background:#fff;border-radius:8px">Filters</button>
+          <button class="btn" style="flex:1;border-radius:8px">My templates</button>
+        </div>
+
+        <div class="section">
+          <label for="filter-search">Search by name</label>
+          <input id="filter-search" type="search" placeholder="Enter a YouTuber name...">
+        </div>
+
+        <div class="section">
+          <label for="filter-niches">Filter by niches</label>
+          <select id="filter-niches"><option>Select niches...</option></select>
+        </div>
+
+        <div class="section">
+          <label for="filter-language">Language</label>
+          <select id="filter-language"><option>English</option><option>French</option></select>
+        </div>
+
+        <div class="section">
+          <label for="filter-min-views">Minimum Median views</label>
+          <input id="filter-min-views" placeholder="Enter minimum number">
+        </div>
+
+        <div style="margin-top:8px;display:flex;gap:8px">
+          <button class="btn" style="flex:1">Reset</button>
+          <button class="btn btn--accent" style="flex:1">Create new search template</button>
+        </div>
+      </aside>
+
+      <main>
+        <div class="panel results">
+            <div class="controls">
+            <div style="display:flex;gap:12px;align-items:center">
+              <label for="rows-per-page">Rows per page:</label>
+              <select id="rows-per-page" style="width:86px"><option>10</option><option>20</option></select>
+            </div>
+            <div style="display:flex;gap:12px;align-items:center">
+              <button class="btn">Favorites only</button>
+              <button class="btn">Reset filters</button>
+            </div>
+          </div>
+
+          <div class="results-grid">
+            <article class="card">
+              <div class="thumb" aria-hidden></div>
+              <div class="meta">
+                <h3 class="title">VOOPOO</h3>
+                <p class="desc">VOOPOO is a global high-tech enterprise specializing in the research, development, manufacture, and sales of electronic cigarettes and vaping products.</p>
+                <div class="tags">Electronic Health Record • Health Care Services • Medical Devices +3 others</div>
+              </div>
+              <div class="actions">
+                <div style="text-align:right"><strong>71</strong><div style="font-size:12px;color:#9AA0A6">sponsorships</div></div>
+                <div><button class="btn" aria-label="favorite">♡</button></div>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="thumb" aria-hidden></div>
+              <div class="meta">
+                <h3 class="title">Unibet.com</h3>
+                <p class="desc">Unibet is a company that operates with online gambling products such as online casino, online poker and online bingo.</p>
+                <div class="tags">Gambling • Gambling & Casinos • Online Business +2 others</div>
+              </div>
+              <div class="actions">
+                <div style="text-align:right"><strong>548</strong><div style="font-size:12px;color:#9AA0A6">sponsorships</div></div>
+                <div><button class="btn" aria-label="favorite">♡</button></div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </main>
+
+      <aside class="panel" aria-label="Details panel">
+        <h4 class="detail-title">Quick Metrics</h4>
+        <div class="metrics">
+          <div class="metric">Subscribers 145k</div>
+          <div class="metric">Median Views 45k</div>
+          <div class="metric">Engagement 5.3%</div>
+          <div class="metric">Avg View % 39.1%</div>
+        </div>
+
+        <hr style="margin:12px 0;border:none;border-top:1px solid var(--neutral-400)">
+        <h4 class="detail-title">Recent Sponsored Videos</h4>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="background:#f3f4f6;padding:8px;border-radius:8px">This project should cost €150,000 — sample video title</div>
+          <div style="background:#f3f4f6;padding:8px;border-radius:8px">3 months of work destroyed — sample video title</div>
+        </div>
+      </aside>
+
+    </div>
+    <!-- Button library: displays all button variants including block -->
+    <div style="margin-top:18px" class="panel">
+      <h3 style="margin:0 0 12px">Button Library</h3>
+      <div class="button-library">
+        <div class="button-demo">
+          <h5>Primary / Default</h5>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn--default btn--md">Primary</button>
+            <button class="btn btn--secondary btn--md">Secondary</button>
+            <button class="btn btn--success btn--md">Success</button>
+            <button class="btn btn--danger btn--md">Danger</button>
+          </div>
+        </div>
+
+        <div class="button-demo">
+          <h5>Light / Outline / Disabled</h5>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn--light btn--md">Light</button>
+            <button class="btn btn--outline btn--md">Outline</button>
+            <button class="btn btn--outline btn--danger btn--md">Outline Danger</button>
+            <button class="btn btn--default btn--md" disabled>Disabled</button>
+            <button class="btn btn--default btn--md" disabled>Disabled link</button>
+          </div>
+        </div>
+
+        <div class="button-demo">
+          <h5>Icon Buttons & Sizes</h5>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <button class="btn btn--icon btn--sm" aria-label="close">×</button>
+            <button class="btn btn--icon btn--md" aria-label="close">×</button>
+            <button class="btn btn--icon btn--lg" aria-label="close">×</button>
+            <button class="btn btn--default btn--sm">Small</button>
+            <button class="btn btn--default btn--md">Medium</button>
+            <button class="btn btn--default btn--lg">Large</button>
+          </div>
+        </div>
+
+        <div class="button-demo">
+          <h5>Social Buttons</h5>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn--social--facebook btn--md">Facebook</button>
+            <button class="btn btn--social--twitter btn--md">Twitter</button>
+            <button class="btn btn--social--linkedin btn--md">LinkedIn</button>
+            <button class="btn btn--social--facebook btn--outline btn--md">Ghost</button>
+          </div>
+        </div>
+
+        <div class="button-demo">
+          <h5>Semantic Colors</h5>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn--success btn--md">Success</button>
+            <button class="btn btn--warning btn--md">Warning</button>
+            <button class="btn btn--info btn--md">Info</button>
+            <button class="btn" style="background:var(--color-purple);color:white">Purple</button>
+            <button class="btn" style="background:var(--color-teal);color:white">Teal</button>
+            <button class="btn" style="background:var(--color-orange);color:white">Orange</button>
+          </div>
+        </div>
+
+        <div class="button-demo" style="grid-column:1 / -1">
+          <h5>Block / Full-width Buttons</h5>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button class="btn btn--default btn--block btn--md">Primary block button</button>
+            <button class="btn btn--light btn--block btn--md">Light block button</button>
+            <button class="btn btn--outline btn--block btn--md">Outline block button</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <footer>Showing 1 to 10 of 12,491 results • Pagination • © inspired</footer>
+  </div>
+  <script>
+    // Prevent activation of anchors marked data-disabled
+    document.addEventListener('click', function(e){
+      var a = e.target.closest('a[data-disabled]');
+      if(a){ e.preventDefault(); }
+    });
+    // keyboard support for anchors: treat Enter/Space as click but prevented when disabled
+    document.addEventListener('keydown', function(e){
+      if((e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter')){
+        var a = document.activeElement;
+        if(a && a.tagName === 'A' && a.dataset && a.dataset.disabled !== undefined){ e.preventDefault(); }
+      }
+    });
+  </script>
+</body>
+</html>
