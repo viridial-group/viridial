@@ -63,7 +63,20 @@ echo ""
 
 test_service "Prometheus" "http://localhost:9090/-/healthy" || FAILED=$((FAILED + 1))
 test_service "Grafana" "http://localhost:3000/api/health" || FAILED=$((FAILED + 1))
-test_service "Loki" "http://localhost:3100/ready" || FAILED=$((FAILED + 1))
+
+# Test Loki avec tolérance pour 503 (initialisation)
+echo -n "Test Loki... "
+LOKI_READY=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:3100/ready" 2>/dev/null)
+LOKI_QUERY=$(curl -s "http://localhost:3100/loki/api/v1/labels" 2>/dev/null)
+if [ "$LOKI_READY" = "200" ]; then
+    echo -e "${GREEN}✓ OK${NC}"
+elif [ "$LOKI_READY" = "503" ] && echo "$LOKI_QUERY" | grep -q "status.*success"; then
+    echo -e "${GREEN}✓ OK (API fonctionnelle, initialisation en cours)${NC}"
+else
+    echo -e "${RED}✗ FAIL (HTTP $LOKI_READY)${NC}"
+    FAILED=$((FAILED + 1))
+fi
+
 test_service "Jaeger UI" "http://localhost:16686/" || FAILED=$((FAILED + 1))
 test_service "Alertmanager" "http://localhost:9093/-/healthy" || FAILED=$((FAILED + 1))
 
