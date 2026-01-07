@@ -278,10 +278,9 @@ export class AuthService {
       throw new BadRequestException('Les mots de passe ne correspondent pas');
     }
 
-    // Trouver le token
+    // Trouver le token (sans relation user, on utilise directement userId) 
     const resetToken = await this.resetTokenRepo.findOne({
       where: { token, used: false },
-      relations: ['user'],
     });
 
     if (!resetToken) {
@@ -292,6 +291,13 @@ export class AuthService {
     if (new Date() > resetToken.expiresAt) {
       await this.resetTokenRepo.update({ id: resetToken.id }, { used: true });
       throw new UnauthorizedException('Token de réinitialisation expiré');
+    }
+
+    // Vérifier que l'utilisateur existe
+    const user = await this.userRepo.findOne({ where: { id: resetToken.userId } });
+    if (!user) {
+      await this.resetTokenRepo.update({ id: resetToken.id }, { used: true });
+      throw new UnauthorizedException('Utilisateur introuvable pour ce token');
     }
 
     // Hasher le nouveau mot de passe
