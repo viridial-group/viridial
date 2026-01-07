@@ -63,9 +63,9 @@ export class PropertyController {
     @Request() req: any,
   ) {
     // TODO: Extract userId from JWT token
-    const userId = req.user?.id || updateDto.userId; // Temporary fallback
+    const userId = req.user?.id;
     if (!userId) {
-      throw new Error('User ID required');
+      throw new Error('User ID required - authentication not implemented yet');
     }
     return this.propertyService.update(id, updateDto, userId);
   }
