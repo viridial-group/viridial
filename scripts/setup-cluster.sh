@@ -56,7 +56,14 @@ check_cmd(){ command -v "$1" >/dev/null 2>&1 || { echo "Required command '$1' no
 check_cmd kubectl
 
 echo "[1/8] Cluster checks"
-kubectl version --short || true
+# Some kubectl builds don't support --short; try common variants then fallback
+if kubectl version --client --short >/dev/null 2>&1; then
+  kubectl version --client --short || true
+elif kubectl version --short >/dev/null 2>&1; then
+  kubectl version --short || true
+else
+  kubectl version || true
+fi
 kubectl get nodes -o wide
 
 echo "[2/8] Install local-path-provisioner (StorageClass)"
