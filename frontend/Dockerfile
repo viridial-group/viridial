@@ -1,30 +1,46 @@
-### Dockerfile for shadcn-vue frontend
-FROM node:18-alpine AS build
+### Dockerfile for Next.js frontend (web app)
+FROM node:18-alpine AS base
+
+# Install dependencies only when needed
+FROM base AS deps
 WORKDIR /app
 
-# Build admin
-COPY admin/package*.json ./admin/
-RUN cd admin && npm ci
-COPY admin ./admin
-RUN cd admin && npm run build
+# Copy package files from web directory
+COPY web/package.json web/pnpm-lock.yaml* ./
+RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN pnpm install --frozen-lockfile
 
-# Build agency
-COPY agency/package*.json ./agency/
-RUN cd agency && npm ci
-COPY agency ./agency
-RUN cd agency && npm run build
+# Rebuild the source code only when needed
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY web ./
 
-# Build web
-COPY web/package*.json ./web/
-RUN cd web && npm ci
-COPY web ./web
-RUN cd web && npm run build
+# Build time environment variables
+ARG NEXT_PUBLIC_AUTH_API_URL
+ENV NEXT_PUBLIC_AUTH_API_URL=${NEXT_PUBLIC_AUTH_API_URL}
 
-FROM nginx:stable-alpine
-# Copy built outputs into subfolders
-COPY --from=build /app/admin/dist /usr/share/nginx/html/admin
-COPY --from=build /app/agency/dist /usr/share/nginx/html/agency
-COPY --from=build /app/web/dist /usr/share/nginx/html
-COPY deploy/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN pnpm build
+
+# Production image, copy all the files and run next
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV production
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
+
+EXPOSE 3000
+
+ENV PORT 3000
+ENV HOSTNAME "0.0.0.0"
+
+CMD ["node", "server.js"]

@@ -1,0 +1,41 @@
+services:
+  frontend:
+    build:
+      context: ../../frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_AUTH_API_URL: ${FRONTEND_AUTH_API_URL:-http://148.230.112.148:8080/auth}
+    image: viridial/frontend:latest
+    container_name: viridial-frontend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      # Use relative path or full URL based on deployment
+      NEXT_PUBLIC_AUTH_API_URL: ${FRONTEND_AUTH_API_URL:-http://viridial.com/auth}
+    ports:
+      - "3000:3000"
+    networks:
+      - viridial-network
+    depends_on:
+      - auth-service
+
+  # Nginx reverse proxy (optional - if you want nginx in front)
+  nginx:
+    image: nginx:stable-alpine
+    container_name: viridial-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ../../deploy/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - viridial-network
+    depends_on:
+      - frontend
+      - auth-service
+
+networks:
+  viridial-network:
+    external: true
+

@@ -10,6 +10,10 @@ async function bootstrap() {
     process.env.FRONTEND_URL || 'http://localhost:3000',
     'http://148.230.112.148',
     'https://148.230.112.148',
+    'http://viridial.com',
+    'https://viridial.com',
+    'http://www.viridial.com',
+    'https://www.viridial.com',
   ].filter(Boolean); // Remove any undefined/null values
 
   app.enableCors({
