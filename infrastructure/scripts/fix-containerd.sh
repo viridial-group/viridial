@@ -23,35 +23,78 @@ else
     echo "Installation de cri-dockerd..."
     
     # Télécharger la dernière version
-    CRI_DOCKERD_VERSION=$(curl -s https://api.github.com/repos/Mirantis/cri-dockerd/releases/latest | grep tag_name | cut -d '"' -f 4 | sed 's/v//')
+    echo "Détection de la dernière version de cri-dockerd..."
+    CRI_DOCKERD_TAG=$(curl -s https://api.github.com/repos/Mirantis/cri-dockerd/releases/latest | grep '"tag_name":' | cut -d '"' -f 4)
     
-    if [ -z "$CRI_DOCKERD_VERSION" ]; then
+    if [ -z "$CRI_DOCKERD_TAG" ]; then
         # Fallback si API GitHub ne répond pas
-        CRI_DOCKERD_VERSION="0.3.9"
-        echo "⚠ Utilisation version par défaut: $CRI_DOCKERD_VERSION"
+        CRI_DOCKERD_TAG="v0.3.21"
+        echo "⚠ Utilisation version par défaut: $CRI_DOCKERD_TAG"
     else
-        echo "Version détectée: $CRI_DOCKERD_VERSION"
+        echo "Version détectée: $CRI_DOCKERD_TAG"
     fi
+    
+    CRI_DOCKERD_VERSION=${CRI_DOCKERD_TAG#v}  # Enlever le 'v' du tag
     
     # Télécharger et installer cri-dockerd
     ARCH=$(dpkg --print-architecture)
-    if [ "$ARCH" = "amd64" ]; then
-        ARCH="x86_64"
-    elif [ "$ARCH" = "arm64" ]; then
-        ARCH="aarch64"
-    fi
+    # Le format GitHub utilise 'amd64' et 'arm64', pas 'x86_64' ou 'aarch64'
     
-    wget -q https://github.com/Mirantis/cri-dockerd/releases/download/v${CRI_DOCKERD_VERSION}/cri-dockerd_${CRI_DOCKERD_VERSION}.${ARCH}.tgz -O /tmp/cri-dockerd.tgz
+    echo "Téléchargement de cri-dockerd ${CRI_DOCKERD_TAG} pour ${ARCH}..."
     
-    if [ ! -f /tmp/cri-dockerd.tgz ]; then
-        echo "❌ Échec téléchargement cri-dockerd"
-        echo "Téléchargement manuel depuis: https://github.com/Mirantis/cri-dockerd/releases"
+    # Format correct: cri-dockerd-0.3.21.amd64.tgz
+    DOWNLOAD_URL="https://github.com/Mirantis/cri-dockerd/releases/download/${CRI_DOCKERD_TAG}/cri-dockerd-${CRI_DOCKERD_VERSION}.${ARCH}.tgz"
+    
+    echo "URL: $DOWNLOAD_URL"
+    wget "$DOWNLOAD_URL" -O /tmp/cri-dockerd.tgz || {
+        echo "❌ Échec téléchargement avec format standard"
+        echo "Tentative avec format alternatif..."
+        # Format alternatif: cri-dockerd_0.3.21-1.x86_64.tgz
+        if [ "$ARCH" = "amd64" ]; then
+            ALT_ARCH="x86_64"
+        elif [ "$ARCH" = "arm64" ]; then
+            ALT_ARCH="aarch64"
+        else
+            ALT_ARCH="$ARCH"
+        fi
+        DOWNLOAD_URL="https://github.com/Mirantis/cri-dockerd/releases/download/${CRI_DOCKERD_TAG}/cri-dockerd_${CRI_DOCKERD_VERSION}-1.${ALT_ARCH}.tgz"
+        echo "URL alternative: $DOWNLOAD_URL"
+        wget "$DOWNLOAD_URL" -O /tmp/cri-dockerd.tgz || {
+            echo "❌ Échec téléchargement cri-dockerd"
+            echo ""
+            echo "Téléchargement manuel requis:"
+            echo "1. Aller sur: https://github.com/Mirantis/cri-dockerd/releases"
+            echo "2. Télécharger le fichier .tgz pour ${ARCH} dans la release ${CRI_DOCKERD_TAG}"
+            echo "3. Le placer dans /tmp/cri-dockerd.tgz"
+            echo "4. Réexécuter ce script"
+            exit 1
+        }
+    }
+    
+    if [ ! -f /tmp/cri-dockerd.tgz ] || [ ! -s /tmp/cri-dockerd.tgz ]; then
+        echo "❌ Fichier téléchargé vide ou absent"
         exit 1
     fi
     
+    echo "✓ Téléchargement réussi"
+    
+    echo "Extraction de cri-dockerd..."
     tar -xzf /tmp/cri-dockerd.tgz -C /tmp/
-    mv /tmp/cri-dockerd/cri-dockerd /usr/local/bin/
+    
+    # Le binaire peut être dans différents emplacements selon le format
+    if [ -f /tmp/cri-dockerd/cri-dockerd ]; then
+        mv /tmp/cri-dockerd/cri-dockerd /usr/local/bin/
+    elif [ -f /tmp/cri-dockerd ]; then
+        mv /tmp/cri-dockerd /usr/local/bin/cri-dockerd
+    else
+        echo "❌ Structure d'archive inattendue"
+        echo "Contenu de /tmp après extraction:"
+        ls -la /tmp/ | grep cri
+        exit 1
+    fi
+    
     chmod +x /usr/local/bin/cri-dockerd
+    echo "✓ cri-dockerd installé dans /usr/local/bin/"
     
     # Installer les fichiers systemd
     wget -q https://raw.githubusercontent.com/Mirantis/cri-dockerd/master/packaging/systemd/cri-docker.service -O /etc/systemd/system/cri-docker.service
