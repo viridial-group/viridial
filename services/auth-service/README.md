@@ -56,8 +56,8 @@ JWT_REFRESH_SECRET=your-refresh-secret
 JWT_REFRESH_EXPIRES_IN=7d
 
 # Google OAuth (optionnel, pour SSO)
-GOOGLE_CLIENT_ID=xxxxx.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=xxxxx
+GOOGLE_CLIENT_ID=YOUR_GOOGLE_CLIENT_ID_HERE
+GOOGLE_CLIENT_SECRET=YOUR_GOOGLE_CLIENT_SECRET_HERE
 GOOGLE_CALLBACK_URL=http://localhost:3000/auth/oidc/google/callback
 ```
 
