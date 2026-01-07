@@ -93,33 +93,63 @@ else
 fi
 echo ""
 
-# 4. Rebuild et redémarrer les services
-echo "4️⃣  Build et redémarrage du frontend..."
+# 4. Arrêter les conteneurs existants qui pourraient utiliser les ports
+echo "4️⃣  Arrêt des conteneurs existants..."
+# Arrêter les conteneurs définis dans ce compose file
+docker compose -f app-frontend.yml down 2>/dev/null || true
+
+# Trouver et arrêter tout conteneur utilisant le port 3000
+PORT_3000_CONTAINER=$(docker ps --format '{{.ID}}\t{{.Names}}\t{{.Ports}}' | grep ':3000->' | awk '{print $1}' | head -n1)
+if [ -n "$PORT_3000_CONTAINER" ]; then
+  echo "   ⚠️  Port 3000 déjà utilisé par un conteneur, arrêt..."
+  docker stop "$PORT_3000_CONTAINER" 2>/dev/null || true
+  docker rm "$PORT_3000_CONTAINER" 2>/dev/null || true
+fi
+
+# Trouver et arrêter tout conteneur utilisant le port 80 (sauf si c'est nginx qu'on veut garder)
+PORT_80_CONTAINER=$(docker ps --format '{{.ID}}\t{{.Names}}\t{{.Ports}}' | grep ':80->' | grep -v viridial-nginx | awk '{print $1}' | head -n1)
+if [ -n "$PORT_80_CONTAINER" ]; then
+  echo "   ⚠️  Port 80 utilisé par un autre conteneur, arrêt..."
+  docker stop "$PORT_80_CONTAINER" 2>/dev/null || true
+fi
+
+# Arrêter le conteneur frontend s'il existe déjà
+if docker ps -a --format '{{.Names}}' | grep -q '^viridial-frontend$'; then
+  echo "   ⚠️  Arrêt de l'ancien conteneur viridial-frontend..."
+  docker stop viridial-frontend 2>/dev/null || true
+  docker rm viridial-frontend 2>/dev/null || true
+fi
+
+echo "   ✅ Conteneurs arrêtés"
+echo ""
+
+# 5. Rebuild et redémarrer les services
+echo "5️⃣  Build et redémarrage du frontend..."
 docker compose -f app-frontend.yml build --no-cache frontend
 docker compose -f app-frontend.yml up -d frontend
 echo "   ✅ Frontend redémarré"
 echo ""
 
-# 4.5. Démarrer nginx si configuré
-echo "4.5️⃣  Démarrage de Nginx..."
+# 5.5. Démarrer nginx si configuré
+echo "5.5️⃣  Démarrage de Nginx..."
 docker compose -f app-frontend.yml up -d nginx 2>/dev/null || {
   echo "   ⚠️  Nginx non démarré ou déjà en cours d'exécution"
 }
 echo ""
 
-# 5. Vérifier le statut
-echo "5️⃣  Vérification du statut..."
+# 6. Vérifier le statut
+echo "6️⃣  Vérification du statut..."
 sleep 3
 docker compose -f app-frontend.yml ps
 echo ""
 
-# 6. Vérifier les logs
-echo "6️⃣  Dernières lignes des logs frontend (10 dernières):"
+# 7. Vérifier les logs
+echo "7️⃣  Dernières lignes des logs frontend (10 dernières):"
 docker compose -f app-frontend.yml logs --tail=10 frontend
 echo ""
 
-# 7. Test de santé
-echo "7️⃣  Test de santé..."
+# 8. Test de santé
+echo "8️⃣  Test de santé..."
 HEALTH_RESPONSE=$(curl -s -w "\n%{http_code}" "http://localhost:3000" || echo -e "\n000")
 HTTP_CODE=$(echo "$HEALTH_RESPONSE" | tail -n1)
 
@@ -131,8 +161,8 @@ else
 fi
 echo ""
 
-# 8. Test de nginx
-echo "8️⃣  Test de Nginx..."
+# 9. Test de nginx
+echo "9️⃣  Test de Nginx..."
 NGINX_RESPONSE=$(curl -s -w "\n%{http_code}" "http://localhost" || echo -e "\n000")
 NGINX_CODE=$(echo "$NGINX_RESPONSE" | tail -n1)
 
