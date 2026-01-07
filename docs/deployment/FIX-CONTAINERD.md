@@ -18,11 +18,13 @@ cd /opt/viridial  # ou /root/viridial
 chmod +x infrastructure/scripts/fix-containerd.sh
 sudo infrastructure/scripts/fix-containerd.sh
 
-# Puis réessayer
-kubeadm init --pod-network-cidr=10.244.0.0/16 --service-cidr=10.96.0.0/12 --ignore-preflight-errors=Swap
+# Le script vous donnera la commande exacte à utiliser
+# Elle inclura --cri-socket=unix:///var/run/cri-dockerd.sock
 ```
 
-### Option 2: Correction Manuelle
+### Option 2: Installation Manuelle de cri-dockerd
+
+Pour Kubernetes 1.29+ avec Docker, vous devez utiliser `cri-dockerd`:
 
 ```bash
 # 1. Vérifier Docker
@@ -31,27 +33,37 @@ systemctl status docker
 systemctl start docker
 systemctl enable docker
 
-# 2. Installer/Configurer containerd
-apt update
-apt install -y containerd
+# 2. Installer cri-dockerd
+CRI_DOCKERD_VERSION="0.3.9"  # ou la dernière version
+ARCH=$(dpkg --print-architecture)
+if [ "$ARCH" = "amd64" ]; then ARCH="x86_64"; fi
 
-# 3. Configurer containerd
-mkdir -p /etc/containerd
-containerd config default | sudo tee /etc/containerd/config.toml
+wget https://github.com/Mirantis/cri-dockerd/releases/download/v${CRI_DOCKERD_VERSION}/cri-dockerd_${CRI_DOCKERD_VERSION}.${ARCH}.tgz
+tar -xzf cri-dockerd_${CRI_DOCKERD_VERSION}.${ARCH}.tgz
+mv cri-dockerd/cri-dockerd /usr/local/bin/
+chmod +x /usr/local/bin/cri-dockerd
 
-# 4. Modifier pour systemd cgroup driver
-sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
+# 3. Installer fichiers systemd
+wget https://raw.githubusercontent.com/Mirantis/cri-dockerd/master/packaging/systemd/cri-docker.service -O /etc/systemd/system/cri-docker.service
+wget https://raw.githubusercontent.com/Mirantis/cri-dockerd/master/packaging/systemd/cri-docker.socket -O /etc/systemd/system/cri-docker.socket
 
-# 5. Redémarrer containerd
-systemctl restart containerd
-systemctl enable containerd
+sed -i 's|ExecStart=/usr/bin/cri-dockerd|ExecStart=/usr/local/bin/cri-dockerd|' /etc/systemd/system/cri-docker.service
 
-# 6. Vérifier
-systemctl status containerd
-ctr version
+# 4. Démarrer cri-dockerd
+systemctl daemon-reload
+systemctl enable cri-docker.service
+systemctl enable --now cri-docker.socket
+systemctl start cri-docker.service
 
-# 7. Réessayer kubeadm init
-kubeadm init --pod-network-cidr=10.244.0.0/16 --service-cidr=10.96.0.0/12 --ignore-preflight-errors=Swap
+# 5. Vérifier
+systemctl status cri-docker
+
+# 6. Initialiser cluster avec cri-dockerd
+kubeadm init \
+  --pod-network-cidr=10.244.0.0/16 \
+  --service-cidr=10.96.0.0/12 \
+  --cri-socket=unix:///var/run/cri-dockerd.sock \
+  --ignore-preflight-errors=Swap
 ```
 
 ## 🔍 Vérification
@@ -71,19 +83,28 @@ ctr version
 
 ## 📝 Explication
 
-Kubernetes 1.29+ utilise containerd comme interface CRI (Container Runtime Interface), même si Docker est installé. Containerd doit être configuré avec:
-- `SystemdCgroup = true` (pour systemd cgroup driver)
-- Socket accessible à `/var/run/containerd/containerd.sock`
+**Kubernetes 1.29+ ne supporte plus Docker directement** via dockershim (supprimé depuis K8s 1.24).
 
-Docker utilise containerd en interne, donc les deux doivent être configurés correctement.
+Pour utiliser Docker avec Kubernetes 1.29+, vous devez utiliser **cri-dockerd**, qui est une implémentation CRI (Container Runtime Interface) pour Docker.
+
+**cri-dockerd**:
+- Fournit l'interface CRI pour Docker
+- Socket disponible à `/var/run/cri-dockerd.sock`
+- Nécessite le paramètre `--cri-socket=unix:///var/run/cri-dockerd.sock` lors de `kubeadm init`
+
+**Alternative**: Utiliser containerd directement (sans Docker), mais cri-dockerd est plus simple si vous avez déjà Docker installé.
 
 ## 🚀 Après Correction
 
-Une fois containerd corrigé, continuer avec:
+Une fois cri-dockerd installé, initialiser le cluster avec:
 
 ```bash
-# Initialiser cluster
-kubeadm init --pod-network-cidr=10.244.0.0/16 --service-cidr=10.96.0.0/12 --ignore-preflight-errors=Swap
+# Initialiser cluster avec cri-dockerd
+kubeadm init \
+  --pod-network-cidr=10.244.0.0/16 \
+  --service-cidr=10.96.0.0/12 \
+  --cri-socket=unix:///var/run/cri-dockerd.sock \
+  --ignore-preflight-errors=Swap
 
 # Configurer kubectl
 mkdir -p $HOME/.kube
