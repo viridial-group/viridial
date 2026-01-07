@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,13 +10,28 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { authService } from '@/lib/api/auth';
 
-export default function SignupPage() {
+// Disable static generation for this page
+export const dynamic = 'force-dynamic';
+
+function SignupForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [successEmail, setSuccessEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    const success = searchParams.get('success');
+    const emailParam = searchParams.get('email');
+    if (success === 'true' && emailParam) {
+      setShowSuccessMessage(true);
+      setSuccessEmail(emailParam);
+    }
+  }, [searchParams]);
 
   const validatePassword = (pwd: string): string | null => {
     if (pwd.length < 8) {
@@ -53,9 +68,14 @@ export default function SignupPage() {
     setIsLoading(true);
 
     try {
-      await authService.signup(email, password, confirmPassword);
-      // Rediriger vers la page de connexion avec un message de succès
-      router.push('/login?signup=success');
+      const result = await authService.signup(email, password, confirmPassword);
+      // Afficher un message de succès avec instruction de vérifier l'email
+      if (result.message) {
+        // Rediriger vers une page de confirmation ou afficher un message
+        router.push(`/signup?success=true&email=${encodeURIComponent(email)}`);
+      } else {
+        router.push('/login?signup=success');
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Une erreur est survenue lors de l\'inscription');
     } finally {
@@ -85,13 +105,37 @@ export default function SignupPage() {
           </div>
 
           <div className="bg-[var(--color-neutral-100)] border border-[var(--color-neutral-400)] rounded-[var(--radius)] shadow-[0_4px_12px_rgba(11,18,32,0.04)] p-6">
-            {error && (
-              <div className="mb-4 rounded-md bg-[var(--color-danger)]/15 p-3 text-sm text-[var(--color-danger)] border border-[var(--color-danger)]/20">
-                {error}
+            {showSuccessMessage && successEmail ? (
+              <div className="text-center space-y-4">
+                <div className="rounded-md bg-[var(--color-success)]/15 p-4 text-sm text-[var(--color-success)] border border-[var(--color-success)]/20">
+                  <p className="font-medium mb-2">✅ Inscription réussie !</p>
+                  <p className="mb-2">
+                    Un email de vérification a été envoyé à <strong>{successEmail}</strong>
+                  </p>
+                  <p className="text-xs text-[var(--color-muted)]">
+                    Veuillez cliquer sur le lien dans l'email pour activer votre compte.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-xs text-[var(--color-muted)]">
+                    Vous n'avez pas reçu l'email ?
+                  </p>
+                  <Link href="/login">
+                    <Button variant="accent" className="w-full">
+                      Aller à la connexion
+                    </Button>
+                  </Link>
+                </div>
               </div>
-            )}
+            ) : (
+              <>
+                {error && (
+                  <div className="mb-4 rounded-md bg-[var(--color-danger)]/15 p-3 text-sm text-[var(--color-danger)] border border-[var(--color-danger)]/20">
+                    {error}
+                  </div>
+                )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-[var(--color-primary)] text-sm font-medium">
                   Email
@@ -166,6 +210,22 @@ export default function SignupPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen flex-col bg-[var(--color-neutral-200)]">
+        <Header />
+        <main className="flex flex-1 items-center justify-center">
+          <div className="text-center">Chargement...</div>
+        </main>
+        <Footer />
+      </div>
+    }>
+      <SignupForm />
+    </Suspense>
   );
 }
 

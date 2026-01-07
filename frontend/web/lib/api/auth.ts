@@ -151,6 +151,46 @@ export class AuthService {
 
     return response.json();
   }
+
+  /**
+   * Vérifier l'email avec un token
+   */
+  async verifyEmail(token: string): Promise<{ message: string; user: { id: string; email: string; emailVerified: boolean } }> {
+    const response = await fetch(`${this.baseUrl}/auth/verify-email`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ token }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ message: 'Email verification failed' }));
+      throw new Error(error.message || `HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    return response.json();
+  }
+
+  /**
+   * Renvoyer l'email de vérification
+   */
+  async resendVerificationEmail(email: string): Promise<{ message: string }> {
+    const response = await fetch(`${this.baseUrl}/auth/resend-verification`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ message: 'Failed to resend verification email' }));
+      throw new Error(error.message || `HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    return response.json();
+  }
 }
 
 export const authService = new AuthService();

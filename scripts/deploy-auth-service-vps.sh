@@ -63,7 +63,7 @@ else
     echo "   SMTP_PASS=..."
     echo "   EMAIL_FROM=support@viridial.com"
     echo "   FROM_NAME=Viridial Support"
-    echo "   FRONTEND_URL=http://148.230.112.148:3000"
+    echo "   FRONTEND_URL=https://viridial.com"
   else
     echo "   ✅ Variables SMTP configurées"
   fi

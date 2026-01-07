@@ -6,6 +6,7 @@ import type { Repository } from 'typeorm';
 import { randomBytes } from 'crypto';
 import { User } from '../entities/user.entity';
 import { PasswordResetToken } from '../entities/password-reset-token.entity';
+import { EmailVerificationToken } from '../entities/email-verification-token.entity';
 import { EmailService } from './email.service';
 
 interface FailedAttempt {
@@ -30,6 +31,8 @@ export class AuthService {
     private readonly userRepo: any,
     @InjectRepository(PasswordResetToken)
     private readonly resetTokenRepo: any,
+    @InjectRepository(EmailVerificationToken)
+    private readonly verificationTokenRepo: any,
     private readonly emailService: EmailService,
   ) {}
 
@@ -177,17 +180,41 @@ export class AuthService {
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
-    // Créer l'utilisateur
+    // Créer l'utilisateur (email non vérifié initialement)
     const user = this.userRepo.create({
       email,
       passwordHash,
       role: 'user',
       isActive: true,
+      emailVerified: false,
     });
 
     await this.userRepo.save(user);
 
-    // Générer les tokens JWT
+    // Générer un token de vérification d'email
+    const verificationToken = randomBytes(32).toString('hex');
+    const expiresAt = new Date();
+    expiresAt.setHours(expiresAt.getHours() + 24); // 24 heures
+
+    const verificationTokenEntity = this.verificationTokenRepo.create({
+      userId: user.id,
+      token: verificationToken,
+      expiresAt,
+      used: false,
+    });
+
+    await this.verificationTokenRepo.save(verificationTokenEntity);
+
+    // Envoyer l'email de vérification
+    try {
+      await this.emailService.sendVerificationEmail(email, verificationToken);
+    } catch (error: any) {
+      console.error('Erreur lors de l\'envoi de l\'email de vérification:', error);
+      // Ne pas bloquer l'inscription si l'email échoue, mais logger l'erreur
+      // L'utilisateur pourra demander un nouveau lien plus tard
+    }
+
+    // Générer les tokens JWT (même si email non vérifié, l'utilisateur peut se connecter)
     const payload = { sub: user.id, email: user.email };
 
     const accessToken = await this.jwtService.signAsync(payload, {
@@ -209,7 +236,9 @@ export class AuthService {
         id: user.id,
         email: user.email,
         role: user.role,
+        emailVerified: user.emailVerified,
       },
+      message: 'Inscription réussie. Veuillez vérifier votre email pour activer votre compte.',
     };
   }
 
@@ -315,6 +344,109 @@ export class AuthService {
 
     return {
       message: 'Mot de passe réinitialisé avec succès',
+    };
+  }
+
+  /**
+   * Vérifier l'email avec un token
+   */
+  async verifyEmail(token: string) {
+    // Trouver le token de vérification
+    const verificationToken = await this.verificationTokenRepo.findOne({
+      where: { token, used: false },
+    });
+
+    if (!verificationToken) {
+      throw new UnauthorizedException('Token de vérification invalide ou déjà utilisé');
+    }
+
+    // Vérifier que le token n'est pas expiré
+    if (new Date() > verificationToken.expiresAt) {
+      await this.verificationTokenRepo.update({ id: verificationToken.id }, { used: true });
+      throw new UnauthorizedException('Token de vérification expiré');
+    }
+
+    // Vérifier que l'utilisateur existe
+    const user = await this.userRepo.findOne({ where: { id: verificationToken.userId } });
+    if (!user) {
+      await this.verificationTokenRepo.update({ id: verificationToken.id }, { used: true });
+      throw new UnauthorizedException('Utilisateur introuvable pour ce token');
+    }
+
+    // Marquer l'email comme vérifié
+    await this.userRepo.update(
+      { id: verificationToken.userId },
+      { emailVerified: true },
+    );
+
+    // Marquer le token comme utilisé
+    await this.verificationTokenRepo.update({ id: verificationToken.id }, { used: true });
+
+    return {
+      message: 'Email vérifié avec succès',
+      user: {
+        id: user.id,
+        email: user.email,
+        emailVerified: true,
+      },
+    };
+  }
+
+  /**
+   * Renvoyer l'email de vérification
+   */
+  async resendVerificationEmail(email: string) {
+    // Vérifier que l'utilisateur existe
+    const user = await this.userRepo.findOne({ where: { email, isActive: true } });
+    
+    if (!user) {
+      // Ne pas révéler si l'email existe ou non (sécurité)
+      return {
+        message: 'Si cet email existe, un nouveau lien de vérification a été envoyé',
+      };
+    }
+
+    // Vérifier si l'email est déjà vérifié
+    if (user.emailVerified) {
+      return {
+        message: 'Cet email est déjà vérifié',
+      };
+    }
+
+    // Invalider les anciens tokens non utilisés
+    await this.verificationTokenRepo.update(
+      { userId: user.id, used: false },
+      { used: true }
+    );
+
+    // Générer un nouveau token
+    const verificationToken = randomBytes(32).toString('hex');
+    const expiresAt = new Date();
+    expiresAt.setHours(expiresAt.getHours() + 24);
+
+    const verificationTokenEntity = this.verificationTokenRepo.create({
+      userId: user.id,
+      token: verificationToken,
+      expiresAt,
+      used: false,
+    });
+
+    await this.verificationTokenRepo.save(verificationTokenEntity);
+
+    // Envoyer l'email
+    try {
+      await this.emailService.sendVerificationEmail(email, verificationToken);
+    } catch (error) {
+      // Si l'envoi d'email échoue, supprimer le token créé
+      await this.verificationTokenRepo.delete({ token: verificationToken });
+      throw new HttpException(
+        'Impossible d\'envoyer l\'email de vérification',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    return {
+      message: 'Si cet email existe, un nouveau lien de vérification a été envoyé',
     };
   }
 }
