@@ -95,7 +95,7 @@ else
 fi
 echo ""
 
-# Créer le répertoire de configuration Redis si nécessaire
+# Créer le répertoire de configuration Redis si nécessaire 
 step "Préparation de la configuration"
 mkdir -p config
 if [ ! -f config/redis.conf ]; then
