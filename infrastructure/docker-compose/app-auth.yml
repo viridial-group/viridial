@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  auth-service:
+    build: ../../services/auth-service
+    image: viridial/auth-service:latest
+    container_name: viridial-auth-service
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      # URL de connexion Postgres pour le service d'auth
+      DATABASE_URL: postgres://${POSTGRES_USER:-viridial}:${POSTGRES_PASSWORD}@viridial-postgres:5432/${POSTGRES_DB:-viridial}
+      # URL Redis pour les sessions / cache
+      REDIS_URL: redis://viridial-redis:6379
+    ports:
+      - "8080:3000"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - viridial-network
+
+networks:
+  viridial-network:
+    external: true
+
+
