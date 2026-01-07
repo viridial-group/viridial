@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -10,7 +10,10 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { authService } from '@/lib/api/auth';
 
-export default function ResetPasswordPage() {
+// Disable static generation for this page
+export const dynamic = 'force-dynamic';
+
+function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [token, setToken] = useState<string | null>(null);
@@ -207,6 +210,22 @@ export default function ResetPasswordPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen flex-col bg-[var(--color-neutral-200)]">
+        <Header />
+        <main className="flex flex-1 items-center justify-center">
+          <div className="text-center">Chargement...</div>
+        </main>
+        <Footer />
+      </div>
+    }>
+      <ResetPasswordForm />
+    </Suspense>
   );
 }
 

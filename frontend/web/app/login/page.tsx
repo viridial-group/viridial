@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
@@ -11,7 +11,10 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { authService } from '@/lib/api/auth';
 
-export default function LoginPage() {
+// Disable static generation for this page
+export const dynamic = 'force-dynamic';
+
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { login } = useAuth();
@@ -197,6 +200,22 @@ export default function LoginPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen flex-col bg-white">
+        <Header />
+        <main className="flex flex-1 items-center justify-center">
+          <div className="text-center">Chargement...</div>
+        </main>
+        <Footer />
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }
 
