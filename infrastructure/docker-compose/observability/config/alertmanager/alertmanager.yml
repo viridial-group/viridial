@@ -1,6 +1,6 @@
 global:
   resolve_timeout: 5m
-  # SMTP configuration (uncomment and configure when email alerts are needed)
+  # SMTP configuration (uncomment and configure when email alerts are needed)  
   # smtp_smarthost: 'smtp.hostinger.com:465'
   # smtp_from: 'alerts@viridial.com'
   # smtp_auth_username: 'alerts@viridial.com'

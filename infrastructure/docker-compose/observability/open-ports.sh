@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script pour ouvrir les ports de la stack d'observabilité dans le firewall
+# Script pour ouvrir les ports de la stack d'observabilité dans le firewall 
 
 set -e
 

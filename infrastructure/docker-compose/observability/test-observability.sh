@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script de test de la stack d'observabilité
+# Script de test de la stack d'observabilité  
 
 set -e
 

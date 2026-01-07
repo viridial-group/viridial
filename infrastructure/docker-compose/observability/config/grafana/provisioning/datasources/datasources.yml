@@ -1,3 +1,4 @@
+# loki 
 apiVersion: 1
 
 datasources:

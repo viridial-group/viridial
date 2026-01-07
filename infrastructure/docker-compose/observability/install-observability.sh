@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script d'installation de la stack d'observabilité Viridial
+# Script d'installation de la stack d'observabilité Viridial 
 # Prometheus, Grafana, Loki, Jaeger, Alertmanager
 
 set -e

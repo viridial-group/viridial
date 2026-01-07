@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # Prometheus - Metrics Collection
+  # Prometheus - Metrics Collection  
   prometheus:
     image: prom/prometheus:latest
     container_name: viridial-prometheus

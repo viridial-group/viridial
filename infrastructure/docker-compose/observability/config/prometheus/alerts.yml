@@ -2,7 +2,7 @@ groups:
   - name: infrastructure
     interval: 30s
     rules:
-      # Service Down Alerts
+      # Service Down Alerts 
       - alert: ServiceDown
         expr: up == 0
         for: 1m

@@ -1,4 +1,4 @@
-# Stack Observabilité Viridial
+# Stack Observabilité Viridial 
 
 Stack complète d'observabilité pour Viridial incluant métriques, logs, traces et alertes.
 
