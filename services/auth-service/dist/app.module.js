@@ -9,15 +9,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
+const typeorm_1 = require("@nestjs/typeorm");
 const auth_controller_1 = require("./controllers/auth.controller");
 const auth_service_1 = require("./services/auth.service");
+const user_entity_1 = require("./entities/user.entity");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            jwt_1.JwtModule.register({})
+            typeorm_1.TypeOrmModule.forRootAsync({
+                useFactory: () => ({
+                    type: 'postgres',
+                    url: process.env.DATABASE_URL,
+                    autoLoadEntities: true,
+                    synchronize: true,
+                }),
+            }),
+            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
+            jwt_1.JwtModule.register({}),
         ],
         controllers: [auth_controller_1.AuthController],
         providers: [auth_service_1.AuthService],

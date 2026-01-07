@@ -1,12 +1,9 @@
 import { Injectable, UnauthorizedException, HttpException, HttpStatus } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-
-interface User {
-  id: string;
-  email: string;
-  passwordHash: string;
-}
+import { InjectRepository } from '@nestjs/typeorm';
+import type { Repository } from 'typeorm';
+import { User } from '../entities/user.entity';
 
 interface FailedAttempt {
   count: number;
@@ -15,7 +12,6 @@ interface FailedAttempt {
 
 @Injectable()
 export class AuthService {
-  private readonly user: User;
   private readonly failedAttempts = new Map<string, FailedAttempt>();
 
   // simple in-memory refresh token store (PoC)
@@ -24,18 +20,12 @@ export class AuthService {
   private readonly maxAttempts = 5;
   private readonly windowMs = 15 * 60 * 1000; // 15 minutes
 
-  constructor(private readonly jwtService: JwtService) {
-    // For now, one user en dur (PoC) avec mot de passe hashé bcrypt
-    const password = process.env.AUTH_DEMO_PASSWORD || 'Passw0rd!';
-    const email = process.env.AUTH_DEMO_EMAIL || 'user@example.com';
-    const passwordHash = bcrypt.hashSync(password, 10);
-
-    this.user = {
-      id: 'demo-user-1',
-      email,
-      passwordHash,
-    };
-  }
+  constructor(
+    private readonly jwtService: JwtService,
+    @InjectRepository(User)
+    // NOTE: typage assoupli ici car les types TypeORM ne sont pas résolus correctement dans l'IDE
+    private readonly userRepo: any,
+  ) {}
 
   private checkRateLimit(email: string) {
     const now = Date.now();
@@ -78,19 +68,20 @@ export class AuthService {
   async validateUser(email: string, password: string): Promise<User> {
     this.checkRateLimit(email);
 
-    if (email !== this.user.email) {
+    const user = await this.userRepo.findOne({ where: { email, isActive: true } });
+    if (!user) {
       this.registerFailedAttempt(email);
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const ok = await bcrypt.compare(password, this.user.passwordHash);
+    const ok = await bcrypt.compare(password, user.passwordHash);
     if (!ok) {
       this.registerFailedAttempt(email);
       throw new UnauthorizedException('Invalid credentials');
     }
 
     this.resetFailedAttempts(email);
-    return this.user;
+    return user;
   }
 
   async login(email: string, password: string) {
@@ -131,7 +122,10 @@ export class AuthService {
       throw new UnauthorizedException('Invalid refresh token');
     }
 
-    const user = this.user;
+    const user = await this.userRepo.findOne({ where: { id: payload.sub, email: payload.email } });
+    if (!user) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
     if (payload.sub !== user.id || payload.email !== user.email) {
       throw new UnauthorizedException('Invalid refresh token');
     }
