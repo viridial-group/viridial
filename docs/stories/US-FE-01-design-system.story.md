@@ -30,3 +30,9 @@ En tant que designer UI/UX, je veux un Design System et une bibliothèque de com
 - [ ] Documentation du design system ajoutée
 
 ```
+
+## Inspiration & References
+- Basez la direction visuelle et les composants sur les images/site fournis en pièce jointe (ex : style "meetsponsors").
+- Voir le brief designer: docs/communication/designer-brief.md
+- Voir le brief developer: docs/communication/developer-brief.md
+
