@@ -174,12 +174,32 @@ services:
     restart: always
     environment:
       - COLLECTOR_ZIPKIN_HOST_PORT=:9411
-      - SPAN_STORAGE_TYPE=badger
-      - BADGER_EPHEMERAL=false
-      - BADGER_DIRECTORY=/badger/data
-      - BADGER_SPAN_STORE_TTL=168h
-    volumes:
-      - jaeger_data:/badger
+      - SPAN_STORAGE_TYPE=memory
+    ports:
+      - "16686:16686"  # UI
+      - "14268:14268"  # HTTP collector
+      - "14250:14250"  # gRPC collector
+      - "6831:6831/udp"  # UDP agent
+      - "6832:6832/udp"  # UDP agent
+      - "5778:5778"  # Config server
+    networks:
+      - viridial-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:16686/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  prometheus_data:
+  alertmanager_data:
+  grafana_data:
+  loki_data:
+  jaeger_data:
+
+networks:
+  viridial-network:
+    external: true
     ports:
       - "16686:16686"  # UI
       - "14268:14268"  # HTTP collector
