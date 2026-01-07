@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Core Colors - Viridial Theme */
+    --color-primary: #0B1220;
+    --color-accent: #FF3B30;
+    --color-neutral-100: #FFFFFF;
+    --color-neutral-200: #F7F7F9;
+    --color-neutral-300: #F1F2F4;
+    --color-neutral-400: #E6E7EA;
+    --color-neutral-500: #D0D2D6;
+    --color-neutral-700: #9AA0A6;
+    --color-muted: #6B7280;
+    --color-gray-900: 17 24 39; /* RGB values for Tailwind opacity support */
+
+    /* Semantic Colors */
+    --color-secondary: #2563EB;
+    --color-success: #05C46B;
+    --color-danger: #EF4444;
+    --color-warning: #F59E0B;
+    --color-info: #0EA5E9;
+    --color-purple: #7C3AED;
+    --color-teal: #14B8A6;
+    --color-orange: #FB923C;
+
+    /* Spacing */
+    --space-xs: 8px;
+    --space-sm: 12px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+
+    /* Border Radius */
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius: 10px;
+
+    /* shadcn/ui compatible variables */
+    --background: var(--color-neutral-100);
+    --foreground: var(--color-primary);
+    --card: var(--color-neutral-100);
+    --card-foreground: var(--color-primary);
+    --popover: var(--color-neutral-100);
+    --popover-foreground: var(--color-primary);
+    --primary: var(--color-primary);
+    --primary-foreground: var(--color-neutral-100);
+    --secondary: var(--color-neutral-200);
+    --secondary-foreground: var(--color-primary);
+    --muted: var(--color-neutral-200);
+    --muted-foreground: var(--color-muted);
+    --accent: var(--color-accent);
+    --accent-foreground: var(--color-neutral-100);
+    --destructive: var(--color-danger);
+    --destructive-foreground: var(--color-neutral-100);
+    --border: var(--color-neutral-400);
+    --input: var(--color-neutral-400);
+    --ring: var(--color-primary);
+    --radius: var(--radius-md);
+  }
+
+  .dark {
+    --background: var(--color-primary);
+    --foreground: var(--color-neutral-100);
+    --card: var(--color-primary);
+    --card-foreground: var(--color-neutral-100);
+    --popover: var(--color-primary);
+    --popover-foreground: var(--color-neutral-100);
+    --primary: var(--color-neutral-100);
+    --primary-foreground: var(--color-primary);
+    --secondary: var(--color-neutral-700);
+    --secondary-foreground: var(--color-neutral-100);
+    --muted: var(--color-neutral-700);
+    --muted-foreground: var(--color-neutral-400);
+    --accent: var(--color-accent);
+    --accent-foreground: var(--color-neutral-100);
+    --destructive: var(--color-danger);
+    --destructive-foreground: var(--color-neutral-100);
+    --border: var(--color-neutral-700);
+    --input: var(--color-neutral-700);
+    --ring: var(--color-neutral-400);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-[var(--color-neutral-200)] text-foreground;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+}

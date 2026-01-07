@@ -14,12 +14,15 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
+const passport_1 = require("@nestjs/passport");
 const auth_service_1 = require("../services/auth.service");
+const oidc_service_1 = require("../services/oidc.service");
 const login_dto_1 = require("../dto/login.dto");
 const refresh_token_dto_1 = require("../dto/refresh-token.dto");
 let AuthController = class AuthController {
-    constructor(authService) {
+    constructor(authService, oidcService) {
         this.authService = authService;
+        this.oidcService = oidcService;
     }
     health() {
         return { status: 'ok', service: 'auth-service' };
@@ -30,6 +33,23 @@ let AuthController = class AuthController {
     }
     async refresh(body) {
         return this.authService.refresh(body.refreshToken);
+    }
+    async googleAuth() {
+    }
+    async googleAuthCallback(req) {
+        const googleProfile = req.user;
+        const user = await this.oidcService.findOrCreateUser(googleProfile);
+        const tokens = await this.oidcService.generateTokens(user);
+        return {
+            success: true,
+            message: 'Google OAuth authentication successful',
+            user: {
+                id: user.id,
+                email: user.email,
+                role: user.role,
+            },
+            ...tokens,
+        };
     }
 };
 exports.AuthController = AuthController;
@@ -53,8 +73,24 @@ __decorate([
     __metadata("design:paramtypes", [refresh_token_dto_1.RefreshTokenDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "refresh", null);
+__decorate([
+    (0, common_1.Get)('oidc/google'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('google')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "googleAuth", null);
+__decorate([
+    (0, common_1.Get)('oidc/google/callback'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('google')),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "googleAuthCallback", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
-    __metadata("design:paramtypes", [auth_service_1.AuthService])
+    __metadata("design:paramtypes", [auth_service_1.AuthService,
+        oidc_service_1.OidcService])
 ], AuthController);
 //# sourceMappingURL=auth.controller.js.map
