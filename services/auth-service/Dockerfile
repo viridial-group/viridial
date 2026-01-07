@@ -4,7 +4,7 @@ WORKDIR /app
 
 # Install dependencies
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 
 # Copy source and build
 COPY . .
@@ -25,5 +25,6 @@ ENV PORT=3000
 EXPOSE 3000
 
 CMD ["node", "dist/main.js"]
+
 
 
