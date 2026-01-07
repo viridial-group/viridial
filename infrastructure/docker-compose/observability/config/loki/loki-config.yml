@@ -1,4 +1,4 @@
-# Loki minimal config compatible avec l'image actuelle
+# Loki minimal config compatible avec l'image actuelle 
 
 auth_enabled: false
 
