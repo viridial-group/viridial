@@ -1,7 +1,5 @@
-version: '3.8'
-
 services:
-  # Prometheus - Metrics Collection  cd
+  # Prometheus - Metrics Collection
   prometheus:
     image: prom/prometheus:latest
     container_name: viridial-prometheus
@@ -174,14 +172,9 @@ services:
     restart: always
     environment:
       - COLLECTOR_ZIPKIN_HOST_PORT=:9411
-      - SPAN_STORAGE_TYPE=badger
-      - BADGER_EPHEMERAL=false
-      - BADGER_DIRECTORY=/badger/data
-      - BADGER_SPAN_STORE_TTL=168h
-    volumes:
-      - jaeger_data:/badger
+      - SPAN_STORAGE_TYPE=memory
     ports:
-      - "16686:16686"  # UI  
+      - "16686:16686"  # UI   
       - "14268:14268"  # HTTP collector
       - "14250:14250"  # gRPC collector
       - "6831:6831/udp"  # UDP agent
