@@ -1,0 +1,118 @@
+---
+# Ingress pour MinIO Console (Staging)
+# Permet d'accéder à la console MinIO via un domaine
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minio-console
+  namespace: viridial-staging
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - minio-console.staging.viridial.com  # À remplacer par votre domaine
+    secretName: minio-console-tls
+  rules:
+  - host: minio-console.staging.viridial.com  # À remplacer par votre domaine
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: minio
+            port:
+              number: 9001
+---
+# Ingress pour MinIO API (Staging) - Optionnel
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minio-api
+  namespace: viridial-staging
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - minio-api.staging.viridial.com  # À remplacer par votre domaine
+    secretName: minio-api-tls
+  rules:
+  - host: minio-api.staging.viridial.com  # À remplacer par votre domaine
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: minio
+            port:
+              number: 9000
+---
+# Ingress pour MinIO Console (Production)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minio-console
+  namespace: viridial-production
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - minio-console.viridial.com  # À remplacer par votre domaine
+    secretName: minio-console-tls
+  rules:
+  - host: minio-console.viridial.com  # À remplacer par votre domaine
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: minio
+            port:
+              number: 9001
+---
+# Ingress pour MinIO API (Production) - Optionnel
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minio-api
+  namespace: viridial-production
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - minio-api.viridial.com  # À remplacer par votre domaine
+    secretName: minio-api-tls
+  rules:
+  - host: minio-api.viridial.com  # À remplacer par votre domaine
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: minio
+            port:
+              number: 9000
+
