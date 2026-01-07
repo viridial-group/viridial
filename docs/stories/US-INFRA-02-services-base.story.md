@@ -1,103 +1,153 @@
 # US-INFRA-02: Services de Base - Database, Cache, Search, Storage
 
-## Status: Draft
+## Status: In Progress
 
 ### Story
-En tant qu'équipe d'ingénierie, je souhaite déployer les services de base (PostgreSQL, Redis, Meilisearch, MinIO) sur Kubernetes avec persistence et haute disponibilité afin de supporter les microservices de l'application.
+En tant qu'équipe d'ingénierie, je souhaite déployer les services de base (PostgreSQL, Redis, Meilisearch, MinIO) avec Docker Compose sur le VPS avec persistence garantie afin de supporter les microservices de l'application.
 
 ### Acceptance Criteria
-- Given cluster Kubernetes, When je déploie PostgreSQL, Then la base de données est accessible avec persistence garantie.
-- Given cluster Kubernetes, When je déploie Redis, Then le cache est accessible pour sessions et données temporaires.
-- Given cluster Kubernetes, When je déploie Meilisearch, Then le moteur de recherche est accessible et indexé.
-- Given cluster Kubernetes, When je déploie MinIO, Then le stockage objet est accessible (S3-compatible).
+- Given Docker et Docker Compose installés, When je déploie PostgreSQL, Then la base de données est accessible avec persistence garantie via volumes Docker.
+- Given Docker et Docker Compose installés, When je déploie Redis, Then le cache est accessible pour sessions et données temporaires avec persistence AOF.
+- Given Docker et Docker Compose installés, When je déploie Meilisearch, Then le moteur de recherche est accessible et indexé avec persistence.
+- Given Docker et Docker Compose installés, When je déploie MinIO, Then le stockage objet est accessible (S3-compatible) avec buckets initialisés.
 - Tous les services ont des health checks et sont monitorables.
-- Persistence configurée avec PersistentVolumes.
+- Persistence configurée avec volumes Docker.
 
 **Priority:** P0
 **Estimation:** 5
 
 ### Tasks
 
-#### Phase 1: PostgreSQL Deployment
-- [ ] StatefulSet PostgreSQL créé avec persistence
-- [ ] Secret pour credentials PostgreSQL créé
-- [ ] PersistentVolumeClaim configuré (20GB minimum)
-- [ ] Service PostgreSQL exposé dans le cluster
-- [ ] Health checks configurés (liveness/readiness probes)
-- [ ] Connection pooling: PgBouncer déployé (optionnel pour MVP)
-- [ ] Resource limits configurés (CPU, memory)
+#### Phase 1: Préparation Docker Compose
+- [x] Docker Compose configuration créée (`infrastructure/docker-compose/docker-compose.yml`)
+- [x] Script d'installation automatique créé (`install-services.sh`)
+- [x] Script de test de connectivité créé (`test-services.sh`)
+- [x] Template de configuration créé (`.env.example`)
+- [x] Documentation complète créée (`README.md`, `INSTALL-VPS.md`, `NEXT-STEPS.md`)
+- [x] Script de nettoyage créé (`cleanup-old-compose.sh`)
+- [ ] Docker installé sur le VPS
+- [ ] Docker Compose installé sur le VPS
 
-#### Phase 2: Redis Deployment
-- [ ] Deployment Redis créé
-- [ ] Service Redis exposé dans le cluster
-- [ ] Health checks configurés
-- [ ] Resource limits configurés
-- [ ] Persistence optionnelle configurée (si nécessaire)
+#### Phase 2: PostgreSQL Deployment
+- [x] Service PostgreSQL configuré dans docker-compose.yml
+- [x] Volume Docker configuré pour persistence (postgres_data)
+- [x] Variables d'environnement configurées (.env)
+- [x] Health checks configurés (pg_isready)
+- [x] Configuration PostgreSQL optimisée (max_connections, shared_buffers, etc.)
+- [ ] PostgreSQL déployé et accessible sur le VPS
+- [ ] Tests de connectivité PostgreSQL réussis
 
-#### Phase 3: Meilisearch Deployment
-- [ ] Deployment Meilisearch créé avec persistence
-- [ ] Secret pour MEILI_MASTER_KEY créé
-- [ ] PersistentVolumeClaim configuré (10GB minimum)
-- [ ] Service Meilisearch exposé dans le cluster
-- [ ] Health checks configurés
-- [ ] Initialisation des index via init script (déployer init container ou job)
+#### Phase 3: Redis Deployment
+- [x] Service Redis configuré dans docker-compose.yml
+- [x] Configuration Redis créée (`config/redis.conf`)
+- [x] Volume Docker configuré pour persistence avec AOF (redis_data)
+- [x] Health checks configurés (redis-cli ping)
+- [ ] Redis déployé et accessible sur le VPS
+- [ ] Tests de connectivité Redis réussis
 
-#### Phase 4: MinIO Deployment
-- [ ] Deployment MinIO créé avec persistence
-- [ ] Secret pour credentials MinIO créé
-- [ ] PersistentVolumeClaim configuré (50GB minimum)
-- [ ] Service MinIO exposé (API + Console)
-- [ ] Health checks configurés
-- [ ] Buckets initiaux créés: `property-images`, `documents`, `backups`
+#### Phase 4: Meilisearch Deployment
+- [x] Service Meilisearch configuré dans docker-compose.yml
+- [x] Secret MEILI_MASTER_KEY configuré dans .env
+- [x] Volume Docker configuré pour persistence (meilisearch_data)
+- [x] Health checks configurés (HTTP /health)
+- [ ] Meilisearch déployé et accessible sur le VPS
+- [ ] Tests de connectivité Meilisearch réussis
 
-#### Phase 5: Configuration & Testing
-- [ ] ConfigMaps créés pour configuration des services
-- [ ] Services testés (connectivité, health checks)
-- [ ] Persistence validée (redémarrer pods et vérifier données)
-- [ ] Documentation des endpoints et credentials
+#### Phase 5: MinIO Deployment
+- [x] Service MinIO configuré dans docker-compose.yml
+- [x] Secret credentials MinIO configuré dans .env
+- [x] Volume Docker configuré pour persistence (minio_data)
+- [x] Service d'initialisation des buckets créé (minio-init)
+- [x] Health checks configurés (HTTP /minio/health/live)
+- [ ] MinIO déployé et accessible sur le VPS
+- [ ] Buckets initialisés (property-images, documents, backups)
+- [ ] Tests de connectivité MinIO réussis
+
+#### Phase 6: Déploiement et Validation
+- [ ] Services déployés sur le VPS avec `./install-services.sh`
+- [ ] Tous les services sont `Up` et `healthy`
+- [ ] Tests de connectivité réussis (`./test-services.sh`)
+- [ ] Credentials sauvegardés de manière sécurisée
+- [ ] Documentation mise à jour avec les endpoints réels
+- [ ] Persistence validée (redémarrer conteneurs et vérifier données conservées)
 
 ### Technical Notes
 
+**Architecture:**
+- **Approche:** Docker Compose (sans Kubernetes)
+- **Localisation:** `infrastructure/docker-compose/`
+- **Réseau:** Bridge network `viridial-network`
+- **Persistence:** Volumes Docker locaux
+
 **PostgreSQL:**
 - **Image:** postgres:14-alpine
-- **Storage:** PersistentVolume avec 20GB minimum
-- **Replication:** Master-slave optionnel (pour production)
-- **Connection Pooling:** PgBouncer ou HikariCP dans l'application
+- **Storage:** Volume Docker `postgres_data` (50GB minimum recommandé)
+- **Port:** 5432 (configurable via .env)
+- **Configuration:** Optimisée pour VPS (max_connections=200, shared_buffers=256MB)
+- **Connection Pooling:** HikariCP dans l'application (pas de PgBouncer séparé)
 - **Multi-tenant:** Row-Level Security (RLS) activé (voir US-007)
 - **Migrations:** Flyway pour versioning (voir US-007)
+- **Health Check:** pg_isready
 
 **Redis:**
 - **Image:** redis:7-alpine
+- **Port:** 6379 (configurable via .env)
 - **Usage:** Cache distribué, sessions, queues temporaires
-- **Persistence:** Optionnelle (AOF ou RDB selon besoin)
-- **Resource Limits:** 256Mi-512Mi memory, 100m-500m CPU
+- **Persistence:** AOF activé (appendonly yes, appendfsync everysec)
+- **Configuration:** Fichier `config/redis.conf` avec maxmemory 512mb
+- **Health Check:** redis-cli ping
 
 **Meilisearch:**
 - **Image:** getmeili/meilisearch:v1.5
-- **Storage:** PersistentVolume avec 10GB minimum
-- **Initialisation:** Scripts dans `deploy/meili-init/` à exécuter après déploiement
-- **Index:** `properties` avec configuration multi-langue
+- **Port:** 7700 (configurable via .env)
+- **Storage:** Volume Docker `meilisearch_data` (20GB minimum recommandé)
+- **Master Key:** Généré automatiquement ou configuré dans .env
+- **Initialisation:** Index à créer après déploiement (voir US-007)
+- **Health Check:** HTTP GET /health
 
 **MinIO:**
 - **Image:** minio/minio:latest
-- **Storage:** PersistentVolume avec 50GB minimum
-- **Access:** S3-compatible API (port 9000) + Console (port 9001)
-- **Buckets:** Créer buckets initiaux via mc (MinIO Client) ou API
-- **Lifecycle:** Configurer policies de retention (optionnel pour MVP)
+- **Ports:** 
+  - API: 9000 (configurable via .env)
+  - Console: 9001 (configurable via .env)
+- **Storage:** Volume Docker `minio_data` (100GB minimum recommandé)
+- **Buckets:** Initialisés automatiquement via service `minio-init`
+  - `property-images`
+  - `documents`
+  - `backups`
+- **Access:** S3-compatible API
+- **Health Check:** HTTP GET /minio/health/live
 
 **Dependencies:**
-- Nécessite US-INFRA-01 (Kubernetes cluster) complété
-- Nécessite secrets management (Kubernetes Secrets ou Vault)
+- Docker installé et fonctionnel
+- Docker Compose installé (v2.0+ ou docker-compose v1.29+)
+- Au moins 2GB de RAM disponible
+- Au moins 10GB d'espace disque disponible
+
+**Fichiers de Configuration:**
+- `docker-compose.yml` - Configuration des services
+- `.env` - Variables d'environnement (secrets, ports, etc.)
+- `config/redis.conf` - Configuration Redis
+- `install-services.sh` - Script d'installation automatique
+- `test-services.sh` - Script de test de connectivité
+
+**Sécurité:**
+- ⚠️ Ne JAMAIS commiter le fichier `.env` (déjà dans .gitignore)
+- Mots de passe générés automatiquement par `install-services.sh`
+- Sauvegarder les credentials dans un gestionnaire de mots de passe
+- En production, limiter l'accès aux ports avec un firewall
 
 ### Definition of Done
-- [ ] PostgreSQL déployé et accessible via service `postgres`
-- [ ] Redis déployé et accessible via service `redis`
-- [ ] Meilisearch déployé et accessible via service `meilisearch`
-- [ ] MinIO déployé et accessible via service `minio`
+- [ ] Docker installé sur le VPS
+- [ ] Docker Compose installé sur le VPS
+- [ ] Services déployés avec `./install-services.sh`
+- [ ] PostgreSQL accessible sur le port configuré
+- [ ] Redis accessible sur le port configuré
+- [ ] Meilisearch accessible sur le port configuré
+- [ ] MinIO accessible sur les ports configurés (API et Console)
 - [ ] Health checks passent pour tous les services
-- [ ] Persistence validée (redémarrer pods et vérifier données conservées)
-- [ ] Services testés depuis un pod de test (connectivité)
-- [ ] Secrets créés et sécurisés (pas en plain text)
-- [ ] Resource limits configurés et respectés
-- [ ] Documentation des endpoints et configuration
-
+- [ ] Tests de connectivité réussis (`./test-services.sh`)
+- [ ] Persistence validée (redémarrer conteneurs et vérifier données conservées)
+- [ ] Buckets MinIO initialisés (property-images, documents, backups)
+- [ ] Credentials sauvegardés de manière sécurisée
+- [ ] Documentation mise à jour avec les endpoints réels
