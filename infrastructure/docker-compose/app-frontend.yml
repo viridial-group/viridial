@@ -3,8 +3,8 @@ services:
     build:
       context: ../../frontend
       dockerfile: Dockerfile
-        args:
-          NEXT_PUBLIC_AUTH_API_URL: ${FRONTEND_AUTH_API_URL:-http://viridial.com}
+      args:
+        NEXT_PUBLIC_AUTH_API_URL: ${FRONTEND_AUTH_API_URL:-http://viridial.com}
     image: viridial/frontend:latest
     container_name: viridial-frontend
     restart: unless-stopped
