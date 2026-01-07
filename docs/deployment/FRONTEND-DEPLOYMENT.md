@@ -154,7 +154,7 @@ curl http://148.230.112.148/auth/health
 # Login test
 curl -X POST http://148.230.112.148/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","password":"password"}'
+  -d '{"email":"sass.hicham@gmail.com","password":"Test1234!"}'
 ```
 
 ### Vérifier les logs
