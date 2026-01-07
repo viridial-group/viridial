@@ -8,24 +8,59 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import { authService } from '@/lib/api/auth';
 
 export default function SignupPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const validatePassword = (pwd: string): string | null => {
+    if (pwd.length < 8) {
+      return 'Le mot de passe doit contenir au moins 8 caractères';
+    }
+    if (!/(?=.*[a-z])/.test(pwd)) {
+      return 'Le mot de passe doit contenir au moins une minuscule';
+    }
+    if (!/(?=.*[A-Z])/.test(pwd)) {
+      return 'Le mot de passe doit contenir au moins une majuscule';
+    }
+    if (!/(?=.*\d)/.test(pwd)) {
+      return 'Le mot de passe doit contenir au moins un chiffre';
+    }
+    return null;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    // Validation côté client
+    if (password !== confirmPassword) {
+      setError('Les mots de passe ne correspondent pas');
+      return;
+    }
+
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+      setError(passwordError);
+      return;
+    }
+
     setIsLoading(true);
 
-    // TODO: Implémenter l'inscription
-    setTimeout(() => {
+    try {
+      await authService.signup(email, password, confirmPassword);
+      // Rediriger vers la page de connexion avec un message de succès
+      router.push('/login?signup=success');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Une erreur est survenue lors de l\'inscription');
+    } finally {
       setIsLoading(false);
-      router.push('/login');
-    }, 1000);
+    }
   };
 
   return (
@@ -83,6 +118,25 @@ export default function SignupPage() {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={isLoading}
+                  className="h-11 border-[var(--color-neutral-400)] rounded-md"
+                />
+                <p className="text-xs text-[var(--color-muted)]">
+                  Au moins 8 caractères, une majuscule, une minuscule et un chiffre
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword" className="text-[var(--color-primary)] text-sm font-medium">
+                  Confirmer le mot de passe
+                </Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  placeholder="••••••••"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   required
                   disabled={isLoading}
                   className="h-11 border-[var(--color-neutral-400)] rounded-md"

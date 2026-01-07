@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -13,11 +13,24 @@ import { authService } from '@/lib/api/auth';
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const signupParam = searchParams.get('signup');
+    const resetParam = searchParams.get('reset');
+    
+    if (signupParam === 'success') {
+      setSuccess('Inscription réussie ! Vous pouvez maintenant vous connecter.');
+    } else if (resetParam === 'success') {
+      setSuccess('Mot de passe réinitialisé avec succès ! Vous pouvez maintenant vous connecter.');
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,6 +74,11 @@ export default function LoginPage() {
 
           {/* Login form */}
           <div className="bg-[var(--color-neutral-100)] border border-[var(--color-neutral-400)] rounded-[var(--radius)] shadow-[0_4px_12px_rgba(11,18,32,0.04)] p-6">
+            {success && (
+              <div className="mb-4 rounded-md bg-[var(--color-success)]/15 p-3 text-sm text-[var(--color-success)] border border-[var(--color-success)]/20">
+                {success}
+              </div>
+            )}
             {error && (
               <div className="mb-4 rounded-md bg-[var(--color-danger)]/15 p-3 text-sm text-[var(--color-danger)] border border-[var(--color-danger)]/20">
                 {error}

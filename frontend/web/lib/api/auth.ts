@@ -91,6 +91,66 @@ export class AuthService {
   getGoogleAuthUrl(): string {
     return `${this.baseUrl}/auth/oidc/google`;
   }
+
+  /**
+   * Inscription d'un nouvel utilisateur
+   */
+  async signup(email: string, password: string, confirmPassword: string): Promise<{ message: string }> {
+    const response = await fetch(`${this.baseUrl}/auth/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password, confirmPassword }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ message: 'Signup failed' }));
+      throw new Error(error.message || `HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    return response.json();
+  }
+
+  /**
+   * Demander une réinitialisation de mot de passe
+   */
+  async forgotPassword(email: string): Promise<{ message: string }> {
+    const response = await fetch(`${this.baseUrl}/auth/forgot-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ message: 'Forgot password request failed' }));
+      throw new Error(error.message || `HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    return response.json();
+  }
+
+  /**
+   * Réinitialiser le mot de passe avec un token
+   */
+  async resetPassword(token: string, newPassword: string, confirmPassword: string): Promise<{ message: string }> {
+    const response = await fetch(`${this.baseUrl}/auth/reset-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ token, newPassword, confirmPassword }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ message: 'Password reset failed' }));
+      throw new Error(error.message || `HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    return response.json();
+  }
 }
 
 export const authService = new AuthService();
