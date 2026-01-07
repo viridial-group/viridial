@@ -6,14 +6,18 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Configuration CORS pour permettre les requêtes depuis le frontend
+  // Production: HTTPS prioritized, Development: HTTP localhost
   const allowedOrigins = [
-    process.env.FRONTEND_URL || 'http://localhost:3000',
-    'http://148.230.112.148',
-    'https://148.230.112.148',
-    'http://viridial.com',
+    // Production HTTPS (prioritized)
+    process.env.FRONTEND_URL || 'https://viridial.com',
     'https://viridial.com',
-    'http://www.viridial.com',
     'https://www.viridial.com',
+    'https://148.230.112.148',
+    // Development/Testing
+    'http://localhost:3000',
+    'http://148.230.112.148',
+    'http://viridial.com',
+    'http://www.viridial.com',
   ].filter(Boolean); // Remove any undefined/null values
 
   app.enableCors({
