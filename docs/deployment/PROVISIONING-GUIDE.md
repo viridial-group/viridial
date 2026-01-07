@@ -338,9 +338,35 @@ Avant de commencer le provisionnement, vérifier:
 - [ ] Git installé sur machine locale
 - [ ] Connexion SSH testée et fonctionnelle
 
-## Provisionnement Automatique
+## Options de Provisionnement
 
-### Option 1: Script Automatique (Recommandé)
+### Option 1: Installation Directe sur VPS (Recommandé - Plus Simple)
+
+**Pour installer directement sur le VPS sans Ansible local:**
+
+```bash
+# Se connecter au VPS
+ssh root@148.230.112.148
+
+# Cloner le repository
+cd /root
+git clone https://github.com/viridial-group/viridial.git
+cd viridial
+
+# Exécuter script d'installation
+chmod +x infrastructure/scripts/install-on-vps.sh
+sudo infrastructure/scripts/install-on-vps.sh
+
+# Installer addons
+chmod +x infrastructure/scripts/install-addons-on-vps.sh
+sudo infrastructure/scripts/install-addons-on-vps.sh
+```
+
+**Voir guide complet:** `docs/deployment/INSTALL-DIRECT-VPS.md`
+
+### Option 2: Ansible depuis Machine Locale
+
+**Pour utiliser Ansible depuis votre machine locale:**
 
 ```bash
 cd infrastructure
