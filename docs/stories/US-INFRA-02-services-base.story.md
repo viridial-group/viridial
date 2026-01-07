@@ -1,6 +1,6 @@
 # US-INFRA-02: Services de Base - Database, Cache, Search, Storage
 
-## Status: In Progress
+## Status: Ready for Review
 
 ### Story
 En tant qu'équipe d'ingénierie, je souhaite déployer les services de base (PostgreSQL, Redis, Meilisearch, MinIO) avec Docker Compose sur le VPS avec persistence garantie afin de supporter les microservices de l'application.
@@ -34,24 +34,24 @@ En tant qu'équipe d'ingénierie, je souhaite déployer les services de base (Po
 - [x] Variables d'environnement configurées (.env)
 - [x] Health checks configurés (pg_isready)
 - [x] Configuration PostgreSQL optimisée (max_connections, shared_buffers, etc.)
-- [ ] PostgreSQL déployé et accessible sur le VPS
-- [ ] Tests de connectivité PostgreSQL réussis
+- [x] PostgreSQL déployé et accessible sur le VPS
+- [x] Tests de connectivité PostgreSQL réussis
 
 #### Phase 3: Redis Deployment
 - [x] Service Redis configuré dans docker-compose.yml
 - [x] Configuration Redis créée (`config/redis.conf`)
 - [x] Volume Docker configuré pour persistence avec AOF (redis_data)
 - [x] Health checks configurés (redis-cli ping)
-- [ ] Redis déployé et accessible sur le VPS
-- [ ] Tests de connectivité Redis réussis
+- [x] Redis déployé et accessible sur le VPS
+- [x] Tests de connectivité Redis réussis
 
 #### Phase 4: Meilisearch Deployment
 - [x] Service Meilisearch configuré dans docker-compose.yml
 - [x] Secret MEILI_MASTER_KEY configuré dans .env
 - [x] Volume Docker configuré pour persistence (meilisearch_data)
 - [x] Health checks configurés (HTTP /health)
-- [ ] Meilisearch déployé et accessible sur le VPS
-- [ ] Tests de connectivité Meilisearch réussis
+- [x] Meilisearch déployé et accessible sur le VPS
+- [x] Tests de connectivité Meilisearch réussis
 
 #### Phase 5: MinIO Deployment
 - [x] Service MinIO configuré dans docker-compose.yml
@@ -59,16 +59,16 @@ En tant qu'équipe d'ingénierie, je souhaite déployer les services de base (Po
 - [x] Volume Docker configuré pour persistence (minio_data)
 - [x] Service d'initialisation des buckets créé (minio-init)
 - [x] Health checks configurés (HTTP /minio/health/live)
-- [ ] MinIO déployé et accessible sur le VPS
-- [ ] Buckets initialisés (property-images, documents, backups)
-- [ ] Tests de connectivité MinIO réussis
+- [x] MinIO déployé et accessible sur le VPS
+- [x] Buckets initialisés (property-images, documents, backups)
+- [x] Tests de connectivité MinIO réussis
 
 #### Phase 6: Déploiement et Validation
-- [ ] Services déployés sur le VPS avec `./install-services.sh`
-- [ ] Tous les services sont `Up` et `healthy`
-- [ ] Tests de connectivité réussis (`./test-services.sh`)
+- [x] Services déployés sur le VPS avec `./install-services.sh`
+- [x] Tous les services sont `Up` et `healthy`
+- [x] Tests de connectivité réussis (`./test-services.sh`)
 - [ ] Credentials sauvegardés de manière sécurisée
-- [ ] Documentation mise à jour avec les endpoints réels
+- [x] Documentation mise à jour avec les endpoints réels
 - [ ] Persistence validée (redémarrer conteneurs et vérifier données conservées)
 
 ### Technical Notes
@@ -138,16 +138,16 @@ En tant qu'équipe d'ingénierie, je souhaite déployer les services de base (Po
 - En production, limiter l'accès aux ports avec un firewall
 
 ### Definition of Done
-- [ ] Docker installé sur le VPS
-- [ ] Docker Compose installé sur le VPS
-- [ ] Services déployés avec `./install-services.sh`
-- [ ] PostgreSQL accessible sur le port configuré
-- [ ] Redis accessible sur le port configuré
-- [ ] Meilisearch accessible sur le port configuré
-- [ ] MinIO accessible sur les ports configurés (API et Console)
-- [ ] Health checks passent pour tous les services
-- [ ] Tests de connectivité réussis (`./test-services.sh`)
+- [x] Docker installé sur le VPS
+- [x] Docker Compose installé sur le VPS
+- [x] Services déployés avec `./install-services.sh`
+- [x] PostgreSQL accessible sur le port configuré
+- [x] Redis accessible sur le port configuré
+- [x] Meilisearch accessible sur le port configuré
+- [x] MinIO accessible sur les ports configurés (API et Console)
+- [x] Health checks passent pour tous les services
+- [x] Tests de connectivité réussis (`./test-services.sh`)
 - [ ] Persistence validée (redémarrer conteneurs et vérifier données conservées)
-- [ ] Buckets MinIO initialisés (property-images, documents, backups)
+- [x] Buckets MinIO initialisés (property-images, documents, backups)
 - [ ] Credentials sauvegardés de manière sécurisée
-- [ ] Documentation mise à jour avec les endpoints réels
+- [x] Documentation mise à jour avec les endpoints réels
