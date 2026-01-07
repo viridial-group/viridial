@@ -33,14 +33,9 @@ if ! kubectl cluster-info &> /dev/null; then
     error "Cluster Kubernetes non accessible."
 fi
 
-# Demander l'environnement
-read -p "Environnement (staging/production) [staging]: " ENV
-ENV=${ENV:-staging}
-NAMESPACE="viridial-${ENV}"
-
-if [ "$ENV" != "staging" ] && [ "$ENV" != "production" ]; then
-    error "Environnement doit être 'staging' ou 'production'"
-fi
+# Environnement fixé à production uniquement
+ENV="production"
+NAMESPACE="viridial-production"
 
 # Vérifier namespace
 if ! kubectl get namespace "$NAMESPACE" &> /dev/null; then
@@ -105,7 +100,8 @@ echo "✓ Secrets créés"
 # ============================================
 step "Déploiement PostgreSQL"
 
-# Appliquer les manifests et filtrer par namespace
+# Appliquer les manifests pour production uniquement
+kubectl apply -f infrastructure/kubernetes/manifests/services/postgres/postgres-secret.yaml
 kubectl apply -f infrastructure/kubernetes/manifests/services/postgres/postgres-configmap.yaml
 kubectl apply -f infrastructure/kubernetes/manifests/services/postgres/postgres-pvc.yaml
 kubectl apply -f infrastructure/kubernetes/manifests/services/postgres/postgres-statefulset.yaml
@@ -139,6 +135,7 @@ echo "✓ Redis déployé"
 # ============================================
 step "Déploiement Meilisearch"
 
+kubectl apply -f infrastructure/kubernetes/manifests/services/meilisearch/meilisearch-secret.yaml
 kubectl apply -f infrastructure/kubernetes/manifests/services/meilisearch/meilisearch-pvc.yaml
 kubectl apply -f infrastructure/kubernetes/manifests/services/meilisearch/meilisearch-deployment.yaml
 kubectl apply -f infrastructure/kubernetes/manifests/services/meilisearch/meilisearch-service.yaml
@@ -155,6 +152,7 @@ echo "✓ Meilisearch déployé"
 # ============================================
 step "Déploiement MinIO"
 
+kubectl apply -f infrastructure/kubernetes/manifests/services/minio/minio-secret.yaml
 kubectl apply -f infrastructure/kubernetes/manifests/services/minio/minio-pvc.yaml
 kubectl apply -f infrastructure/kubernetes/manifests/services/minio/minio-statefulset.yaml
 kubectl apply -f infrastructure/kubernetes/manifests/services/minio/minio-service.yaml

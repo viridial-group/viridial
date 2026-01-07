@@ -1,22 +1,4 @@
 ---
-# Service Meilisearch pour Staging
-apiVersion: v1
-kind: Service
-metadata:
-  name: meilisearch
-  namespace: viridial-staging
-  labels:
-    app: meilisearch
-spec:
-  type: ClusterIP
-  ports:
-  - port: 7700
-    targetPort: 7700
-    protocol: TCP
-    name: http
-  selector:
-    app: meilisearch
----
 # Service Meilisearch pour Production
 apiVersion: v1
 kind: Service
@@ -34,4 +16,3 @@ spec:
     name: http
   selector:
     app: meilisearch
-

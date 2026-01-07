@@ -1,46 +1,4 @@
 ---
-# Job pour initialiser les buckets MinIO Staging
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: minio-init-buckets
-  namespace: viridial-staging
-spec:
-  template:
-    spec:
-      restartPolicy: OnFailure
-      containers:
-      - name: mc
-        image: minio/mc:latest
-        command:
-        - /bin/sh
-        - -c
-        - |
-          # Attendre que MinIO soit prêt
-          until mc alias set minio http://minio:9000 $(MINIO_ROOT_USER) $(MINIO_ROOT_PASSWORD) 2>/dev/null; do
-            echo "En attente de MinIO..."
-            sleep 5
-          done
-          
-          # Créer les buckets
-          mc mb minio/property-images || true
-          mc mb minio/documents || true
-          mc mb minio/backups || true
-          
-          # Configurer les politiques d'accès (optionnel)
-          echo "Buckets créés avec succès"
-        env:
-        - name: MINIO_ROOT_USER
-          valueFrom:
-            secretKeyRef:
-              name: minio-secret
-              key: MINIO_ROOT_USER
-        - name: MINIO_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: minio-secret
-              key: MINIO_ROOT_PASSWORD
----
 # Job pour initialiser les buckets MinIO Production
 apiVersion: batch/v1
 kind: Job
@@ -82,4 +40,3 @@ spec:
             secretKeyRef:
               name: minio-secret
               key: MINIO_ROOT_PASSWORD
-

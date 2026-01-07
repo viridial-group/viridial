@@ -1,18 +1,4 @@
 ---
-# PersistentVolumeClaim pour Meilisearch Staging
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: meilisearch-data
-  namespace: viridial-staging
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: local-path
-  resources:
-    requests:
-      storage: 10Gi
----
 # PersistentVolumeClaim pour Meilisearch Production
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -26,4 +12,3 @@ spec:
   resources:
     requests:
       storage: 20Gi
-

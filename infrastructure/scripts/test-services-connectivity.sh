@@ -25,15 +25,9 @@ warning() {
     echo -e "${YELLOW}⚠${NC} $1"
 }
 
-# Demander l'environnement
-read -p "Environnement (staging/production) [staging]: " ENV
-ENV=${ENV:-staging}
-NAMESPACE="viridial-${ENV}"
-
-if [ "$ENV" != "staging" ] && [ "$ENV" != "production" ]; then
-    echo "Environnement doit être 'staging' ou 'production'"
-    exit 1
-fi
+# Environnement fixé à production uniquement
+ENV="production"
+NAMESPACE="viridial-production"
 
 echo "🧪 Tests de connectivité pour $NAMESPACE"
 echo ""

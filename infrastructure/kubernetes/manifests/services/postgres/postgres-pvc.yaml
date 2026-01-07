@@ -1,18 +1,4 @@
 ---
-# PersistentVolumeClaim pour PostgreSQL Staging
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: postgres-data
-  namespace: viridial-staging
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: local-path
-  resources:
-    requests:
-      storage: 20Gi
----
 # PersistentVolumeClaim pour PostgreSQL Production
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -26,4 +12,3 @@ spec:
   resources:
     requests:
       storage: 50Gi
-

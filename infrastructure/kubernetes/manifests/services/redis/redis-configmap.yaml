@@ -1,34 +1,4 @@
 ---
-# ConfigMap pour Redis Staging
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: redis-config
-  namespace: viridial-staging
-data:
-  redis.conf: |
-    # Network
-    bind 0.0.0.0
-    protected-mode yes
-    port 6379
-    
-    # Memory
-    maxmemory 256mb
-    maxmemory-policy allkeys-lru
-    
-    # Persistence (optionnel)
-    save 900 1
-    save 300 10
-    save 60 10000
-    
-    # Logging
-    loglevel notice
-    
-    # Performance
-    tcp-backlog 511
-    timeout 0
-    tcp-keepalive 300
----
 # ConfigMap pour Redis Production
 apiVersion: v1
 kind: ConfigMap
@@ -60,4 +30,3 @@ data:
     tcp-backlog 511
     timeout 0
     tcp-keepalive 300
-
