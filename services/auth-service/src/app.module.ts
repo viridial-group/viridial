@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthController } from './controllers/auth.controller';
 import { AuthService } from './services/auth.service';
+import { OidcService } from './services/oidc.service';
+import { GoogleStrategy } from './strategies/google.strategy';
 import { User } from './entities/user.entity';
 
 // Helper pour parser DATABASE_URL
@@ -34,10 +37,11 @@ function parseDatabaseUrl(url?: string) {
       useFactory: () => parseDatabaseUrl(process.env.DATABASE_URL),
     }),
     TypeOrmModule.forFeature([User]),
+    PassportModule,
     JwtModule.register({}), // secrets & expiresIn gérés dans AuthService via options
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, OidcService, GoogleStrategy],
 })
 export class AppModule {}
 
