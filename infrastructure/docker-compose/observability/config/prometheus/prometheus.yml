@@ -5,7 +5,7 @@ global:
     cluster: 'viridial-production'
     environment: 'production'
 
-# Alertmanager configuration 
+# Alertmanager configuration  
 alerting:
   alertmanagers:
     - static_configs:

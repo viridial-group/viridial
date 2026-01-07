@@ -32,7 +32,7 @@ ruler:
 
 # Retention
 limits_config:
-  retention_period: 720h  # 30 days
+  retention_period: 720h  # 30 days 
   max_query_length: 0h
   max_query_parallelism: 32
 
