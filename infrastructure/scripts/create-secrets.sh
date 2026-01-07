@@ -1,6 +1,6 @@
 #!/bin/bash
 # Script pour créer les secrets Kubernetes depuis .env
-# Usage: ./infrastructure/scripts/create-secrets.sh [namespace]
+# Usage: ./infrastructure/scripts/create-secrets.sh [namespace] 
 
 set -e
 

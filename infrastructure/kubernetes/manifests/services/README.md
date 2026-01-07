@@ -204,7 +204,7 @@ kubectl describe pvc <pvc-name> -n viridial-production
 kubectl get svc -n viridial-production
 kubectl describe svc <service-name> -n viridial-production
 
-# Tester depuis un pod
+# Tester depuis un pod 
 kubectl run -it --rm debug --image=busybox --restart=Never -n viridial-production -- sh
 # Dans le pod: wget -O- http://meilisearch:7700/health
 ```

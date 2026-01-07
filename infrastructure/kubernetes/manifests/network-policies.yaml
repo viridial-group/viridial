@@ -1,5 +1,5 @@
 ---
-# Network Policies pour isolation multi-tenant
+# Network Policies pour isolation multi-tenant 
 # Deny all ingress par défaut
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy

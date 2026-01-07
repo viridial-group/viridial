@@ -1,5 +1,5 @@
 ---
-# Job pour initialiser les buckets MinIO Production
+# Job pour initialiser les buckets MinIO Production 
 apiVersion: batch/v1
 kind: Job
 metadata:

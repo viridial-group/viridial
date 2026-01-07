@@ -1,5 +1,5 @@
 ---
-# Service Meilisearch pour Production
+# Service Meilisearch pour Production 
 apiVersion: v1
 kind: Service
 metadata:

@@ -51,6 +51,7 @@ echo -e "${GREEN}[7] Ressources disponibles sur le nœud:${NC}"
 kubectl describe nodes | grep -A 5 "Allocated resources:" || kubectl top nodes 2>/dev/null || echo "Metrics Server non disponible"
 echo ""
 
+
 echo "╔══════════════════════════════════════════════════════════════╗"
 echo "║  💡 Solutions possibles:                                      ║"
 echo "╚══════════════════════════════════════════════════════════════╝"

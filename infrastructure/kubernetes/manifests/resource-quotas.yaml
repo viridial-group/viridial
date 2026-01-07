@@ -1,5 +1,5 @@
 ---
-# Resource Quotas pour isolation multi-tenant
+# Resource Quotas pour isolation multi-tenant 
 apiVersion: v1
 kind: ResourceQuota
 metadata:

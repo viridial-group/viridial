@@ -1,5 +1,5 @@
 #!/bin/bash
-# Script de test de connectivité aux services de base
+# Script de test de connectivité aux services de base 
 # À exécuter depuis le VPS ou localement avec kubectl configuré
 
 set -e

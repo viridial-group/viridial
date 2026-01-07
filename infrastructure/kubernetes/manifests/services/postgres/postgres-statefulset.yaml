@@ -1,5 +1,5 @@
 ---
-# StatefulSet PostgreSQL pour Production
+# StatefulSet PostgreSQL pour Production 
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:

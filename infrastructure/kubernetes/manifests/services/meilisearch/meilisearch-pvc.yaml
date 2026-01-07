@@ -1,5 +1,5 @@
 ---
-# PersistentVolumeClaim pour Meilisearch Production
+# PersistentVolumeClaim pour Meilisearch Production 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

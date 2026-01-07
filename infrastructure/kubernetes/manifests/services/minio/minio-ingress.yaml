@@ -1,5 +1,5 @@
 ---
-# Ingress pour MinIO Console (Production)
+# Ingress pour MinIO Console (Production) 
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:

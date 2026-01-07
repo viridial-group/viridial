@@ -1,5 +1,5 @@
 ---
-# ClusterIssuer Let's Encrypt pour certificats TLS automatiques
+# ClusterIssuer Let's Encrypt pour certificats TLS automatiques 
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:

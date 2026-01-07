@@ -1,6 +1,6 @@
 #!/bin/bash
 # Script pour corriger les limites de ressources et redéployer les services
-# Résout le problème "Insufficient CPU" sur VPS avec ressources limitées
+# Résout le problème "Insufficient CPU" sur VPS avec ressources limitées 
 
 set -e
 

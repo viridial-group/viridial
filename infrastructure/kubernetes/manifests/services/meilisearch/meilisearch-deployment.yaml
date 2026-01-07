@@ -1,5 +1,5 @@
 ---
-# Deployment Meilisearch pour Production
+# Deployment Meilisearch pour Production 
 apiVersion: apps/v1
 kind: Deployment
 metadata:

@@ -1,5 +1,5 @@
 ---
-# PersistentVolumeClaim pour MinIO Production
+# PersistentVolumeClaim pour MinIO Production 
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

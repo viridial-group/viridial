@@ -1,5 +1,5 @@
 ---
-# Namespaces pour Viridial
+# Namespaces pour Viridial 
 apiVersion: v1
 kind: Namespace
 metadata:

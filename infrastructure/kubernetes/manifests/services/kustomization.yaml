@@ -1,6 +1,6 @@
 ---
 # Kustomization pour déployer tous les services de base (Production uniquement)
-# Usage: kubectl apply -k infrastructure/kubernetes/manifests/services/
+# Usage: kubectl apply -k infrastructure/kubernetes/manifests/services/ 
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
