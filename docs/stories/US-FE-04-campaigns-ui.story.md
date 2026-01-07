@@ -28,3 +28,9 @@ En tant qu'annonceur, je veux créer et gérer des campagnes promotionnelles (bo
 - [ ] Interaction flows prototyped and tested
 
 ```
+
+## Inspiration & References
+- Use the provided images/site as reference for campaign card layouts, filters and metric dashboards.
+- Voir le brief designer: docs/communication/designer-brief.md
+- Voir le brief developer: docs/communication/developer-brief.md
+

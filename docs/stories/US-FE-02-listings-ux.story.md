@@ -29,3 +29,9 @@ En tant que visiteur, je veux une expérience de recherche et de résultats clai
 - [ ] Prototype interactif testé et retours synthétisés
 
 ```
+
+## Inspiration & References
+- Utiliser les images et le site fourni (pièces jointes) comme source d'inspiration pour le layout 3‑volets (filtres / résultats / détails) et les patterns de filtres avancés.
+- Voir le brief designer: docs/communication/designer-brief.md
+- Voir le brief developer: docs/communication/developer-brief.md
+

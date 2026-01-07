@@ -28,3 +28,9 @@ En tant qu'utilisateur, je veux une page détail d'annonce claire intégrant l'e
 - [ ] ACs vérifiés en smoke tests UI
 
 ```
+
+## Inspiration & References
+- S'inspirer du layout media kit et des cartes de listing dans les images fournies.
+- Voir le brief designer: docs/communication/designer-brief.md
+- Voir le brief developer: docs/communication/developer-brief.md
+
