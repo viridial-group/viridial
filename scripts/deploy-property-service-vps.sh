@@ -1,15 +1,21 @@
 #!/bin/bash
 # Script pour déployer le Property Service sur le VPS
-# Usage: ./scripts/deploy-property-service-vps.sh
+# Usage: ./scripts/deploy-property-service-vps.sh 
 
 set -e
 
 echo "🚀 Déploiement du Property Service sur le VPS..."
 echo ""
 
+
+# Se placer dans le répertoire racine du projets./scripts/deploy-property-service-vps.sh
+cd "$(dirname "$0")/.."
+PROJECT_ROOT=$(pwd)
+
 # Configuration
 COMPOSE_FILE="infrastructure/docker-compose/app-property.yml"
 NETWORK_NAME="viridial-network"
+ENV_FILE="infrastructure/docker-compose/.env"
 
 # Vérifier que le réseau Docker existe
 if ! docker network ls | grep -q "$NETWORK_NAME"; then
@@ -19,31 +25,53 @@ fi
 
 # Arrêter les containers existants qui utilisent le port 3001
 echo "🛑 Arrêt des containers existants sur le port 3001..."
-docker ps -a --filter "publish=3001" --format "{{.ID}}" | xargs -r docker stop | xargs -r docker rm
+docker ps -a --filter "publish=3001" --format "{{.ID}}" | xargs -r docker stop | xargs -r docker rm || true
+
+# Charger les variables d'environnement depuis .env si disponible
+if [ -f "$ENV_FILE" ]; then
+  echo "📋 Chargement des variables d'environnement depuis $ENV_FILE..."
+  set -a
+  source "$ENV_FILE"
+  set +a
+elif [ -f .env ]; then
+  echo "📋 Chargement des variables d'environnement depuis .env..."
+  set -a
+  source .env
+  set +a
+fi
 
 # Vérifier que la base de données est accessible
 if [ -z "$DATABASE_URL" ]; then
   echo "⚠️  DATABASE_URL n'est pas définie dans l'environnement."
   echo "   Veuillez l'exporter ou créer un fichier .env avec DATABASE_URL"
+  echo "   Cherché dans: $ENV_FILE et .env"
   exit 1
-fi
-
-# Charger les variables d'environnement depuis .env si disponible
-if [ -f .env ]; then
-  export $(cat .env | grep -v '^#' | xargs)
 fi
 
 # Build et démarrage des services
 echo "🔨 Construction et démarrage des services..."
-cd "$(dirname "$0")/.."
 
-docker compose -f "$COMPOSE_FILE" build --no-cache property-service
+# Utiliser le fichier .env pour docker compose
+if [ -f "$ENV_FILE" ]; then
+  docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" build --no-cache property-service
+elif [ -f .env ]; then
+  docker compose -f "$COMPOSE_FILE" --env-file .env build --no-cache property-service
+else
+  docker compose -f "$COMPOSE_FILE" build --no-cache property-service
+fi
 
 # Appliquer les migrations SQL si nécessaire
 echo "📊 Vérification des migrations de base de données..."
 echo "   Note: Les migrations doivent être appliquées manuellement ou via un script séparé"
 
-docker compose -f "$COMPOSE_FILE" up -d
+# Démarrer les services avec le bon fichier .env
+if [ -f "$ENV_FILE" ]; then
+  docker compose -f "$COMPOSE_FILE" --env-file "$ENV_FILE" up -d
+elif [ -f .env ]; then
+  docker compose -f "$COMPOSE_FILE" --env-file .env up -d
+else
+  docker compose -f "$COMPOSE_FILE" up -d
+fi
 
 # Attendre que le service soit prêt
 echo "⏳ Attente du démarrage du service..."
