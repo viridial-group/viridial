@@ -14,23 +14,20 @@ Ce guide vous permet de déployer Viridial SaaS sur votre VPS avec Kubernetes (K
 
 ## Architecture Recommandée
 
-### Option 1: MVP Simple (1 VPS) - Recommandé pour démarrer
+### Option 1: MVP Simple (1 VPS)
 - 1 node Kubernetes (control plane + worker combiné)
 - Tous les services sur le même node
-- **Fournisseur:** Hostinger
-- **Coût:** Selon plan Hostinger choisi
+- **Coût:** ~5€/mois (Hetzner CPX21)
 
 ### Option 2: Staging (3 VPS)
 - 1 control plane + 2 worker nodes
 - Services distribués
-- **Fournisseur:** Hostinger (3 VPS)
-- **Coût:** Selon plans Hostinger
+- **Coût:** ~15€/mois (Hetzner CPX21 x 3)
 
 ### Option 3: Production (5+ VPS)
 - 1 control plane + 4+ worker nodes
 - HA et redondance
-- **Fournisseur:** Hostinger (5+ VPS)
-- **Coût:** Selon plans Hostinger
+- **Coût:** ~25€/mois (Hetzner CPX21 x 5)
 
 ## Étape 1: Préparation des VPS
 

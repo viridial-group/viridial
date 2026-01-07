@@ -92,7 +92,6 @@ docker run -d --name meilisearch -p 7700:7700 -e MEILI_MASTER_KEY=masterKey getm
 
 ### Informations VPS
 
-- **Fournisseur:** Hostinger
 - **IP:** 148.230.112.148
 - **Repository:** https://github.com/viridial-group/viridial.git
 
@@ -196,8 +195,7 @@ Voir [Roadmap](docs/stories/EPICS.md) pour la roadmap complète.
 ## Ressources
 
 - **Repository:** https://github.com/viridial-group/viridial.git
-- **VPS:** Hostinger (148.230.112.148)
+- **VPS:** 148.230.112.148
 - **Documentation:** `docs/`
 - **Quick Start:** [QUICK-START.md](docs/QUICK-START.md)
-- **Hostinger Guide:** [HOSTINGER-VPS-GUIDE.md](docs/deployment/HOSTINGER-VPS-GUIDE.md)
 
