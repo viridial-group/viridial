@@ -31,6 +31,15 @@ if [ "$NODE_STATUS" != "True" ]; then
     exit 1
 fi
 
+# Vérifier et retirer le taint du control plane (nécessaire pour single-node)
+TAINTS=$(kubectl describe node $(kubectl get nodes -o name | head -1) | grep Taints | awk '{print $2}')
+if [ "$TAINTS" != "<none>" ] && [ -n "$TAINTS" ]; then
+    echo "⚠ Control plane a des taints. Retrait pour permettre pods (single-node)..."
+    kubectl taint nodes --all node-role.kubernetes.io/control-plane- --overwrite || true
+    kubectl taint nodes --all node-role.kubernetes.io/master- --overwrite || true
+    echo "✓ Taints retirés"
+fi
+
 # Créer namespace si nécessaire
 if ! kubectl get namespace ingress-nginx &> /dev/null; then
     echo "Création du namespace ingress-nginx..."
@@ -39,12 +48,21 @@ else
     echo "✓ Namespace ingress-nginx existe déjà"
 fi
 
-# Vérifier si déjà installé
-if kubectl get pods -n ingress-nginx &> /dev/null && kubectl get pods -n ingress-nginx --no-headers 2>/dev/null | grep -q Running; then
+# Vérifier si déjà installé et fonctionnel
+INGRESS_PODS=$(kubectl get pods -n ingress-nginx --no-headers 2>/dev/null | grep -v "admission-create" | grep -c Running || echo "0")
+if [ "$INGRESS_PODS" -gt 0 ]; then
     echo "✓ Nginx Ingress Controller déjà installé et fonctionnel"
     kubectl get pods -n ingress-nginx
     kubectl get svc -n ingress-nginx
     exit 0
+fi
+
+# Nettoyer les pods Pending ou en erreur avant réinstallation
+PENDING_PODS=$(kubectl get pods -n ingress-nginx --no-headers 2>/dev/null | grep -E "Pending|Error|CrashLoopBackOff" | awk '{print $1}' || true)
+if [ -n "$PENDING_PODS" ]; then
+    echo "Nettoyage des pods en erreur/Pending..."
+    echo "$PENDING_PODS" | xargs -r kubectl delete pod -n ingress-nginx --force --grace-period=0 2>/dev/null || true
+    sleep 5
 fi
 
 # Installer Nginx Ingress Controller
