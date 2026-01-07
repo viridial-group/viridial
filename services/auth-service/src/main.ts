@@ -6,8 +6,14 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Configuration CORS pour permettre les requêtes depuis le frontend
+  const allowedOrigins = [
+    process.env.FRONTEND_URL || 'http://localhost:3000',
+    'http://148.230.112.148',
+    'https://148.230.112.148',
+  ].filter(Boolean); // Remove any undefined/null values
+
   app.enableCors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: allowedOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -28,7 +34,7 @@ async function bootstrap() {
   // eslint-disable-next-line no-console
   console.log(`Auth service is running on port ${port}`);
   // eslint-disable-next-line no-console
-  console.log(`CORS enabled for: ${process.env.FRONTEND_URL || 'http://localhost:3000'}`);
+  console.log(`CORS enabled for origins: ${allowedOrigins.join(', ')}`);
 }
 
 bootstrap();
