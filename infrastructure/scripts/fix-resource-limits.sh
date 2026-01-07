@@ -62,11 +62,11 @@ fi
 # ============================================
 step "Application des manifests avec ressources réduites"
 
-echo "Les manifests ont été mis à jour avec des ressources minimales:"
-echo "  - CPU requests: 100m (au lieu de 250m)"
-echo "  - CPU limits: 500m (au lieu de 1000m)"
-echo "  - Memory requests: 256Mi (au lieu de 512Mi)"
-echo "  - Memory limits: 512Mi (au lieu de 1Gi)"
+echo "Les manifests ont été mis à jour avec des ressources adaptées au VPS:"
+echo "  - CPU requests: 200m (au lieu de 500m)"
+echo "  - CPU limits: 1000m (au lieu de 2000m)"
+echo "  - Memory requests: 512Mi (au lieu de 1Gi)"
+echo "  - Memory limits: 1Gi (au lieu de 2Gi)"
 echo ""
 
 # Appliquer les StatefulSets et Deployments mis à jour
