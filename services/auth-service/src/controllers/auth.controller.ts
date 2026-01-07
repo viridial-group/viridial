@@ -4,6 +4,9 @@ import { AuthService } from '../services/auth.service';
 import { OidcService } from '../services/oidc.service';
 import { LoginDto } from '../dto/login.dto';
 import { RefreshTokenDto } from '../dto/refresh-token.dto';
+import { SignupDto } from '../dto/signup.dto';
+import { ForgotPasswordDto } from '../dto/forgot-password.dto';
+import { ResetPasswordDto } from '../dto/reset-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -23,9 +26,27 @@ export class AuthController {
     return this.authService.login(email, password);
   }
 
+  @Post('signup')
+  async signup(@Body() body: SignupDto) {
+    const { email, password, confirmPassword } = body;
+    return this.authService.signup(email, password, confirmPassword);
+  }
+
   @Post('refresh')
   async refresh(@Body() body: RefreshTokenDto) {
     return this.authService.refresh(body.refreshToken);
+  }
+
+  @Post('forgot-password')
+  async forgotPassword(@Body() body: ForgotPasswordDto) {
+    const { email } = body;
+    return this.authService.requestPasswordReset(email);
+  }
+
+  @Post('reset-password')
+  async resetPassword(@Body() body: ResetPasswordDto) {
+    const { token, newPassword, confirmPassword } = body;
+    return this.authService.resetPassword(token, newPassword, confirmPassword);
   }
 
   /**

@@ -7,6 +7,8 @@ import { AuthService } from './services/auth.service';
 import { OidcService } from './services/oidc.service';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { User } from './entities/user.entity';
+import { PasswordResetToken } from './entities/password-reset-token.entity';
+import { EmailService } from './services/email.service';
 
 // Helper pour parser DATABASE_URL
 function parseDatabaseUrl(url?: string) {
@@ -36,12 +38,12 @@ function parseDatabaseUrl(url?: string) {
     TypeOrmModule.forRootAsync({
       useFactory: () => parseDatabaseUrl(process.env.DATABASE_URL),
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, PasswordResetToken]),
     PassportModule,
     JwtModule.register({}), // secrets & expiresIn gérés dans AuthService via options
   ],
   controllers: [AuthController],
-  providers: [AuthService, OidcService, GoogleStrategy],
+  providers: [AuthService, OidcService, GoogleStrategy, EmailService],
 })
 export class AppModule {}
 
