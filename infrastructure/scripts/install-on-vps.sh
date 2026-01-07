@@ -247,11 +247,62 @@ if [ -f /etc/kubernetes/admin.conf ]; then
 fi
 
 if [ "$SKIP_INIT" != "true" ]; then
+    # Vérifier que Docker est le runtime
+    if ! systemctl is-active --quiet docker; then
+        error "Docker n'est pas actif. Vérifiez: systemctl status docker"
+    fi
+    
+    # Configurer containerd pour utiliser Docker (si containerd est présent)
+    if command -v containerd &> /dev/null; then
+        echo "Configuration containerd pour utiliser Docker..."
+        # Créer configuration containerd
+        mkdir -p /etc/containerd
+        containerd config default | tee /etc/containerd/config.toml > /dev/null
+        
+        # Modifier pour utiliser systemd cgroup driver
+        sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
+        
+        # Redémarrer containerd
+        systemctl restart containerd
+        systemctl enable containerd
+        sleep 5
+    fi
+    
     # Initialiser cluster (single node pour MVP)
-    kubeadm init \
-        --pod-network-cidr=${POD_NETWORK_CIDR} \
-        --service-cidr=${SERVICE_CIDR} \
-        --ignore-preflight-errors=Swap
+    # Utiliser --cri-socket si containerd est présent, sinon Docker sera détecté automatiquement
+    if command -v containerd &> /dev/null && systemctl is-active --quiet containerd; then
+        echo "Utilisation de containerd comme runtime..."
+        kubeadm init \
+            --pod-network-cidr=${POD_NETWORK_CIDR} \
+            --service-cidr=${SERVICE_CIDR} \
+            --cri-socket=unix:///var/run/containerd/containerd.sock \
+            --ignore-preflight-errors=Swap
+    else
+        echo "Utilisation de Docker comme runtime..."
+        # Pour Kubernetes 1.29+, Docker est supporté via containerd
+        # Mais si containerd n'est pas configuré, installer cri-dockerd
+        if ! command -v cri-dockerd &> /dev/null; then
+            echo "Installation de cri-dockerd pour support Docker..."
+            CRI_DOCKERD_VERSION=$(curl -s https://api.github.com/repos/Mirantis/cri-dockerd/releases/latest | grep tag_name | cut -d '"' -f 4)
+            wget https://github.com/Mirantis/cri-dockerd/releases/download/${CRI_DOCKERD_VERSION}/cri-dockerd_${CRI_DOCKERD_VERSION#v}.amd64.tgz
+            tar xvf cri-dockerd_${CRI_DOCKERD_VERSION#v}.amd64.tgz
+            mv cri-dockerd/cri-dockerd /usr/local/bin/
+            wget https://raw.githubusercontent.com/Mirantis/cri-dockerd/master/packaging/systemd/cri-docker.service
+            wget https://raw.githubusercontent.com/Mirantis/cri-dockerd/master/packaging/systemd/cri-docker.socket
+            mv cri-docker.service /etc/systemd/system/
+            mv cri-docker.socket /etc/systemd/system/
+            systemctl daemon-reload
+            systemctl enable cri-docker.service
+            systemctl enable --now cri-docker.socket
+            systemctl start cri-docker.service
+        fi
+        
+        kubeadm init \
+            --pod-network-cidr=${POD_NETWORK_CIDR} \
+            --service-cidr=${SERVICE_CIDR} \
+            --cri-socket=unix:///var/run/cri-dockerd.sock \
+            --ignore-preflight-errors=Swap
+    fi
 
     # Configurer kubectl
     mkdir -p $HOME/.kube
@@ -259,7 +310,7 @@ if [ "$SKIP_INIT" != "true" ]; then
     chown $(id -u):$(id -g) $HOME/.kube/config
 
     # Permettre pods sur control plane (single node)
-    kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+    kubectl taint nodes --all node-role.kubernetes.io/control-plane- || true
 
     echo "✓ Cluster Kubernetes initialisé"
 fi

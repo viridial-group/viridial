@@ -171,6 +171,43 @@ kubectl apply -f infrastructure/kubernetes/manifests/resource-quotas.yaml
 
 ## 🐛 Troubleshooting
 
+### Erreur: "container runtime is not running" ou "CRI v1 runtime API"
+
+Cette erreur indique que containerd n'est pas correctement configuré.
+
+**Solution rapide:**
+
+```bash
+# Sur le VPS, exécuter le script de correction
+cd /opt/viridial  # ou /root/viridial selon où vous avez cloné
+chmod +x infrastructure/scripts/fix-containerd.sh
+sudo infrastructure/scripts/fix-containerd.sh
+
+# Puis réessayer l'initialisation
+kubeadm init --pod-network-cidr=10.244.0.0/16 --service-cidr=10.96.0.0/12 --ignore-preflight-errors=Swap
+```
+
+**Solution manuelle:**
+
+```bash
+# Configurer containerd
+mkdir -p /etc/containerd
+containerd config default | sudo tee /etc/containerd/config.toml
+
+# Modifier pour systemd cgroup driver
+sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
+
+# Redémarrer containerd
+systemctl restart containerd
+systemctl enable containerd
+
+# Attendre quelques secondes
+sleep 10
+
+# Réessayer kubeadm init
+kubeadm init --pod-network-cidr=10.244.0.0/16 --service-cidr=10.96.0.0/12 --ignore-preflight-errors=Swap
+```
+
 ### Erreur: "kubelet not running"
 
 ```bash
