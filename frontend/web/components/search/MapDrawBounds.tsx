@@ -39,8 +39,9 @@ export default function MapDrawBounds({ onBoundsChange, enabled = true }: MapDra
     }
 
     // Configure draw control - only rectangle for bounding box
+    // Position it on the left to avoid conflict with custom controls on the right
     const drawControl = new L.Control.Draw({
-      position: 'topright',
+      position: 'topleft',
       draw: {
         polygon: false,
         polyline: false,

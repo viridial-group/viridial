@@ -25,8 +25,6 @@ services:
       FRONTEND_URL: ${FRONTEND_URL:-https://viridial.com}
       # Property Service (for nearby search integration)
       PROPERTY_SERVICE_URL: ${PROPERTY_SERVICE_URL:-http://property-service:3001}
-      # Property Service (for nearby search integration)
-      PROPERTY_SERVICE_URL: ${PROPERTY_SERVICE_URL:-http://property-service:3001}
     ports:
       - "3002:3002"
     networks:

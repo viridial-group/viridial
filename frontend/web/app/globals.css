@@ -83,6 +83,23 @@
     --input: var(--color-neutral-700);
     --ring: var(--color-neutral-400);
   }
+
+  /* Modern Input Focus Styles */
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+  }
+
+  /* Smooth Transitions */
+  input,
+  select,
+  textarea,
+  button {
+    transition-property: border-color, background-color, color, box-shadow;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
 }
 
 @layer base {
@@ -263,7 +280,8 @@
 
 /* Leaflet Draw styles */
 .leaflet-draw-toolbar {
-  margin-top: 10px;
+  margin-top: 70px !important; /* Décaler pour éviter le chevauchement avec les contrôles personnalisés */
+  margin-left: 10px !important;
 }
 
 .leaflet-draw-toolbar a {

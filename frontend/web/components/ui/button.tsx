@@ -20,7 +20,7 @@ const buttonVariants = cva(
         warning:
           "bg-[var(--color-warning)] text-white hover:opacity-90",
         outline:
-          "border border-[var(--color-neutral-400)] bg-transparent text-[var(--color-primary)] hover:bg-[var(--color-neutral-200)]",
+          "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all",
         light:
           "bg-[var(--color-neutral-100)] text-[var(--color-primary)] border border-[var(--color-neutral-400)] hover:bg-[var(--color-neutral-200)]",
         ghost: "hover:bg-[var(--color-neutral-200)] hover:text-[var(--color-primary)]",

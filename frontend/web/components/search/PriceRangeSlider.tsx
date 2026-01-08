@@ -94,7 +94,7 @@ export default function PriceRangeSlider({
   return (
     <div className="space-y-3">
       <Label>Fourchette de prix</Label>
-      <div className="px-2">
+      <div className="px-2 py-2">
         <Slider
           value={[localMin, localMax]}
           onValueChange={handleSliderChange}
@@ -104,9 +104,9 @@ export default function PriceRangeSlider({
           className="w-full"
         />
       </div>
-      <div className="flex items-center gap-2">
-        <div className="flex-1">
-          <Label htmlFor="price-min" className="text-xs text-gray-500">
+      <div className="flex items-end gap-2">
+        <div className="flex-1 space-y-1.5">
+          <Label htmlFor="price-min" className="text-xs text-gray-500 font-medium">
             Min
           </Label>
           <Input
@@ -117,11 +117,11 @@ export default function PriceRangeSlider({
             min={min}
             max={localMax}
             placeholder={formatPrice(min)}
-            className="h-9 text-sm"
+            className="h-10 text-sm"
           />
         </div>
-        <div className="flex-1">
-          <Label htmlFor="price-max" className="text-xs text-gray-500">
+        <div className="flex-1 space-y-1.5">
+          <Label htmlFor="price-max" className="text-xs text-gray-500 font-medium">
             Max
           </Label>
           <Input
@@ -132,11 +132,11 @@ export default function PriceRangeSlider({
             min={localMin}
             max={max}
             placeholder={formatPrice(max)}
-            className="h-9 text-sm"
+            className="h-10 text-sm"
           />
         </div>
       </div>
-      <div className="flex items-center justify-between text-xs text-gray-500">
+      <div className="flex items-center justify-between text-xs text-gray-500 font-medium pt-1">
         <span>{formatPrice(localMin)}</span>
         <span>{formatPrice(localMax)}</span>
       </div>

@@ -14,9 +14,9 @@ export class GeolocationService {
 
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    private readonly googleProvider: any, // GoogleProviderService
-    private readonly nominatimProvider: any, // NominatimProviderService
-    private readonly stubProvider: any, // StubProviderService
+    private readonly googleProvider: GoogleProviderService,
+    private readonly nominatimProvider: NominatimProviderService,
+    private readonly stubProvider: StubProviderService,
   ) {
     // Select provider based on environment
     const providerName = process.env.GEOCODING_PROVIDER || 'stub';

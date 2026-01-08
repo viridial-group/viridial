@@ -165,8 +165,8 @@ function SearchPageContent() {
   return (
     <div className="h-screen flex flex-col bg-white overflow-hidden">
       {/* Top Search Bar - Enhanced Google Maps style */}
-      <div className="absolute top-0 left-0 right-0 z-50 bg-white shadow-md">
-        <div className="max-w-[1800px] mx-auto px-4 py-3">
+      <div className="relative z-50 bg-white shadow-md flex-shrink-0">
+        <div className="max-w-[1800px] mx-auto px-4 py-3 relative">
           <div className="flex items-center gap-3">
             {/* Logo/Brand */}
             <Link href="/" className="flex-shrink-0 hidden sm:block">
@@ -175,7 +175,7 @@ function SearchPageContent() {
               </div>
             </Link>
 
-            {/* Enhanced Search Input - Google Maps style */}
+            {/* Enhanced Search Input - Modern clean style */}
             <form onSubmit={handleSubmit} className="flex-1 relative max-w-2xl" ref={searchInputRef as any}>
               <div className="relative">
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
@@ -186,9 +186,9 @@ function SearchPageContent() {
                   onChange={(e) => setQuery(e.target.value)}
                   onFocus={() => setIsSearchFocused(true)}
                   placeholder="Rechercher une propriété, un lieu, une adresse..."
-                  className={`pl-12 pr-12 h-12 text-base border-2 rounded-full shadow-sm transition-all ${
+                  className={`pl-12 pr-12 h-12 text-base border rounded-full shadow-sm transition-all ${
                     isSearchFocused
-                      ? 'border-green-500 shadow-lg'
+                      ? 'border-green-500 ring-2 ring-green-500 shadow-md'
                       : 'border-gray-300 hover:border-gray-400'
                   }`}
                 />
@@ -217,9 +217,9 @@ function SearchPageContent() {
 
               {/* Enhanced Suggestions dropdown */}
               {isSearchFocused && suggestions && suggestions.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-2xl border border-gray-200 z-50 max-h-[400px] overflow-y-auto">
-                  <div className="p-2">
-                    <div className="text-xs font-semibold text-gray-500 px-3 py-2 uppercase">
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-300 z-50 max-h-[400px] overflow-y-auto">
+                  <div className="p-1">
+                    <div className="text-xs font-semibold text-gray-500 px-3 py-2 uppercase tracking-wide">
                       Suggestions
                     </div>
                     {suggestions.map((suggestion, index) => (
@@ -227,18 +227,18 @@ function SearchPageContent() {
                         key={index}
                         type="button"
                         onClick={() => handleSuggestionClick(suggestion)}
-                        className="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center gap-3 rounded-md transition-colors group"
+                        className="w-full px-3 py-2.5 text-left hover:bg-gray-50 flex items-center gap-3 rounded-md transition-colors group border-b border-gray-100 last:border-b-0"
                       >
-                        <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-green-100 transition-colors">
+                        <div className="flex-shrink-0 w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-green-100 transition-colors">
                           <Search className="h-4 w-4 text-gray-500 group-hover:text-green-600" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="font-medium text-gray-900 truncate">{suggestion.title || 'Suggestion'}</div>
+                          <div className="font-medium text-gray-900 truncate text-sm">{suggestion.title || 'Suggestion'}</div>
                           {suggestion.city && (
-                            <div className="text-sm text-gray-500">{suggestion.city}</div>
+                            <div className="text-xs text-gray-500 mt-0.5">{suggestion.city}</div>
                           )}
                         </div>
-                        <ChevronRight className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                        <ChevronRight className="h-4 w-4 text-gray-400 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
                       </button>
                     ))}
                   </div>
@@ -247,10 +247,10 @@ function SearchPageContent() {
 
               {/* No suggestions message */}
               {isSearchFocused && query.length >= 2 && !isLoading && suggestions && suggestions.length === 0 && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-2xl border border-gray-200 z-50 p-4 text-center text-gray-500">
-                  <Search className="h-8 w-8 mx-auto mb-2 text-gray-300" />
-                  <p>Aucune suggestion trouvée</p>
-                  <p className="text-sm">Appuyez sur Entrée pour rechercher</p>
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-300 z-50 p-6 text-center text-gray-500">
+                  <Search className="h-8 w-8 mx-auto mb-3 text-gray-300" />
+                  <p className="text-sm font-medium text-gray-700 mb-1">Aucune suggestion trouvée</p>
+                  <p className="text-xs text-gray-500">Appuyez sur Entrée pour rechercher</p>
                 </div>
               )}
             </form>
@@ -319,42 +319,33 @@ function SearchPageContent() {
               </Button>
             )}
 
-            {/* Saved Searches */}
-            <div className="relative">
-              <SavedSearches
-                onLoadSearch={(savedQuery, savedFilters, savedOptions) => {
-                  setQuery(savedQuery);
-                  updateFilters(savedFilters);
-                  if (savedOptions) {
-                    setSearchOptions(savedOptions);
-                  }
-                  search(savedQuery, savedFilters, savedOptions);
-                }}
-              />
-            </div>
-
-            {/* Draw Bounds Toggle */}
+            {/* Draw Zone Button */}
             <Button
               type="button"
               variant={drawBoundsEnabled ? 'default' : 'outline'}
               onClick={() => {
                 setDrawBoundsEnabled(!drawBoundsEnabled);
-                if (!drawBoundsEnabled) {
-                  // Clear bounds filter when disabling
+                if (drawBoundsEnabled && mapBounds) {
+                  // Clear bounds when disabling
                   setMapBounds(null);
-                  updateFilters({ 
-                    northEastLat: undefined,
-                    northEastLng: undefined,
-                    southWestLat: undefined,
-                    southWestLng: undefined,
-                  });
+                  const { northEastLat, northEastLng, southWestLat, southWestLng, ...restFilters } = filters;
+                  updateFilters(restFilters);
                 }
               }}
               className="flex items-center gap-2 rounded-full"
               title={drawBoundsEnabled ? 'Désactiver le dessin de zone' : 'Dessiner une zone de recherche'}
             >
-              <Square className="h-4 w-4" />
-              <span className="hidden sm:inline">Zone</span>
+              {drawBoundsEnabled ? (
+                <>
+                  <CheckSquare className="h-4 w-4" />
+                  <span className="hidden sm:inline">Zone active</span>
+                </>
+              ) : (
+                <>
+                  <Square className="h-4 w-4" />
+                  <span className="hidden sm:inline">Dessiner zone</span>
+                </>
+              )}
             </Button>
 
             {/* Locate Me Button */}
@@ -389,53 +380,6 @@ function SearchPageContent() {
             >
               <Crosshair className="h-4 w-4" />
               <span className="hidden sm:inline">Moi</span>
-            </Button>
-
-            {/* Save Search Button */}
-            {results && results.totalHits > 0 && (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  const name = prompt('Nom de la recherche (optionnel) :') || '';
-                  saveSearch(name, query, filters, searchOptions);
-                  alert('Recherche sauvegardée !');
-                }}
-                className="flex items-center gap-2 rounded-full"
-                title="Sauvegarder cette recherche"
-              >
-                <Star className="h-4 w-4" />
-                <span className="hidden sm:inline">Sauver</span>
-              </Button>
-            )}
-
-            {/* Draw Zone Button */}
-            <Button
-              type="button"
-              variant={drawBoundsEnabled ? 'default' : 'outline'}
-              onClick={() => {
-                setDrawBoundsEnabled(!drawBoundsEnabled);
-                if (drawBoundsEnabled && mapBounds) {
-                  // Clear bounds when disabling
-                  setMapBounds(null);
-                  const { latitude, longitude, radiusKm, ...restFilters } = filters;
-                  updateFilters(restFilters);
-                }
-              }}
-              className="flex items-center gap-2 rounded-full"
-              title={drawBoundsEnabled ? 'Désactiver le dessin de zone' : 'Dessiner une zone de recherche'}
-            >
-              {drawBoundsEnabled ? (
-                <>
-                  <CheckSquare className="h-4 w-4" />
-                  <span className="hidden sm:inline">Zone active</span>
-                </>
-              ) : (
-                <>
-                  <Square className="h-4 w-4" />
-                  <span className="hidden sm:inline">Dessiner zone</span>
-                </>
-              )}
             </Button>
 
             {/* Filter Toggle Button - Enhanced */}
@@ -491,9 +435,9 @@ function SearchPageContent() {
 
           {/* Enhanced Filters Panel */}
           {showFilters && (
-            <div className="mt-4 pt-4 border-t border-gray-200 animate-in slide-in-from-top-2 duration-200">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                <div>
+            <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-50 p-5 animate-in slide-in-from-top-2 duration-200 max-h-[calc(100vh-200px)] overflow-y-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+                <div className="space-y-1.5">
                   <Label htmlFor="type">Type</Label>
                   <Select
                     value={filters.type || 'all'}
@@ -515,7 +459,7 @@ function SearchPageContent() {
                   </Select>
                 </div>
 
-                <div>
+                <div className="space-y-1.5">
                   <Label htmlFor="country">Pays</Label>
                   <Input
                     id="country"
@@ -525,7 +469,7 @@ function SearchPageContent() {
                   />
                 </div>
 
-                <div>
+                <div className="space-y-1.5">
                   <Label htmlFor="city">Ville</Label>
                   <Input
                     id="city"
@@ -643,7 +587,7 @@ function SearchPageContent() {
       </div>
 
       {/* Main Content Area - Map + Results */}
-      <div className={`flex-1 flex ${isMockMode ? 'pt-24 md:pt-28' : 'pt-16 md:pt-20'} overflow-hidden`}>
+      <div className="flex-1 flex overflow-hidden">
         {/* Results Panel - Left Side with smooth transitions */}
         {showResultsPanel && (
           <div 
