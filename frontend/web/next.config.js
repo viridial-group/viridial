@@ -12,6 +12,18 @@ const nextConfig = {
     maxInactiveAge: 25 * 1000,
     pagesBufferLength: 2,
   },
+  // Webpack configuration for Leaflet
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+      };
+    }
+    return config;
+  },
+  // Handle Leaflet CSS imports
+  transpilePackages: ['leaflet', 'react-leaflet'],
 }
 
 module.exports = nextConfig

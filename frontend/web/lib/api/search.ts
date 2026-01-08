@@ -33,6 +33,11 @@ export interface SearchFilters {
   latitude?: number;
   longitude?: number;
   radiusKm?: number;
+  // Bounding box for drawn area on map
+  northEastLat?: number;
+  northEastLng?: number;
+  southWestLat?: number;
+  southWestLng?: number;
 }
 
 export interface SearchOptions {
@@ -44,7 +49,7 @@ export interface SearchOptions {
 
 export interface SearchResult {
   hits: PropertySearchHit[];
-  total: number;
+  totalHits: number; // Changed from 'total' to match API response
   limit: number;
   offset: number;
   processingTimeMs?: number;
@@ -73,25 +78,36 @@ export interface PropertySearchHit {
   region: string | null;
   country: string | null;
   mediaUrls: string[] | null;
-  translations: {
+  // Flattened translation fields for easier access (from Meilisearch)
+  title_fr?: string;
+  title_en?: string;
+  description_fr?: string;
+  description_en?: string;
+  // Original translations array (if available)
+  translations?: {
     language: string;
     title: string;
     description?: string;
     metaTitle?: string;
     metaDescription?: string;
   }[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
   // Meilisearch specific fields
   _formatted?: {
-    'translations.title'?: string;
-    'translations.description'?: string;
+    title_fr?: string;
+    title_en?: string;
+    description_fr?: string;
+    description_en?: string;
   };
   _matchesPosition?: {
-    'translations.title'?: Array<{ start: number; length: number }>;
-    'translations.description'?: Array<{ start: number; length: number }>;
+    title_fr?: Array<{ start: number; length: number }>;
+    title_en?: Array<{ start: number; length: number }>;
   };
 }
+
+// Alias for convenience
+export type PropertySearchResult = PropertySearchHit;
 
 export interface SearchSuggestion {
   id: string;
@@ -109,9 +125,11 @@ export interface SearchFacets {
 
 export class SearchService {
   private baseUrl: string;
+  private useMock: boolean;
 
-  constructor(baseUrl: string = SEARCH_API_URL) {
+  constructor(baseUrl: string = SEARCH_API_URL, useMock: boolean = false) {
     this.baseUrl = baseUrl;
+    this.useMock = useMock || process.env.NEXT_PUBLIC_USE_MOCK_SEARCH === 'true';
   }
 
   /**
@@ -123,6 +141,11 @@ export class SearchService {
     filters: SearchFilters = {},
     options: SearchOptions = {},
   ): Promise<SearchResult> {
+    // Use mock data if enabled
+    if (this.useMock) {
+      const { mockSearch } = await import('@/lib/mocks/search-mock-data');
+      return mockSearch(query, filters, { ...options, sortBy: options.sort?.[0] || 'relevance' });
+    }
     const params = new URLSearchParams();
     
     if (query) params.append('q', query);
@@ -200,6 +223,17 @@ export class SearchService {
   ): Promise<SearchSuggestion[]> {
     if (!query || query.trim().length === 0) {
       return [];
+    }
+
+    // Use mock data if enabled
+    if (this.useMock) {
+      const { mockSuggestionsCall } = await import('@/lib/mocks/search-mock-data');
+      const suggestions = await mockSuggestionsCall(query);
+      return suggestions.map((s, idx) => ({
+        id: `mock-${idx}`,
+        title: s.title,
+        city: s.city,
+      }));
     }
 
     const params = new URLSearchParams();

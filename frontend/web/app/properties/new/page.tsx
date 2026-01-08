@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   Card,
   CardContent,
@@ -140,13 +140,18 @@ export default function NewPropertyPage() {
                 <CardContent className="space-y-4">
                   <div>
                     <Label htmlFor="type">Type de propriété *</Label>
-                    <Select id="type" value={type} onChange={(e) => setType(e.target.value as PropertyType)} required>
-                      <option value={PropertyType.APARTMENT}>Appartement</option>
-                      <option value={PropertyType.HOUSE}>Maison</option>
-                      <option value={PropertyType.VILLA}>Villa</option>
-                      <option value={PropertyType.LAND}>Terrain</option>
-                      <option value={PropertyType.COMMERCIAL}>Commercial</option>
-                      <option value={PropertyType.OTHER}>Autre</option>
+                    <Select value={type} onValueChange={(value) => setType(value as PropertyType)}>
+                      <SelectTrigger id="type">
+                        <SelectValue placeholder="Sélectionner un type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={PropertyType.APARTMENT}>Appartement</SelectItem>
+                        <SelectItem value={PropertyType.HOUSE}>Maison</SelectItem>
+                        <SelectItem value={PropertyType.VILLA}>Villa</SelectItem>
+                        <SelectItem value={PropertyType.LAND}>Terrain</SelectItem>
+                        <SelectItem value={PropertyType.COMMERCIAL}>Commercial</SelectItem>
+                        <SelectItem value={PropertyType.OTHER}>Autre</SelectItem>
+                      </SelectContent>
                     </Select>
                   </div>
 
@@ -166,10 +171,15 @@ export default function NewPropertyPage() {
                     </div>
                     <div>
                       <Label htmlFor="currency">Devise</Label>
-                      <Select id="currency" value={currency} onChange={(e) => setCurrency(e.target.value)}>
-                        <option value="EUR">EUR (€)</option>
-                        <option value="USD">USD ($)</option>
-                        <option value="GBP">GBP (£)</option>
+                      <Select value={currency} onValueChange={(value) => setCurrency(value)}>
+                        <SelectTrigger id="currency">
+                          <SelectValue placeholder="Sélectionner une devise" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="EUR">EUR (€)</SelectItem>
+                          <SelectItem value="USD">USD ($)</SelectItem>
+                          <SelectItem value="GBP">GBP (£)</SelectItem>
+                        </SelectContent>
                       </Select>
                     </div>
                   </div>
@@ -246,11 +256,16 @@ export default function NewPropertyPage() {
                 <CardContent className="space-y-4">
                   <div>
                     <Label htmlFor="language">Langue *</Label>
-                    <Select id="language" value={language} onChange={(e) => setLanguage(e.target.value)} required>
-                      <option value="fr">Français</option>
-                      <option value="en">English</option>
-                      <option value="es">Español</option>
-                      <option value="de">Deutsch</option>
+                    <Select value={language} onValueChange={(value) => setLanguage(value)}>
+                      <SelectTrigger id="language">
+                        <SelectValue placeholder="Sélectionner une langue" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="fr">Français</SelectItem>
+                        <SelectItem value="en">English</SelectItem>
+                        <SelectItem value="es">Español</SelectItem>
+                        <SelectItem value="de">Deutsch</SelectItem>
+                      </SelectContent>
                     </Select>
                   </div>
 
