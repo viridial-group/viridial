@@ -107,7 +107,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-[var(--color-neutral-200)] text-foreground;
+    @apply bg-gray-50 text-foreground;
     font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
 }

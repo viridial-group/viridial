@@ -332,7 +332,7 @@ function SearchPageContent() {
                   updateFilters(restFilters);
                 }
               }}
-              className="flex items-center gap-2 rounded-full"
+              className="flex items-center gap-2 border-gray-300 hover:bg-gray-50"
               title={drawBoundsEnabled ? 'Désactiver le dessin de zone' : 'Dessiner une zone de recherche'}
             >
               {drawBoundsEnabled ? (
@@ -375,7 +375,7 @@ function SearchPageContent() {
                   }
                 );
               }}
-              className="flex items-center gap-2 rounded-full"
+              className="flex items-center gap-2 border-gray-300 hover:bg-gray-50"
               title="Rechercher autour de moi"
             >
               <Crosshair className="h-4 w-4" />
@@ -387,27 +387,27 @@ function SearchPageContent() {
               type="button"
               variant={showFilters ? 'default' : 'outline'}
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 rounded-full relative"
+              className={`flex items-center gap-2 relative ${showFilters ? 'bg-green-600 hover:bg-green-700 text-white border-green-600' : 'border-gray-300 hover:bg-gray-50'}`}
             >
               <Filter className="h-4 w-4" />
               <span className="hidden sm:inline">Filtres</span>
               {activeFiltersCount > 0 && (
-                <Badge className="ml-1 h-5 w-5 p-0 flex items-center justify-center text-xs bg-green-600 text-white">
+                <Badge className={`ml-1 h-5 w-5 p-0 flex items-center justify-center text-xs ${showFilters ? 'bg-white text-green-600' : 'bg-green-600 text-white'}`}>
                   {activeFiltersCount}
                 </Badge>
               )}
             </Button>
 
             {/* View Toggle Button - Desktop */}
-            <div className="hidden md:flex items-center gap-1 bg-gray-100 rounded-full p-1">
+            <div className="hidden md:flex items-center gap-1 bg-white border border-gray-300 rounded-md p-1">
               <Button
                 type="button"
                 variant={showResultsPanel ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => setShowResultsPanel(true)}
-                className="rounded-full"
+                className={`h-9 ${showResultsPanel ? 'bg-green-600 hover:bg-green-700 text-white' : 'hover:bg-gray-50'}`}
               >
-                <List className="h-4 w-4 mr-1" />
+                <List className="h-4 w-4 mr-1.5" />
                 Liste
               </Button>
               <Button
@@ -415,9 +415,9 @@ function SearchPageContent() {
                 variant={!showResultsPanel ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => setShowResultsPanel(false)}
-                className="rounded-full"
+                className={`h-9 ${!showResultsPanel ? 'bg-green-600 hover:bg-green-700 text-white' : 'hover:bg-gray-50'}`}
               >
-                <Map className="h-4 w-4 mr-1" />
+                <Map className="h-4 w-4 mr-1.5" />
                 Carte
               </Button>
             </div>
@@ -596,10 +596,10 @@ function SearchPageContent() {
             }`}
           >
             {/* Enhanced Results Header */}
-            <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white sticky top-0 z-10">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <h2 className="text-lg font-semibold text-gray-900">
+            <div className="p-5 border-b border-gray-200 bg-white sticky top-0 z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <h2 className="text-base font-semibold text-gray-900">
                     {isLoading ? (
                       <span className="flex items-center gap-2">
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600"></div>
@@ -610,7 +610,7 @@ function SearchPageContent() {
                     )}
                   </h2>
                   {results && results.totalHits > 0 && (
-                    <Badge variant="secondary" className="text-xs font-semibold">
+                    <Badge variant="secondary" className="text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-300">
                       {results.totalHits}
                     </Badge>
                   )}
@@ -620,29 +620,29 @@ function SearchPageContent() {
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowResultsPanel(false)}
-                  className="md:hidden"
+                  className="md:hidden hover:bg-gray-100"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
               </div>
               
               {/* Sort & Query Info */}
-              <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center justify-between gap-3">
                 {query && (
-                  <p className="text-sm text-gray-600 flex items-center gap-1 flex-1">
-                    <Search className="h-3 w-3" />
+                  <p className="text-xs text-gray-500 flex items-center gap-1.5 flex-1 font-medium">
+                    <Search className="h-3.5 w-3.5" />
                     <span className="truncate">&quot;{query}&quot;</span>
                   </p>
                 )}
                 <div className="flex items-center gap-2">
                   {/* View Mode Toggle */}
                   {results && results.totalHits > 0 && (
-                    <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
+                    <div className="flex items-center border border-gray-300 rounded-md overflow-hidden bg-white">
                       <Button
                         variant={viewMode === 'list' ? 'default' : 'ghost'}
                         size="sm"
                         onClick={() => setViewMode('list')}
-                        className="h-8 rounded-none border-0"
+                        className={`h-9 rounded-none border-0 ${viewMode === 'list' ? 'bg-green-600 hover:bg-green-700 text-white' : 'hover:bg-gray-50'}`}
                         title="Vue liste"
                       >
                         <List className="h-4 w-4" />
@@ -651,7 +651,7 @@ function SearchPageContent() {
                         variant={viewMode === 'grid' ? 'default' : 'ghost'}
                         size="sm"
                         onClick={() => setViewMode('grid')}
-                        className="h-8 rounded-none border-0"
+                        className={`h-9 rounded-none border-0 ${viewMode === 'grid' ? 'bg-green-600 hover:bg-green-700 text-white' : 'hover:bg-gray-50'}`}
                         title="Vue grille"
                       >
                         <Layers className="h-4 w-4" />
@@ -680,13 +680,13 @@ function SearchPageContent() {
                         search(query, filters, newOptions);
                       }}
                     >
-                      <SelectTrigger className="w-[140px] h-8 text-xs">
-                        <SelectValue />
+                      <SelectTrigger className="w-[160px] h-9 text-sm border-gray-300">
+                        <SelectValue placeholder="Trier par..." />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="relevance">Pertinence</SelectItem>
-                        <SelectItem value="price_asc">Prix croissant</SelectItem>
-                        <SelectItem value="price_desc">Prix décroissant</SelectItem>
+                        <SelectItem value="price_asc">Prix croissant ↑</SelectItem>
+                        <SelectItem value="price_desc">Prix décroissant ↓</SelectItem>
                         {userLocation && <SelectItem value="distance">Distance</SelectItem>}
                       </SelectContent>
                     </Select>
@@ -709,32 +709,32 @@ function SearchPageContent() {
             {/* Results List with enhanced scroll */}
             <div className="flex-1 overflow-y-auto custom-scrollbar">
               {error && (
-                <div className="m-4 p-4 text-red-700 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
-                  <X className="h-5 w-5 flex-shrink-0" />
-                  <div>
-                    <p className="font-medium">Erreur de recherche</p>
-                    <p className="text-sm">{error}</p>
+                <div className="m-5 p-4 text-red-700 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
+                  <X className="h-5 w-5 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="font-semibold text-sm mb-1">Erreur de recherche</p>
+                    <p className="text-xs text-red-600">{error}</p>
                   </div>
                 </div>
               )}
 
               {!isLoading && results && results.hits.length === 0 && (
-                <div className="p-12 text-center text-gray-500">
-                  <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
-                    <Search className="h-10 w-10 text-gray-300" />
+                <div className="p-16 text-center">
+                  <div className="w-24 h-24 mx-auto mb-5 rounded-full bg-gray-100 flex items-center justify-center border border-gray-200">
+                    <Search className="h-12 w-12 text-gray-400" />
                   </div>
-                  <p className="text-lg font-medium mb-2">Aucun résultat trouvé</p>
-                  <p className="text-sm mb-4">Essayez de modifier vos critères de recherche</p>
-                  <Button variant="outline" onClick={clearFilters}>
+                  <p className="text-base font-semibold text-gray-900 mb-2">Aucun résultat trouvé</p>
+                  <p className="text-sm text-gray-500 mb-6">Essayez de modifier vos critères de recherche</p>
+                  <Button variant="outline" onClick={clearFilters} className="border-gray-300">
                     Réinitialiser les filtres
                   </Button>
                 </div>
               )}
 
               {isLoading && !results && (
-                <div className="p-8 text-center">
-                  <div className="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-green-600 mb-3"></div>
-                  <p className="text-gray-500">Recherche en cours...</p>
+                <div className="p-12 text-center">
+                  <div className="inline-block animate-spin rounded-full h-12 w-12 border-2 border-gray-200 border-t-green-600 mb-4"></div>
+                  <p className="text-sm font-medium text-gray-700">Recherche en cours...</p>
                 </div>
               )}
 
@@ -743,10 +743,10 @@ function SearchPageContent() {
                   {results.hits.map((property, index) => (
                     <Card
                       key={property.id}
-                      className={`${viewMode === 'grid' ? '' : 'm-3'} cursor-pointer transition-all duration-200 hover:shadow-xl hover:scale-[1.01] border-l-4 group ${
+                      className={`${viewMode === 'grid' ? '' : 'mx-3 mb-3'} cursor-pointer transition-all duration-200 hover:shadow-lg border border-gray-200 group bg-white ${
                         selectedProperty?.id === property.id
-                          ? 'border-green-500 bg-green-50 shadow-md ring-2 ring-green-200 scale-[1.02]'
-                          : 'border-transparent hover:border-green-200'
+                          ? 'border-green-500 shadow-md ring-1 ring-green-500'
+                          : 'hover:border-gray-300'
                       }`}
                       onClick={() => setSelectedProperty(property)}
                       style={{ 
@@ -777,10 +777,10 @@ function SearchPageContent() {
                             </div>
                           )}
                           {/* Status badge on image */}
-                          <div className="absolute top-2 right-2">
+                          <div className="absolute top-3 right-3">
                             <Badge 
                               variant={getStatusBadgeVariant(property.status)}
-                              className="capitalize backdrop-blur-sm bg-white/90"
+                              className="capitalize backdrop-blur-sm bg-white/95 border border-gray-200 shadow-sm text-xs font-semibold"
                             >
                               {property.status}
                             </Badge>
@@ -788,47 +788,47 @@ function SearchPageContent() {
                         </div>
 
                         {/* Property Info */}
-                        <div className="p-4 space-y-3">
+                        <div className="p-5 space-y-3">
                           <div>
-                            <h3 className="font-semibold text-lg text-gray-900 line-clamp-2 mb-1 group-hover:text-green-600 transition-colors">
+                            <h3 className="font-semibold text-base text-gray-900 line-clamp-2 mb-2 group-hover:text-green-600 transition-colors leading-tight">
                               {property.title_fr || property.title_en || 'Sans titre'}
                             </h3>
-                            <div className="flex items-center gap-4 text-sm text-gray-600">
-                              <div className="flex items-center gap-1">
+                            <div className="flex items-center gap-4 text-xs text-gray-500">
+                              <div className="flex items-center gap-1.5">
                                 {propertyTypeIcon(property.type)}
-                                <span className="capitalize">{property.type}</span>
+                                <span className="capitalize font-medium">{property.type}</span>
                               </div>
                               {property.city && (
-                                <div className="flex items-center gap-1">
-                                  <MapPin className="h-3 w-3" />
-                                  <span className="truncate">{property.city}</span>
+                                <div className="flex items-center gap-1.5">
+                                  <MapPin className="h-3.5 w-3.5" />
+                                  <span className="truncate font-medium">{property.city}</span>
                                 </div>
                               )}
                             </div>
                           </div>
 
-                          <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-                            <div className="flex items-center gap-1">
+                          {property.description_fr && (
+                            <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed">
+                              {property.description_fr}
+                            </p>
+                          )}
+
+                          <div className="flex items-center justify-between pt-3 border-t border-gray-200">
+                            <div className="flex items-center gap-2">
                               <DollarSign className="h-5 w-5 text-green-600" />
-                              <span className="text-xl font-bold text-green-600">
+                              <span className="text-xl font-bold text-gray-900">
                                 {formatPrice(property.price, property.currency)}
                               </span>
                             </div>
                             <Link
                               href={`/properties/${property.id}`}
-                              className="inline-flex items-center gap-1 text-sm font-medium text-green-600 hover:text-green-700 transition-colors"
+                              className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-700 hover:text-green-600 transition-colors px-3 py-1.5 rounded-md hover:bg-gray-50"
                               onClick={(e) => e.stopPropagation()}
                             >
-                              Détails
+                              Voir détails
                               <ChevronRight className="h-4 w-4" />
                             </Link>
                           </div>
-
-                          {property.description_fr && (
-                            <p className="text-sm text-gray-600 line-clamp-2">
-                              {property.description_fr}
-                            </p>
-                          )}
                         </div>
                       </CardContent>
                     </Card>
@@ -838,18 +838,16 @@ function SearchPageContent() {
 
               {/* Enhanced Pagination */}
               {!isLoading && results && results.totalHits > (results.limit || 20) && (
-                <div className="p-4 border-t border-gray-200 bg-gray-50 sticky bottom-0">
-                  <div className="flex items-center justify-between text-sm text-gray-600 mb-3">
-                    <span className="font-medium">
-                      Page {Math.floor(results.offset / results.limit) + 1} sur{' '}
-                      {Math.ceil(results.totalHits / results.limit)}
+                <div className="p-5 border-t border-gray-200 bg-white sticky bottom-0">
+                  <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
+                    <span className="font-medium text-gray-700">
+                      Affichage de {results.offset + 1} à {Math.min(results.offset + results.limit, results.totalHits)} sur {results.totalHits} résultats
                     </span>
-                    <span className="text-gray-500">
-                      {results.offset + 1}-{Math.min(results.offset + results.limit, results.totalHits)} sur{' '}
-                      {results.totalHits}
+                    <span className="font-medium">
+                      Page {Math.floor(results.offset / results.limit) + 1} sur {Math.ceil(results.totalHits / results.limit)}
                     </span>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex items-center justify-center gap-2">
                     <Button
                       variant="outline"
                       size="sm"
@@ -859,11 +857,66 @@ function SearchPageContent() {
                         setSearchOptions((prev) => ({ ...prev, offset: newOffset }));
                         search();
                       }}
-                      className="flex-1"
+                      className="h-9 px-4 border-gray-300"
                     >
                       <ChevronLeft className="h-4 w-4 mr-1" />
                       Précédent
                     </Button>
+                    
+                    {/* Page Numbers */}
+                    <div className="flex items-center gap-1">
+                      {Array.from({ length: Math.min(5, Math.ceil(results.totalHits / results.limit)) }, (_, i) => {
+                        const currentPage = Math.floor(results.offset / results.limit) + 1;
+                        const totalPages = Math.ceil(results.totalHits / results.limit);
+                        let pageNum: number;
+                        
+                        if (totalPages <= 5) {
+                          pageNum = i + 1;
+                        } else if (currentPage <= 3) {
+                          pageNum = i + 1;
+                        } else if (currentPage >= totalPages - 2) {
+                          pageNum = totalPages - 4 + i;
+                        } else {
+                          pageNum = currentPage - 2 + i;
+                        }
+                        
+                        const isActive = pageNum === currentPage;
+                        
+                        return (
+                          <Button
+                            key={pageNum}
+                            variant={isActive ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => {
+                              const newOffset = (pageNum - 1) * (results.limit || 20);
+                              setSearchOptions((prev) => ({ ...prev, offset: newOffset }));
+                              search();
+                            }}
+                            className={`h-9 w-9 p-0 ${isActive ? 'bg-green-600 hover:bg-green-700 text-white border-green-600' : 'border-gray-300'}`}
+                          >
+                            {pageNum}
+                          </Button>
+                        );
+                      })}
+                      {Math.ceil(results.totalHits / results.limit) > 5 && (
+                        <>
+                          <span className="px-2 text-gray-400">...</span>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              const newOffset = (Math.ceil(results.totalHits / results.limit) - 1) * (results.limit || 20);
+                              setSearchOptions((prev) => ({ ...prev, offset: newOffset }));
+                              search();
+                            }}
+                            className="h-9 w-9 p-0 border-gray-300"
+                          >
+                            {Math.ceil(results.totalHits / results.limit)}
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                    
                     <Button
                       variant="outline"
                       size="sm"
@@ -873,7 +926,7 @@ function SearchPageContent() {
                         setSearchOptions((prev) => ({ ...prev, offset: newOffset }));
                         search();
                       }}
-                      className="flex-1"
+                      className="h-9 px-4 border-gray-300"
                     >
                       Suivant
                       <ChevronRight className="h-4 w-4 ml-1" />
