@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  geolocation-service:
+    build:
+      context: ../../services/geolocation-service
+      dockerfile: Dockerfile
+    image: viridial/geolocation-service:latest
+    container_name: viridial-geolocation-service
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3002
+      # Redis for caching
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      # Geocoding provider: 'google', 'nominatim', or 'stub'
+      GEOCODING_PROVIDER: ${GEOCODING_PROVIDER:-stub}
+      # Google Maps API key (required if provider is 'google')
+      GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY:-}
+      # Nominatim base URL (optional, defaults to official service)
+      NOMINATIM_BASE_URL: ${NOMINATIM_BASE_URL:-https://nominatim.openstreetmap.org}
+      # Cache TTL in seconds (default: 24 hours)
+      GEOCODING_CACHE_TTL: ${GEOCODING_CACHE_TTL:-86400}
+      # Frontend URL for CORS
+      FRONTEND_URL: ${FRONTEND_URL:-https://viridial.com}
+      # Property Service (for nearby search integration)
+      PROPERTY_SERVICE_URL: ${PROPERTY_SERVICE_URL:-http://property-service:3001}
+      # Property Service (for nearby search integration)
+      PROPERTY_SERVICE_URL: ${PROPERTY_SERVICE_URL:-http://property-service:3001}
+    ports:
+      - "3002:3002"
+    networks:
+      - viridial-network
+    depends_on:
+      - redis
+    # Health check
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3002/geolocation/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  redis:
+    image: redis:7-alpine
+    container_name: viridial-redis-geolocation
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-geolocation-data:/data
+    networks:
+      - viridial-network
+    # Health check
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    # Note: In production, use external Redis from shared infrastructure
+
+volumes:
+  redis-geolocation-data:
+
+networks:
+  viridial-network:
+    external: true
+
+# Note:
+# - Geolocation service uses Redis for caching geocode results
+# - Provider can be configured via GEOCODING_PROVIDER env var
+# - For production, use 'google' or 'nominatim' provider (stub is for development only)
+# - Google provider requires GOOGLE_MAPS_API_KEY
+# - Nominatim has rate limits (1 req/sec) - caching is essential
+

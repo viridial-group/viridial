@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import {
@@ -48,21 +49,45 @@ export default function DashboardPage() {
           </Button>
         </div>
 
-        <Card className="bg-[var(--color-neutral-100)]">
-          <CardHeader>
-            <CardTitle className="text-[var(--color-primary)]">
-              Bienvenue sur Viridial
-            </CardTitle>
-            <CardDescription className="text-[var(--color-muted)]">
-              Vous êtes connecté avec succès !
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-[var(--color-muted)]">
-              Cette page est protégée par authentification. Vous pouvez maintenant accéder aux fonctionnalités de la plateforme.
-            </p>
-          </CardContent>
-        </Card>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <Card className="bg-[var(--color-neutral-100)]">
+            <CardHeader>
+              <CardTitle className="text-[var(--color-primary)]">
+                Bienvenue sur Viridial
+              </CardTitle>
+              <CardDescription className="text-[var(--color-muted)]">
+                Vous êtes connecté avec succès !
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-[var(--color-muted)] mb-4">
+                Gérez vos propriétés immobilières depuis votre tableau de bord.
+              </p>
+              <Link href="/properties">
+                <Button className="w-full">Mes Propriétés</Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-[var(--color-neutral-100)]">
+            <CardHeader>
+              <CardTitle className="text-[var(--color-primary)]">
+                Actions rapides
+              </CardTitle>
+              <CardDescription className="text-[var(--color-muted)]">
+                Accès rapide aux fonctionnalités
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <Link href="/properties/new">
+                <Button variant="outline" className="w-full">+ Nouvelle Propriété</Button>
+              </Link>
+              <Link href="/properties">
+                <Button variant="outline" className="w-full">Voir toutes mes propriétés</Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

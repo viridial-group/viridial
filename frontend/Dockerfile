@@ -19,6 +19,8 @@ COPY web ./
 # Build time environment variables
 ARG NEXT_PUBLIC_AUTH_API_URL
 ENV NEXT_PUBLIC_AUTH_API_URL=${NEXT_PUBLIC_AUTH_API_URL}
+ARG NEXT_PUBLIC_PROPERTY_API_URL
+ENV NEXT_PUBLIC_PROPERTY_API_URL=${NEXT_PUBLIC_PROPERTY_API_URL}
 
 RUN corepack enable && corepack prepare pnpm@latest --activate
 RUN pnpm build

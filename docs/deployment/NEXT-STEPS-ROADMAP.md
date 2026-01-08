@@ -6,48 +6,73 @@ Document récapitulatif des prochaines étapes à suivre après la configuration
 
 1. ✅ **Auth Service** - Déployé et fonctionnel (inscription, login, email verification)
 2. ✅ **Frontend** - Déployé avec HTTPS sur viridial.com
-3. ✅ **Property Service** - Structure complète créée (pas encore déployé)
-4. ✅ **Configuration .env** - Système centralisé avec script `setup-env.sh`
+3. ✅ **Property Service** - Structure complète créée avec géocodage automatique
+4. ✅ **Geolocation Service** - Implémenté avec support Google/Nominatim/Stub
+5. ✅ **Intégration Geolocation ↔ Property** - Géocodage automatique et recherche proximité complétés
+6. ✅ **Configuration .env** - Système centralisé avec script `setup-env.sh`
 
 ## 🎯 Actions Immédiates (Priorité 1)
 
-### Option A: Finaliser le Property Service (Recommandé)
+### Option A: Déployer Property & Geolocation Services ✅ RECOMMANDÉ
 
-Le Property Service est créé mais nécessite :
+**Services prêts à déployer :**
+- ✅ Geolocation Service - Implémenté avec géocodage automatique
+- ✅ Property Service - Implémenté avec intégration geocoding
+- ✅ Scripts de déploiement créés
+- ✅ Configuration .env centralisée
 
-1. **Déployer le Service**
+**Étapes de déploiement :**
+
+1. **Préparer les variables d'environnement**
    ```bash
-   # Sur le VPS
-   ssh root@148.230.112.148
-   cd /opt/viridial
-   
-   # Configurer .env si pas déjà fait
    ./scripts/setup-env.sh
-   
-   # Appliquer les migrations SQL
+   ```
+
+2. **Déployer Geolocation Service**
+   ```bash
+   ./scripts/deploy-geolocation-service-vps.sh
+   ```
+
+3. **Appliquer migrations SQL pour Property Service**
+   ```bash
    psql $DATABASE_URL < services/property-service/src/migrations/create-properties-tables.sql
-   
-   # Déployer via Docker (bypass npm install local)
+   ```
+
+4. **Déployer Property Service**
+   ```bash
    ./scripts/deploy-property-service-vps.sh
    ```
 
-2. **Tester le Service**
-   ```bash
-   curl https://viridial.com/properties/health
-   # Devrait retourner: {"status":"ok","service":"property-service"}
-   ```
-
-3. **Implémenter l'Authentification JWT** (Haute Priorité)
-   - Les endpoints sont actuellement ouverts
-   - Créer un JWT guard réutilisable
-   - Intégrer avec auth-service pour vérifier les tokens
+5. **Tester l'intégration**
+   - Voir `docs/deployment/DEPLOY-SERVICES-GUIDE.md` pour les tests détaillés
 
 **Avantages:**
-- Complète US-007 (Properties CRUD)
-- Permet de continuer avec US-009 (Search) qui dépend de US-007
-- Le build Docker bypass les problèmes npm locaux
+- Complète US-007 (Properties CRUD) et US-019 (Geolocation)
+- Géocodage automatique fonctionnel
+- Recherche proximité opérationnelle
+- Prêt pour l'implémentation de l'authentification JWT
 
-### Option B: Implémenter la Géolocalisation (US-019)
+**Guide complet :** `docs/deployment/DEPLOY-SERVICES-GUIDE.md`
+
+### Option B: Déployer les Services Property et Geolocation ✅ COMPLÉTÉ
+
+L'intégration complète entre Property Service et Geolocation Service est maintenant terminée :
+
+**Fonctionnalités implémentées :**
+- ✅ Géocodage automatique lors de création/modification de propriétés
+- ✅ Recherche proximité avec calcul de distance
+- ✅ Cache Redis pour optimiser les performances
+- ✅ Support multi-providers (Google, Nominatim, Stub)
+
+**Prochaines actions :**
+1. Générer les fichiers `.env` avec `setup-env.sh`
+2. Déployer le Geolocation Service
+3. Déployer le Property Service avec migrations SQL
+4. Tester l'intégration complète
+
+Voir `docs/deployment/GEOLOCATION-PROPERTY-INTEGRATION-COMPLETE.md` pour les détails.
+
+### Option C: Implémenter la Recherche (US-009) - Ancienne Option B
 
 Selon les dépendances, US-019 (Géolocalisation) devrait être fait avant US-007, mais comme US-007 est déjà en cours :
 

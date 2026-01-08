@@ -14,12 +14,17 @@ services:
       DATABASE_URL: ${DATABASE_URL}
       # Frontend URL for CORS
       FRONTEND_URL: ${FRONTEND_URL:-https://viridial.com}
+      # JWT Authentication (must match auth-service JWT_ACCESS_SECRET)
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+      # Geolocation Service (for auto-geocoding)
+      GEOLOCATION_SERVICE_URL: ${GEOLOCATION_SERVICE_URL:-http://geolocation-service:3002}
     ports:
       - "3001:3001"
     networks:
       - viridial-network
     depends_on:
       - db
+    # Note: Geolocation Service should be running for auto-geocoding
     # Health check
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3001/properties/health"]

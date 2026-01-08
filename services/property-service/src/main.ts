@@ -28,7 +28,8 @@ async function bootstrap() {
   });
 
   // Set global prefix for API routes
-  app.setGlobalPrefix('properties');
+  // Note: Prefix is set per controller, not globally
+  // app.setGlobalPrefix('properties'); // Commented - controllers already use /properties prefix
 
   // Validation globale des DTOs
   app.useGlobalPipes(

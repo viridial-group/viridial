@@ -40,8 +40,8 @@ export class PropertyTranslationDto {
 
 export class CreatePropertyDto {
   @IsUUID()
-  @IsNotEmpty()
-  userId!: string;
+  @IsOptional() // userId is optional in DTO - will be set from JWT token
+  userId?: string;
 
   @IsEnum(PropertyType)
   @IsNotEmpty()

@@ -68,12 +68,13 @@ if [ "$CHECK_ONLY" = true ]; then
   echo -e "${BLUE}🔍 Vérification des fichiers .env...${NC}"
   echo ""
   
-  ENV_FILES=(
-    ".env"
-    "infrastructure/docker-compose/.env"
-    "services/auth-service/.env"
-    "services/property-service/.env"
-  )
+      ENV_FILES=(
+        ".env"
+        "infrastructure/docker-compose/.env"
+        "services/auth-service/.env"
+        "services/property-service/.env"
+        "services/geolocation-service/.env"
+      )
   
   MISSING=0
   for file in "${ENV_FILES[@]}"; do
@@ -180,6 +181,7 @@ FROM_NAME=${FROM_NAME}
 # Frontend URLs
 FRONTEND_URL=${FRONTEND_URL}
 FRONTEND_AUTH_API_URL=${FRONTEND_AUTH_API_URL:-https://viridial.com}
+FRONTEND_PROPERTY_API_URL=${FRONTEND_PROPERTY_API_URL:-https://viridial.com}
 
 # Redis
 REDIS_URL=${REDIS_URL}
@@ -193,6 +195,19 @@ JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET}
 GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
 GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
 GOOGLE_CALLBACK_URL=${GOOGLE_CALLBACK_URL}
+
+# Geolocation Service
+GEOCODING_PROVIDER=${GEOCODING_PROVIDER:-stub}
+GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY:-}
+NOMINATIM_BASE_URL=${NOMINATIM_BASE_URL:-https://nominatim.openstreetmap.org}
+GEOCODING_CACHE_TTL=${GEOCODING_CACHE_TTL:-86400}
+GEOLOCATION_SERVICE_URL=${GEOLOCATION_SERVICE_URL:-http://geolocation-service:3002}
+
+# Property Service (for Geolocation Service integration)
+PROPERTY_SERVICE_URL=${PROPERTY_SERVICE_URL:-http://property-service:3001}
+GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
+NOMINATIM_BASE_URL=${NOMINATIM_BASE_URL:-https://nominatim.openstreetmap.org}
+GEOCODING_CACHE_TTL=${GEOCODING_CACHE_TTL:-86400}
 
 # Meilisearch
 MEILI_MASTER_KEY=${MEILI_MASTER_KEY}
@@ -268,8 +283,51 @@ DATABASE_URL=${DATABASE_URL}
 
 # Frontend (CORS)
 FRONTEND_URL=${FRONTEND_URL}
+
+# JWT Authentication (must match auth-service JWT_ACCESS_SECRET)
+JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET}
+
+# Geolocation Service (for auto-geocoding)
+GEOLOCATION_SERVICE_URL=${GEOLOCATION_SERVICE_URL:-http://geolocation-service:3002}
 EOF
   echo -e "${GREEN}✅ $PROPERTY_ENV créé/synchronisé${NC}"
+fi
+
+# Geolocation Service
+GEOLOCATION_ENV="services/geolocation-service/.env"
+if [ ! -f "$GEOLOCATION_ENV" ] || [ "$FORCE" = true ]; then
+  cat > "$GEOLOCATION_ENV" <<EOF
+# ========================================
+# Geolocation Service Environment Variables
+# ========================================
+# Généré automatiquement par setup-env.sh depuis .env
+# Date: $(date)
+
+NODE_ENV=${NODE_ENV:-production}
+PORT=3002
+
+# Redis (for caching geocode results)
+REDIS_URL=${REDIS_URL}
+
+# Geocoding Provider: 'google', 'nominatim', or 'stub' (default: stub)
+GEOCODING_PROVIDER=${GEOCODING_PROVIDER:-stub}
+
+# Google Maps API Key (required if provider is 'google')
+GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
+
+# Nominatim base URL (optional, defaults to official service)
+NOMINATIM_BASE_URL=${NOMINATIM_BASE_URL:-https://nominatim.openstreetmap.org}
+
+# Cache TTL in seconds (default: 86400 = 24 hours)
+GEOCODING_CACHE_TTL=${GEOCODING_CACHE_TTL:-86400}
+
+# Frontend (CORS)
+FRONTEND_URL=${FRONTEND_URL}
+
+# Property Service (for nearby search integration)
+PROPERTY_SERVICE_URL=${PROPERTY_SERVICE_URL:-http://property-service:3001}
+EOF
+  echo -e "${GREEN}✅ $GEOLOCATION_ENV créé/synchronisé${NC}"
 fi
 
 echo ""
@@ -298,6 +356,7 @@ echo "   📄 .env (fichier principal - source de vérité)"
 echo "   📄 infrastructure/docker-compose/.env"
 echo "   📄 services/auth-service/.env"
 echo "   📄 services/property-service/.env"
+echo "   📄 services/geolocation-service/.env"
 echo ""
 echo -e "${YELLOW}⚠️  Important:${NC}"
 echo "   - Ne commitez JAMAIS les fichiers .env dans Git!"

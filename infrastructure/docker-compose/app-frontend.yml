@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile
       args:
         NEXT_PUBLIC_AUTH_API_URL: ${FRONTEND_AUTH_API_URL:-https://viridial.com}
+        NEXT_PUBLIC_PROPERTY_API_URL: ${FRONTEND_PROPERTY_API_URL:-https://viridial.com}
     image: viridial/frontend:latest
     container_name: viridial-frontend
     restart: unless-stopped
@@ -13,6 +14,7 @@ services:
       # Use base URL without /auth suffix (auth service appends /auth/login)
       # HTTPS for production
       NEXT_PUBLIC_AUTH_API_URL: ${FRONTEND_AUTH_API_URL:-https://viridial.com}
+      NEXT_PUBLIC_PROPERTY_API_URL: ${FRONTEND_PROPERTY_API_URL:-https://viridial.com}
     ports:
       - "3000:3000"
     networks:
