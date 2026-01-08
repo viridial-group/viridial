@@ -40,6 +40,14 @@ export function Header() {
           </li>
           <li>
             <Link
+              href="/search"
+              className="text-[var(--color-primary)] hover:opacity-70 transition-opacity"
+            >
+              Recherche
+            </Link>
+          </li>
+          <li>
+            <Link
               href="/browse"
               className="text-[var(--color-primary)] hover:opacity-70 transition-opacity"
             >
