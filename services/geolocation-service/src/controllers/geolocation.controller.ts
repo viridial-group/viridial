@@ -130,7 +130,7 @@ export class GeolocationController {
         dto.radiusKm,
         dto.limit || 20,
         dto.offset || 0,
-        'listed', // Default to listed properties only
+        'listed', // Default to listed properties only 
       );
 
       if (!result) {
