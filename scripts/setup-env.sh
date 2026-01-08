@@ -210,6 +210,7 @@ NOMINATIM_BASE_URL=${NOMINATIM_BASE_URL:-https://nominatim.openstreetmap.org}
 GEOCODING_CACHE_TTL=${GEOCODING_CACHE_TTL:-86400}
 
 # Meilisearch
+MEILISEARCH_URL=${MEILISEARCH_URL:-http://meilisearch:7700}
 MEILI_MASTER_KEY=${MEILI_MASTER_KEY}
 EOF
   echo -e "${GREEN}✅ $DOCKER_ENV créé/synchronisé${NC}"
@@ -289,6 +290,9 @@ JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET}
 
 # Geolocation Service (for auto-geocoding)
 GEOLOCATION_SERVICE_URL=${GEOLOCATION_SERVICE_URL:-http://geolocation-service:3002}
+
+# Search Service (for Meilisearch indexing)
+SEARCH_SERVICE_URL=${SEARCH_SERVICE_URL:-http://search-service:3003}
 EOF
   echo -e "${GREEN}✅ $PROPERTY_ENV créé/synchronisé${NC}"
 fi
@@ -330,6 +334,29 @@ EOF
   echo -e "${GREEN}✅ $GEOLOCATION_ENV créé/synchronisé${NC}"
 fi
 
+# Search Service
+SEARCH_ENV="services/search-service/.env"
+if [ ! -f "$SEARCH_ENV" ] || [ "$FORCE" = true ]; then
+  cat > "$SEARCH_ENV" <<EOF
+# ========================================
+# Search Service Environment Variables
+# ========================================
+# Généré automatiquement par setup-env.sh depuis .env
+# Date: $(date)
+
+NODE_ENV=${NODE_ENV:-production}
+PORT=3003
+
+# Meilisearch
+MEILISEARCH_URL=${MEILISEARCH_URL:-http://meilisearch:7700}
+MEILI_MASTER_KEY=${MEILI_MASTER_KEY}
+
+# Frontend (CORS)
+FRONTEND_URL=${FRONTEND_URL}
+EOF
+  echo -e "${GREEN}✅ $SEARCH_ENV créé/synchronisé${NC}"
+fi
+
 echo ""
 echo -e "${GREEN}╔══════════════════════════════════════════════════════════════╗${NC}"
 echo -e "${GREEN}║  ✅ Configuration terminée!                                  ║${NC}"
@@ -357,6 +384,7 @@ echo "   📄 infrastructure/docker-compose/.env"
 echo "   📄 services/auth-service/.env"
 echo "   📄 services/property-service/.env"
 echo "   📄 services/geolocation-service/.env"
+echo "   📄 services/search-service/.env"
 echo ""
 echo -e "${YELLOW}⚠️  Important:${NC}"
 echo "   - Ne commitez JAMAIS les fichiers .env dans Git!"

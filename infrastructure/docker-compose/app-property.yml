@@ -18,6 +18,8 @@ services:
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
       # Geolocation Service (for auto-geocoding)
       GEOLOCATION_SERVICE_URL: ${GEOLOCATION_SERVICE_URL:-http://geolocation-service:3002}
+      # Search Service (for Meilisearch indexing)
+      SEARCH_SERVICE_URL: ${SEARCH_SERVICE_URL:-http://search-service:3003}
     ports:
       - "3001:3001"
     networks:

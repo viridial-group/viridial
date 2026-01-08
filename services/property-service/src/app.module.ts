@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PropertyController } from './controllers/property.controller';
 import { PropertyService } from './services/property.service';
 import { GeolocationClientService } from './services/geolocation-client.service';
+import { SearchIndexService } from './services/search-index.service';
 import { AuthModule } from './auth/auth.module';
 import { Property } from './entities/property.entity';
 import { PropertyTranslation } from './entities/property-translation.entity';
@@ -48,7 +49,7 @@ function parseDatabaseUrl(url?: string) {
     AuthModule, // Import AuthModule for JWT authentication
   ],
   controllers: [PropertyController],
-  providers: [PropertyService, GeolocationClientService],
+  providers: [PropertyService, GeolocationClientService, SearchIndexService],
 })
 export class AppModule {}
 

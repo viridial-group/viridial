@@ -204,6 +204,8 @@ function SignupForm() {
               </Link>
               .
             </p>
+              </>
+            )}
           </div>
         </div>
       </main>

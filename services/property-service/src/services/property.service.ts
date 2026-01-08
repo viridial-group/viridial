@@ -12,6 +12,7 @@ import { PropertyTranslation } from '../entities/property-translation.entity';
 import { CreatePropertyDto } from '../dto/create-property.dto';
 import { UpdatePropertyDto } from '../dto/update-property.dto';
 import { GeolocationClientService } from './geolocation-client.service';
+import { SearchIndexService } from './search-index.service';
 
 @Injectable()
 export class PropertyService {
@@ -23,6 +24,7 @@ export class PropertyService {
     @InjectRepository(PropertyTranslation)
     private translationRepo: Repository<PropertyTranslation>,
     private readonly geolocationClient: GeolocationClientService,
+    private readonly searchIndexService: SearchIndexService,
   ) {}
 
       async create(createDto: CreatePropertyDto, userId: string): Promise<Property> {
@@ -282,11 +284,29 @@ export class PropertyService {
       await this.translationRepo.save(translations);
     }
 
-    return this.findOne(id, userId);
+    const updatedProperty = await this.findOne(id, userId);
+
+    // Re-index if property is LISTED (searchable)
+    if (updatedProperty.status === PropertyStatus.LISTED) {
+      await this.searchIndexService.indexProperty(
+        updatedProperty,
+        updatedProperty.translations,
+      ).catch((error) => {
+        this.logger.warn(`Failed to re-index property ${id} after update: ${error.message}`);
+      });
+    }
+
+    return updatedProperty;
   }
 
   async delete(id: string, userId: string): Promise<void> {
     const property = await this.findOne(id, userId);
+    
+    // Delete from search index
+    await this.searchIndexService.deleteProperty(id).catch((error) => {
+      this.logger.warn(`Failed to delete property ${id} from search index: ${error.message}`);
+    });
+    
     await this.propertyRepo.remove(property);
   }
 
@@ -333,10 +353,17 @@ export class PropertyService {
 
     await this.propertyRepo.save(property);
 
-    // TODO: Trigger Meilisearch indexing event
-    // await this.eventEmitter.emit('property.published', { propertyId: id });
+    // Index in Meilisearch via Search Service
+    const propertyWithTranslations = await this.findOne(id, userId);
+    await this.searchIndexService.indexProperty(
+      propertyWithTranslations,
+      propertyWithTranslations.translations,
+    ).catch((error) => {
+      // Log error but don't fail publication if indexing fails
+      this.logger.warn(`Failed to index property ${id} after publication: ${error.message}`);
+    });
 
-    return this.findOne(id, userId);
+    return propertyWithTranslations;
   }
 
   /**
