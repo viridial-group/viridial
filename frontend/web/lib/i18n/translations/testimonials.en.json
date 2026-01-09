@@ -24,10 +24,11 @@
     }
   },
   "filter": {
-    "all": "All",
-    "agencies": "Agencies",
-    "owners": "Owners",
-    "enterprise": "Enterprises"
+    "all": "All"
+  },
+  "empty": {
+    "title": "No testimonials found",
+    "description": "No testimonials match the selected filters."
   },
   "categories": {
     "agencies": "Real Estate Agencies",

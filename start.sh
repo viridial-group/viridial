@@ -246,9 +246,11 @@ MINIO_ROOT_USER=minioadmin" .env
     NPM_CMD="/usr/local/bin/npm"
   elif [ -x "/opt/homebrew/bin/npm" ]; then
     NPM_CMD="/opt/homebrew/bin/npm"
-  elif [ -x "$(which node 2>/dev/null | sed 's|/node$|/npm|')" ]; then
+  elif [ -x "/usr/bin/npm" ]; then
+    NPM_CMD="/usr/bin/npm"
+  else
     # Essayer de trouver npm dans le même répertoire que node
-    NODE_PATH=$(which node 2>/dev/null)
+    NODE_PATH=$(command -v node 2>/dev/null || which node 2>/dev/null)
     if [ -n "$NODE_PATH" ] && [ -x "${NODE_PATH%/*}/npm" ]; then
       NPM_CMD="${NODE_PATH%/*}/npm"
     fi
@@ -263,32 +265,91 @@ MINIO_ROOT_USER=minioadmin" .env
       $NPM_CMD install
     else
       echo -e "${RED}❌ pnpm et npm non trouvés.${NC}"
-      echo -e "${YELLOW}💡 Solutions possibles:${NC}"
-      echo -e "   1. Installez Node.js (qui inclut npm): https://nodejs.org/"
-      echo -e "   2. Ou installez pnpm globalement: ${BLUE}npm install -g pnpm${NC}"
-      echo -e "   3. Ou utilisez nvm pour gérer Node.js: ${BLUE}curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash${NC}"
+      echo ""
       echo -e "${YELLOW}📋 Vérification de Node.js:${NC}"
+      NODE_FOUND=false
       if command -v node >/dev/null 2>&1; then
         echo -e "   ✅ Node.js trouvé: $(command -v node) ($(node --version 2>/dev/null || echo 'version inconnue'))"
+        NODE_FOUND=true
       else
-        echo -e "   ❌ Node.js non trouvé dans PATH"
-        echo -e "   💡 Vérifiez si Node.js est installé: ${BLUE}ls -la /usr/local/bin/node /opt/homebrew/bin/node${NC}"
+        echo -e "   ❌ Node.js non trouvé"
       fi
+      echo ""
+      echo -e "${YELLOW}💡 Solutions pour installer Node.js:${NC}"
+      
+      # Détecter le système d'exploitation
+      OS_TYPE=$(uname -s 2>/dev/null || echo "Unknown")
+      if [ "$OS_TYPE" = "Linux" ]; then
+        if command -v apt-get >/dev/null 2>&1; then
+          # Ubuntu/Debian
+          echo -e "   ${BLUE}Option 1 (Recommandé - nvm):${NC}"
+          echo -e "      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash"
+          echo -e "      source ~/.bashrc"
+          echo -e "      nvm install --lts"
+          echo -e "      nvm use --lts"
+          echo ""
+          echo -e "   ${BLUE}Option 2 (Via NodeSource - version récente):${NC}"
+          echo -e "      curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -"
+          echo -e "      sudo apt-get install -y nodejs"
+          echo ""
+          echo -e "   ${BLUE}Option 3 (Via apt - version ancienne):${NC}"
+          echo -e "      sudo apt update && sudo apt install -y nodejs npm"
+        elif command -v yum >/dev/null 2>&1; then
+          # CentOS/RHEL
+          echo -e "   ${BLUE}Option 1 (Recommandé - nvm):${NC}"
+          echo -e "      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash"
+          echo -e "      source ~/.bashrc"
+          echo -e "      nvm install --lts"
+          echo ""
+          echo -e "   ${BLUE}Option 2 (Via NodeSource):${NC}"
+          echo -e "      curl -fsSL https://rpm.nodesource.com/setup_lts.x | sudo bash -"
+          echo -e "      sudo yum install -y nodejs"
+        else
+          echo -e "   Visitez https://nodejs.org/ pour installer Node.js"
+        fi
+      else
+        # macOS ou autre
+        echo -e "   1. Installez Node.js: https://nodejs.org/"
+        echo -e "   2. Ou utilisez Homebrew: ${BLUE}brew install node${NC}"
+        echo -e "   3. Ou utilisez nvm: ${BLUE}curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash${NC}"
+      fi
+      echo ""
+      echo -e "${YELLOW}💡 Après installation de Node.js, installez pnpm:${NC}"
+      echo -e "   ${BLUE}npm install -g pnpm${NC}"
+      echo ""
       exit 1
     fi
   fi
   
   # Démarrer le serveur de développement Next.js (en arrière-plan)
   echo -e "${BLUE}🚀 Démarrage du serveur de développement Next.js...${NC}"
+  
+  # Re-vérifier les commandes après installation potentielle
+  if [ -z "$PNPM_CMD" ] && [ -z "$NPM_CMD" ]; then
+    # Réessayer la détection après l'installation
+    if command -v pnpm >/dev/null 2>&1; then
+      PNPM_CMD="pnpm"
+    elif [ -x "/usr/local/bin/pnpm" ]; then
+      PNPM_CMD="/usr/local/bin/pnpm"
+    fi
+    if command -v npm >/dev/null 2>&1; then
+      NPM_CMD="npm"
+    elif [ -x "/usr/local/bin/npm" ]; then
+      NPM_CMD="/usr/local/bin/npm"
+    elif [ -x "/usr/bin/npm" ]; then
+      NPM_CMD="/usr/bin/npm"
+    fi
+  fi
+  
   if [ -n "$PNPM_CMD" ]; then
     $PNPM_CMD run dev > /tmp/nextjs-dev.log 2>&1 &
   elif [ -n "$NPM_CMD" ]; then
     $NPM_CMD run dev > /tmp/nextjs-dev.log 2>&1 &
-    else
-      echo -e "${RED}❌ Impossible de démarrer le serveur: ni pnpm ni npm trouvé${NC}"
-      echo -e "${YELLOW}💡 Solutions: Installez Node.js ou pnpm (voir messages ci-dessus)${NC}"
-      exit 1
-    fi
+  else
+    echo -e "${RED}❌ Impossible de démarrer le serveur: ni pnpm ni npm trouvé${NC}"
+    echo -e "${YELLOW}💡 Installez Node.js d'abord (voir instructions ci-dessus)${NC}"
+    exit 1
+  fi
   NEXTJS_PID=$!
   echo $NEXTJS_PID > /tmp/nextjs.pid
   sleep 5
@@ -378,9 +439,11 @@ else
       NPM_CMD="/usr/local/bin/npm"
     elif [ -x "/opt/homebrew/bin/npm" ]; then
       NPM_CMD="/opt/homebrew/bin/npm"
-    elif [ -x "$(which node 2>/dev/null | sed 's|/node$|/npm|')" ]; then
+    elif [ -x "/usr/bin/npm" ]; then
+      NPM_CMD="/usr/bin/npm"
+    else
       # Essayer de trouver npm dans le même répertoire que node
-      NODE_PATH=$(which node 2>/dev/null)
+      NODE_PATH=$(command -v node 2>/dev/null || which node 2>/dev/null)
       if [ -n "$NODE_PATH" ] && [ -x "${NODE_PATH%/*}/npm" ]; then
         NPM_CMD="${NODE_PATH%/*}/npm"
       fi
@@ -394,7 +457,7 @@ else
       pm2 start $NPM_CMD --name "frontend" -- start || pm2 restart frontend
     else
       echo -e "${RED}❌ Impossible de builder le frontend: ni pnpm ni npm trouvé${NC}"
-      echo -e "${YELLOW}💡 Installez Node.js ou pnpm (voir messages ci-dessus)${NC}"
+      echo -e "${YELLOW}💡 Installez Node.js d'abord (voir instructions de la section développement)${NC}"
       exit 1
     fi
     cd "$PROJECT_ROOT"

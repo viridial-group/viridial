@@ -24,10 +24,11 @@
     }
   },
   "filter": {
-    "all": "Tous",
-    "agencies": "Agences",
-    "owners": "Propriétaires",
-    "enterprise": "Entreprises"
+    "all": "Tous"
+  },
+  "empty": {
+    "title": "Aucun témoignage trouvé",
+    "description": "Aucun témoignage ne correspond aux filtres sélectionnés."
   },
   "categories": {
     "agencies": "Agences Immobilières",

@@ -17,6 +17,14 @@
     "title": "Résultats mesurables",
     "description": "Nos clients constatent des résultats concrets"
   },
+  "empty": {
+    "title": "Aucune étude de cas trouvée",
+    "description": "Aucune étude de cas ne correspond aux filtres sélectionnés."
+  },
+  "sections": {
+    "challenge": "Défi",
+    "solution": "Solution"
+  },
   "cta": {
     "title": "Vous souhaitez devenir notre prochain cas de succès ?",
     "description": "Contactez notre équipe pour discuter de vos besoins",

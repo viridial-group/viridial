@@ -21,7 +21,7 @@ async function loadTranslations(lang: Language): Promise<any> {
   }
 
   try {
-    const [common, home, features, pricing, search, property, auth, about, contact, caseStudies] = await Promise.all([
+    const [common, home, features, pricing, search, property, auth, about, contact, caseStudies, testimonials] = await Promise.all([
       import(`@/lib/i18n/translations/common.${lang}.json`).catch(() => import(`@/lib/i18n/translations/common.${defaultLanguage}.json`)),
       import(`@/lib/i18n/translations/home.${lang}.json`).catch(() => import(`@/lib/i18n/translations/home.${defaultLanguage}.json`)),
       import(`@/lib/i18n/translations/features.${lang}.json`).catch(() => import(`@/lib/i18n/translations/features.${defaultLanguage}.json`)),
@@ -32,6 +32,7 @@ async function loadTranslations(lang: Language): Promise<any> {
       import(`@/lib/i18n/translations/about.${lang}.json`).catch(() => import(`@/lib/i18n/translations/about.${defaultLanguage}.json`)),
       import(`@/lib/i18n/translations/contact.${lang}.json`).catch(() => import(`@/lib/i18n/translations/contact.${defaultLanguage}.json`)),
       import(`@/lib/i18n/translations/case-studies.${lang}.json`).catch(() => import(`@/lib/i18n/translations/case-studies.${defaultLanguage}.json`)),
+      import(`@/lib/i18n/translations/testimonials.${lang}.json`).catch(() => import(`@/lib/i18n/translations/testimonials.${defaultLanguage}.json`)),
     ]);
 
     const translations = {
@@ -45,6 +46,7 @@ async function loadTranslations(lang: Language): Promise<any> {
       about: about.default || about,
       contact: contact.default || contact,
       'case-studies': caseStudies.default || caseStudies,
+      testimonials: testimonials.default || testimonials,
     };
 
     translationsCache[lang] = translations;

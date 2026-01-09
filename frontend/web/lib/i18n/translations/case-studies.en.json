@@ -17,6 +17,14 @@
     "title": "Measurable results",
     "description": "Our clients see concrete results"
   },
+  "empty": {
+    "title": "No case studies found",
+    "description": "No case studies match the selected filters."
+  },
+  "sections": {
+    "challenge": "Challenge",
+    "solution": "Solution"
+  },
   "cta": {
     "title": "Want to become our next success story?",
     "description": "Contact our team to discuss your needs",
