@@ -46,17 +46,3 @@ export class ReviewStatsDto {
   verifiedReviewsCount?: number; // Count of verified reviews
 }
 
-export class ReviewStatsDto {
-  entityType!: ReviewEntityType;
-  entityId!: string;
-  totalReviews!: number;
-  averageRating!: number;
-  ratingDistribution!: {
-    '1': number;
-    '2': number;
-    '3': number;
-    '4': number;
-    '5': number;
-  };
-}
-

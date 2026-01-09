@@ -34,7 +34,9 @@ RUN npm ci --only=production
 COPY --from=builder /app/dist ./dist
 
 # Expose port
-EXPOSE 3002
+EXPOSE 3003
+
+ENV PORT=3003
 
 # Start application
 CMD ["node", "dist/main.js"]

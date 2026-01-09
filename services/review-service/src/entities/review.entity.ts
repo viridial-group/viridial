@@ -57,7 +57,7 @@ export class Review {
   entityId!: string;
 
   // Rating (1-5 stars)
-  @Column({ type: 'integer', check: 'rating >= 1 AND rating <= 5' })
+  @Column({ type: 'integer' })
   rating!: number;
 
   // Review title

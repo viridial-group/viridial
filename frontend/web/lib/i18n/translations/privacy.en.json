@@ -1,0 +1,39 @@
+{
+  "hero": {
+    "title": "Privacy Policy",
+    "description": "Learn how we protect and use your personal data in accordance with GDPR"
+  },
+  "sections": {
+    "introduction": {
+      "title": "Introduction",
+      "content": "Viridial is committed to protecting your privacy and personal data. This privacy policy explains how we collect, use, store, and protect your information in accordance with the General Data Protection Regulation (GDPR)."
+    },
+    "dataCollection": {
+      "title": "Data Collection",
+      "content": "We collect the following data to provide and improve our services:",
+      "items": {
+        "name": "Name and contact information (name, email address, phone number)",
+        "email": "Account information (credentials, preferences)",
+        "phone": "Property data (descriptions, photos, location)",
+        "property": "Usage data (logs, statistics, preferences)"
+      }
+    },
+    "dataSecurity": {
+      "title": "Data Security",
+      "content": "We use advanced technical and organizational security measures to protect your data, including SSL/TLS encryption, regular backups, and restricted access to personal data. Your data is stored in certified and secure data centers."
+    },
+    "yourRights": {
+      "title": "Your Rights",
+      "content": "In accordance with GDPR, you have the following rights:",
+      "items": {
+        "access": "Right of access to your personal data",
+        "rectification": "Right to rectification of inaccurate data",
+        "deletion": "Right to erasure (right to be forgotten)",
+        "portability": "Right to data portability"
+      }
+    }
+  },
+  "lastUpdated": "Last updated",
+  "contact": "For any questions regarding this policy, contact us at privacy@viridial.com"
+}
+

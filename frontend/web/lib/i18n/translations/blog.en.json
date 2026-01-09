@@ -1,0 +1,37 @@
+{
+  "hero": {
+    "badge": "Resources & News",
+    "title": "Real Estate Blog",
+    "description": "Discover our articles on sustainable real estate, eco-neighborhoods, and market trends"
+  },
+  "categories": {
+    "eco-quartiers": "Eco-neighborhoods",
+    "tendances": "Trends",
+    "construction": "Sustainable construction"
+  },
+  "posts": {
+    "ecoQuartiers": {
+      "title": "Complete guide to eco-neighborhoods in France",
+      "excerpt": "Discover certified eco-neighborhoods in France, their environmental characteristics, and how they're transforming sustainable real estate."
+    },
+    "marketTrends": {
+      "title": "2024 Real estate market trends",
+      "excerpt": "Analysis of current real estate market trends, with a focus on growing demand for eco-friendly properties."
+    },
+    "sustainableBuilding": {
+      "title": "Eco-friendly materials for construction",
+      "excerpt": "Exploration of sustainable construction materials and their impact on the environment and property values."
+    },
+    "readMore": "Read more"
+  },
+  "empty": {
+    "title": "No articles available",
+    "description": "Check back soon to discover our new articles."
+  },
+  "newsletter": {
+    "title": "Stay informed",
+    "description": "Subscribe to our newsletter to receive the latest articles and real estate tips.",
+    "button": "Subscribe"
+  }
+}
+

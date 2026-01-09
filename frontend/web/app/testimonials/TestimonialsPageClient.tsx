@@ -169,10 +169,10 @@ export function TestimonialsPageClient() {
               <CardContent className="pt-12 pb-12 text-center">
                 <Quote className="h-16 w-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  Aucun témoignage trouvé
+                  {t('testimonials.empty.title')}
                 </h3>
                 <p className="text-gray-600">
-                  Aucun témoignage ne correspond aux filtres sélectionnés.
+                  {t('testimonials.empty.description')}
                 </p>
               </CardContent>
             </Card>

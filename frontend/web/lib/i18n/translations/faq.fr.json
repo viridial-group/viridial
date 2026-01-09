@@ -1,0 +1,83 @@
+{
+  "hero": {
+    "badge": "Centre d'aide",
+    "title": "Questions Fréquentes",
+    "description": "Trouvez rapidement les réponses à vos questions sur Viridial"
+  },
+  "search": {
+    "placeholder": "Rechercher dans les questions..."
+  },
+  "categories": {
+    "general": "Questions générales",
+    "pricing": "Tarification",
+    "features": "Fonctionnalités",
+    "technical": "Aspects techniques"
+  },
+  "general": {
+    "whatIsViridial": {
+      "q": "Qu'est-ce que Viridial ?",
+      "a": "Viridial est une plateforme SaaS immobilière multi-tenant qui permet de rechercher, gérer et analyser des propriétés avec un focus particulier sur les éco-quartiers et l'immobilier durable. Notre plateforme offre des outils avancés pour les agences immobilières, les propriétaires et les entreprises."
+    },
+    "howItWorks": {
+      "q": "Comment fonctionne Viridial ?",
+      "a": "Viridial fonctionne comme un service cloud accessible depuis n'importe quel navigateur. Vous créez un compte, choisissez votre plan, et accédez immédiatement à toutes les fonctionnalités : recherche de propriétés, gestion de vos annonces, analytics, et bien plus encore."
+    },
+    "whoCanUse": {
+      "q": "Qui peut utiliser Viridial ?",
+      "a": "Viridial s'adresse aux agences immobilières, aux propriétaires indépendants, aux entreprises immobilières, et à tous les professionnels du secteur qui souhaitent moderniser leur gestion immobilière avec des outils numériques avancés."
+    }
+  },
+  "pricing": {
+    "freeTrial": {
+      "q": "Y a-t-il une période d'essai gratuite ?",
+      "a": "Oui, nous offrons une période d'essai gratuite de 14 jours pour tous nos plans. Aucune carte bancaire n'est requise pour commencer. Vous pouvez annuler à tout moment pendant la période d'essai."
+    },
+    "pricingPlans": {
+      "q": "Quels sont les différents plans tarifaires ?",
+      "a": "Nous proposons trois plans : Starter pour les propriétaires indépendants, Professional pour les agences, et Enterprise pour les grandes entreprises avec des besoins personnalisés. Chaque plan inclut différentes fonctionnalités et limites d'utilisation."
+    },
+    "cancelAnytime": {
+      "q": "Puis-je annuler mon abonnement à tout moment ?",
+      "a": "Absolument. Vous pouvez annuler votre abonnement à tout moment depuis votre tableau de bord. Aucun frais d'annulation n'est appliqué, et vous conservez l'accès jusqu'à la fin de votre période de facturation."
+    }
+  },
+  "features": {
+    "propertySearch": {
+      "q": "Comment fonctionne la recherche de propriétés ?",
+      "a": "Notre moteur de recherche avancé vous permet de filtrer les propriétés par localisation, prix, type, caractéristiques écologiques, et bien plus encore. Vous pouvez également utiliser la recherche par carte pour visualiser les propriétés sur une carte interactive."
+    },
+    "ecoQuartiers": {
+      "q": "Qu'est-ce qu'un éco-quartier dans Viridial ?",
+      "a": "Les éco-quartiers sont des zones résidentielles certifiées pour leurs performances environnementales. Viridial identifie et classe ces quartiers en fonction de leurs certifications, infrastructures écologiques, et impact environnemental."
+    },
+    "analytics": {
+      "q": "Quels types d'analytics sont disponibles ?",
+      "a": "Viridial offre des analytics détaillés sur les performances de vos propriétés, les tendances du marché, les statistiques de visites, les taux de conversion, et bien plus encore. Tous les rapports sont exportables et personnalisables."
+    }
+  },
+  "technical": {
+    "integration": {
+      "q": "Viridial s'intègre-t-il avec d'autres outils ?",
+      "a": "Oui, Viridial propose des intégrations avec les principaux outils CRM, systèmes de paiement, et plateformes de marketing. Nous offrons également une API complète pour les intégrations personnalisées."
+    },
+    "dataSecurity": {
+      "q": "Comment mes données sont-elles sécurisées ?",
+      "a": "La sécurité est notre priorité. Nous utilisons un chiffrement SSL/TLS pour toutes les communications, stockons les données dans des centres de données certifiés, et respectons le RGPD. Des sauvegardes régulières sont effectuées automatiquement."
+    },
+    "support": {
+      "q": "Quel support est disponible ?",
+      "a": "Nous offrons un support par email, chat en direct, et documentation complète. Les plans Professional et Enterprise incluent un support prioritaire et dédié. Nous répondons généralement dans les 24 heures."
+    }
+  },
+  "empty": {
+    "title": "Aucune question trouvée",
+    "description": "Aucune question ne correspond à votre recherche. Essayez d'autres mots-clés ou contactez-nous directement.",
+    "contactButton": "Nous contacter"
+  },
+  "cta": {
+    "title": "Vous ne trouvez pas votre réponse ?",
+    "description": "Notre équipe est là pour vous aider. Contactez-nous et nous vous répondrons dans les plus brefs délais.",
+    "button": "Contactez notre support"
+  }
+}
+

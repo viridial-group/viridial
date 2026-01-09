@@ -20,6 +20,7 @@ export default function robots(): MetadataRoute.Robots {
           "/contact",
           "/testimonials",
           "/case-studies",
+          "/faq",
           "/blog",
           "/legal/",
         ],

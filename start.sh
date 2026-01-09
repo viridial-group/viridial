@@ -28,6 +28,36 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$SCRIPT_DIR"
 cd "$PROJECT_ROOT"
 
+# Fonction pour vérifier la version de Node.js
+check_node_version() {
+  if ! command -v node >/dev/null 2>&1; then
+    return 1
+  fi
+  
+  NODE_VERSION=$(node --version 2>/dev/null | sed 's/v//')
+  if [ -z "$NODE_VERSION" ]; then
+    return 1
+  fi
+  
+  # Extraire le numéro de version majeur
+  NODE_MAJOR=$(echo "$NODE_VERSION" | cut -d. -f1)
+  NODE_MINOR=$(echo "$NODE_VERSION" | cut -d. -f2)
+  
+  # Vérifier que c'est Node.js 20.x
+  if [ "$NODE_MAJOR" -eq 20 ]; then
+    # Version 20.x acceptée (20.0.0 et supérieur)
+    if [ "$NODE_MINOR" -ge 0 ]; then
+      return 0
+    fi
+  elif [ "$NODE_MAJOR" -gt 20 ]; then
+    # Node.js 21+ pourrait fonctionner mais non testé
+    return 2
+  fi
+  
+  # Version < 20 ou non supportée
+  return 1
+}
+
 echo -e "${BLUE}╔══════════════════════════════════════════════════════════════╗${NC}"
 echo -e "${BLUE}║  🚀 Démarrage Viridial - Mode: $MODE${NC}                    ║"
 echo -e "${BLUE}╚══════════════════════════════════════════════════════════════╝${NC}"
@@ -221,6 +251,57 @@ MINIO_ROOT_USER=minioadmin" .env
   
   echo -e "${BLUE}📦 Compilation du frontend avec SASS...${NC}"
   
+  # Vérifier la version Node.js avant de compiler
+  if ! check_node_version; then
+    CHECK_RESULT=$?
+    NODE_VERSION=$(node --version 2>/dev/null || echo "non installé")
+    
+    if [ $CHECK_RESULT -eq 2 ]; then
+      # Version supérieure à 20.x - Avertissement mais permet de continuer
+      echo -e "${YELLOW}⚠️  Node.js $NODE_VERSION détecté (supérieur à 20.x)${NC}"
+      echo -e "${YELLOW}   Le projet est testé avec Node.js 20.x LTS. Continuer quand même ? (y/N)${NC}"
+      read -t 10 -r response || response="n"
+      if [[ ! "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+        echo -e "${RED}❌ Arrêt. Utilisez Node.js 20.x LTS pour éviter les problèmes de compatibilité${NC}"
+        if [ -f "$PROJECT_ROOT/.nvmrc" ]; then
+          REQUIRED_VERSION=$(cat "$PROJECT_ROOT/.nvmrc")
+          echo -e "${BLUE}   Installer la version recommandée:${NC}"
+          echo -e "      nvm install $REQUIRED_VERSION && nvm use $REQUIRED_VERSION"
+        fi
+        exit 1
+      fi
+      echo -e "${YELLOW}⚠️  Continuation avec Node.js $NODE_VERSION (non testé)${NC}"
+    else
+      # Version incompatible ou non installée
+      echo -e "${RED}❌ Version Node.js incompatible: $NODE_VERSION${NC}"
+      echo -e "${YELLOW}📋 Version requise: Node.js 20.x LTS (20.0.0 - 20.x.x)${NC}"
+      echo ""
+      
+      # Vérifier si .nvmrc existe
+      if [ -f "$PROJECT_ROOT/.nvmrc" ]; then
+        REQUIRED_VERSION=$(cat "$PROJECT_ROOT/.nvmrc")
+        echo -e "${YELLOW}💡 Version requise selon .nvmrc: $REQUIRED_VERSION${NC}"
+        echo -e "${BLUE}   Installer avec nvm:${NC}"
+        echo -e "      cd $PROJECT_ROOT"
+        echo -e "      nvm install $REQUIRED_VERSION"
+        echo -e "      nvm use $REQUIRED_VERSION"
+        echo ""
+        echo -e "${YELLOW}   Ou utiliser automatiquement:${NC}"
+        echo -e "      cd $PROJECT_ROOT && nvm use"
+      else
+        echo -e "${YELLOW}💡 Solutions:${NC}"
+        echo -e "   ${BLUE}nvm install 20.18.0 && nvm use 20.18.0${NC}"
+        echo -e "   ${BLUE}Ou visitez https://nodejs.org/ pour installer Node.js 20 LTS${NC}"
+      fi
+      echo ""
+      echo -e "${YELLOW}📖 Voir docs/NODE-VERSION-REQUIREMENTS.md pour plus de détails${NC}"
+      exit 1
+    fi
+  else
+    NODE_VERSION=$(node --version 2>/dev/null)
+    echo -e "${GREEN}✅ Version Node.js: $NODE_VERSION (compatible - 20.x LTS)${NC}"
+  fi
+  
   # S'assurer que les chemins communs sont dans le PATH
   export PATH="/usr/local/bin:/opt/homebrew/bin:$HOME/.local/share/pnpm:$PATH"
   
@@ -381,15 +462,49 @@ MINIO_ROOT_USER=minioadmin" .env
   echo -e "   ${BLUE}tail -f /tmp/nextjs-dev.log${NC}"
   echo ""
   
-else
-  # Mode production - PM2 ou systemd
-  echo -e "${BLUE}📋 Mode Production - Démarrage des services...${NC}"
-  
-  # Vérifier .env
-  if [ ! -f ".env" ]; then
-    echo -e "${RED}❌ Fichier .env manquant. Créez-le avant de démarrer en production.${NC}"
-    exit 1
-  fi
+  else
+    # Mode production - PM2 ou systemd
+    echo -e "${BLUE}📋 Mode Production - Démarrage des services...${NC}"
+    
+    # Vérifier la version Node.js pour la production
+    if ! check_node_version; then
+      CHECK_RESULT=$?
+      NODE_VERSION=$(node --version 2>/dev/null || echo "non installé")
+      
+      if [ $CHECK_RESULT -eq 2 ]; then
+        echo -e "${YELLOW}⚠️  Node.js $NODE_VERSION détecté (supérieur à 20.x)${NC}"
+        echo -e "${YELLOW}   Le projet est testé avec Node.js 20.x LTS en production.${NC}"
+        echo -e "${RED}❌ Recommandation: Utilisez Node.js 20.x LTS pour la production${NC}"
+      else
+        echo -e "${RED}❌ Version Node.js incompatible: $NODE_VERSION${NC}"
+        echo -e "${YELLOW}📋 Version requise: Node.js 20.x LTS (20.0.0 - 20.x.x)${NC}"
+      fi
+      
+      echo ""
+      if [ -f ".nvmrc" ]; then
+        REQUIRED_VERSION=$(cat .nvmrc)
+        echo -e "${YELLOW}💡 Version requise selon .nvmrc: $REQUIRED_VERSION${NC}"
+        echo -e "${BLUE}   Installer avec nvm:${NC}"
+        echo -e "      nvm install $REQUIRED_VERSION"
+        echo -e "      nvm use $REQUIRED_VERSION"
+        echo -e "      nvm alias default $REQUIRED_VERSION  # Pour la production"
+      else
+        echo -e "${YELLOW}💡 Solutions:${NC}"
+        echo -e "   ${BLUE}nvm install 20.18.0 && nvm use 20.18.0 && nvm alias default 20.18.0${NC}"
+      fi
+      echo ""
+      echo -e "${YELLOW}📖 Voir docs/NODE-VERSION-REQUIREMENTS.md pour plus de détails${NC}"
+      exit 1
+    else
+      NODE_VERSION=$(node --version 2>/dev/null)
+      echo -e "${GREEN}✅ Version Node.js vérifiée: $NODE_VERSION (compatible)${NC}"
+    fi
+    
+    # Vérifier .env
+    if [ ! -f ".env" ]; then
+      echo -e "${RED}❌ Fichier .env manquant. Créez-le avant de démarrer en production.${NC}"
+      exit 1
+    fi
   
   # Charger les variables d'environnement
   set -a

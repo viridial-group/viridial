@@ -1,0 +1,83 @@
+{
+  "hero": {
+    "badge": "Help Center",
+    "title": "Frequently Asked Questions",
+    "description": "Quickly find answers to your questions about Viridial"
+  },
+  "search": {
+    "placeholder": "Search questions..."
+  },
+  "categories": {
+    "general": "General Questions",
+    "pricing": "Pricing",
+    "features": "Features",
+    "technical": "Technical"
+  },
+  "general": {
+    "whatIsViridial": {
+      "q": "What is Viridial?",
+      "a": "Viridial is a multi-tenant real estate SaaS platform that allows you to search, manage, and analyze properties with a particular focus on eco-neighborhoods and sustainable real estate. Our platform offers advanced tools for real estate agencies, property owners, and businesses."
+    },
+    "howItWorks": {
+      "q": "How does Viridial work?",
+      "a": "Viridial works as a cloud service accessible from any browser. You create an account, choose your plan, and immediately access all features: property search, listing management, analytics, and much more."
+    },
+    "whoCanUse": {
+      "q": "Who can use Viridial?",
+      "a": "Viridial is designed for real estate agencies, independent property owners, real estate companies, and all professionals in the sector who want to modernize their real estate management with advanced digital tools."
+    }
+  },
+  "pricing": {
+    "freeTrial": {
+      "q": "Is there a free trial period?",
+      "a": "Yes, we offer a 14-day free trial for all our plans. No credit card is required to get started. You can cancel at any time during the trial period."
+    },
+    "pricingPlans": {
+      "q": "What are the different pricing plans?",
+      "a": "We offer three plans: Starter for independent property owners, Professional for agencies, and Enterprise for large companies with customized needs. Each plan includes different features and usage limits."
+    },
+    "cancelAnytime": {
+      "q": "Can I cancel my subscription at any time?",
+      "a": "Absolutely. You can cancel your subscription at any time from your dashboard. No cancellation fees are applied, and you retain access until the end of your billing period."
+    }
+  },
+  "features": {
+    "propertySearch": {
+      "q": "How does property search work?",
+      "a": "Our advanced search engine allows you to filter properties by location, price, type, ecological features, and much more. You can also use map search to visualize properties on an interactive map."
+    },
+    "ecoQuartiers": {
+      "q": "What is an eco-neighborhood in Viridial?",
+      "a": "Eco-neighborhoods are residential areas certified for their environmental performance. Viridial identifies and classifies these neighborhoods based on their certifications, ecological infrastructure, and environmental impact."
+    },
+    "analytics": {
+      "q": "What types of analytics are available?",
+      "a": "Viridial offers detailed analytics on your property performance, market trends, visit statistics, conversion rates, and much more. All reports are exportable and customizable."
+    }
+  },
+  "technical": {
+    "integration": {
+      "q": "Does Viridial integrate with other tools?",
+      "a": "Yes, Viridial offers integrations with major CRM tools, payment systems, and marketing platforms. We also provide a complete API for custom integrations."
+    },
+    "dataSecurity": {
+      "q": "How is my data secured?",
+      "a": "Security is our priority. We use SSL/TLS encryption for all communications, store data in certified data centers, and comply with GDPR. Regular backups are performed automatically."
+    },
+    "support": {
+      "q": "What support is available?",
+      "a": "We offer support via email, live chat, and comprehensive documentation. Professional and Enterprise plans include priority and dedicated support. We typically respond within 24 hours."
+    }
+  },
+  "empty": {
+    "title": "No questions found",
+    "description": "No questions match your search. Try other keywords or contact us directly.",
+    "contactButton": "Contact us"
+  },
+  "cta": {
+    "title": "Can't find your answer?",
+    "description": "Our team is here to help. Contact us and we'll get back to you as soon as possible.",
+    "button": "Contact our support"
+  }
+}
+

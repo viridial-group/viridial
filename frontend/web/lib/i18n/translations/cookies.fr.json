@@ -1,0 +1,37 @@
+{
+  "hero": {
+    "title": "Politique des Cookies",
+    "description": "Découvrez comment nous utilisons les cookies et comment gérer vos préférences"
+  },
+  "breadcrumb": {
+    "legal": "Légal",
+    "cookies": "Cookies"
+  },
+  "sections": {
+    "whatAre": {
+      "title": "Qu'est-ce qu'un cookie ?",
+      "content": "Un cookie est un petit fichier texte stocké sur votre appareil lorsque vous visitez un site web. Les cookies permettent au site de mémoriser vos actions et préférences pendant une certaine période, évitant ainsi de devoir les ressaisir à chaque visite."
+    },
+    "types": {
+      "essential": {
+        "title": "Cookies essentiels",
+        "description": "Ces cookies sont nécessaires au fonctionnement du site. Ils permettent des fonctions de base comme la navigation et l'accès aux zones sécurisées du site web."
+      },
+      "analytics": {
+        "title": "Cookies d'analyse",
+        "description": "Ces cookies nous aident à comprendre comment les visiteurs utilisent notre site en collectant et rapportant des informations anonymes. Cela nous permet d'améliorer le fonctionnement du site."
+      },
+      "marketing": {
+        "title": "Cookies marketing",
+        "description": "Ces cookies sont utilisés pour suivre les visiteurs à travers différents sites web dans le but d'afficher des publicités pertinentes et engageantes."
+      }
+    },
+    "management": {
+      "title": "Gestion de vos préférences",
+      "content": "Vous pouvez gérer vos préférences de cookies à tout moment via les paramètres de votre navigateur. Notez que la désactivation de certains cookies peut affecter la fonctionnalité du site."
+    }
+  },
+  "lastUpdated": "Dernière mise à jour",
+  "contact": "Pour toute question concernant notre utilisation des cookies, contactez-nous à privacy@viridial.com"
+}
+

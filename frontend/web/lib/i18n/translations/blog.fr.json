@@ -1,0 +1,37 @@
+{
+  "hero": {
+    "badge": "Ressources & Actualités",
+    "title": "Blog Immobilier",
+    "description": "Découvrez nos articles sur l'immobilier durable, les éco-quartiers et les tendances du marché"
+  },
+  "categories": {
+    "eco-quartiers": "Éco-quartiers",
+    "tendances": "Tendances",
+    "construction": "Construction durable"
+  },
+  "posts": {
+    "ecoQuartiers": {
+      "title": "Guide complet des éco-quartiers en France",
+      "excerpt": "Découvrez les éco-quartiers certifiés en France, leurs caractéristiques environnementales et comment ils transforment l'immobilier durable."
+    },
+    "marketTrends": {
+      "title": "Tendances du marché immobilier 2024",
+      "excerpt": "Analyse des tendances actuelles du marché immobilier, avec un focus sur la demande croissante pour les propriétés écologiques."
+    },
+    "sustainableBuilding": {
+      "title": "Les matériaux écologiques pour la construction",
+      "excerpt": "Exploration des matériaux de construction durables et de leur impact sur l'environnement et la valeur des propriétés."
+    },
+    "readMore": "Lire la suite"
+  },
+  "empty": {
+    "title": "Aucun article disponible",
+    "description": "Revenez bientôt pour découvrir nos nouveaux articles."
+  },
+  "newsletter": {
+    "title": "Restez informé",
+    "description": "Abonnez-vous à notre newsletter pour recevoir les derniers articles et conseils immobiliers.",
+    "button": "S'abonner"
+  }
+}
+

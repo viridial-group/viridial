@@ -1,0 +1,39 @@
+{
+  "hero": {
+    "title": "Politique de Confidentialité",
+    "description": "Découvrez comment nous protégeons et utilisons vos données personnelles conformément au RGPD"
+  },
+  "sections": {
+    "introduction": {
+      "title": "Introduction",
+      "content": "Viridial s'engage à protéger votre vie privée et vos données personnelles. Cette politique de confidentialité explique comment nous collectons, utilisons, stockons et protégeons vos informations conformément au Règlement Général sur la Protection des Données (RGPD)."
+    },
+    "dataCollection": {
+      "title": "Collecte des Données",
+      "content": "Nous collectons les données suivantes pour fournir et améliorer nos services :",
+      "items": {
+        "name": "Nom et coordonnées (nom, prénom, adresse email, numéro de téléphone)",
+        "email": "Informations de compte (identifiants, préférences)",
+        "phone": "Données de propriétés (descriptions, photos, localisation)",
+        "property": "Données d'utilisation (logs, statistiques, préférences)"
+      }
+    },
+    "dataSecurity": {
+      "title": "Sécurité des Données",
+      "content": "Nous utilisons des mesures de sécurité techniques et organisationnelles avancées pour protéger vos données, incluant le chiffrement SSL/TLS, des sauvegardes régulières, et un accès restreint aux données personnelles. Vos données sont stockées dans des centres de données certifiés et sécurisés."
+    },
+    "yourRights": {
+      "title": "Vos Droits",
+      "content": "Conformément au RGPD, vous disposez des droits suivants :",
+      "items": {
+        "access": "Droit d'accès à vos données personnelles",
+        "rectification": "Droit de rectification des données inexactes",
+        "deletion": "Droit à l'effacement (droit à l'oubli)",
+        "portability": "Droit à la portabilité de vos données"
+      }
+    }
+  },
+  "lastUpdated": "Dernière mise à jour",
+  "contact": "Pour toute question concernant cette politique, contactez-nous à privacy@viridial.com"
+}
+

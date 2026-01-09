@@ -77,29 +77,13 @@ export function Footer() {
                   {t('common.nav.caseStudies')}
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/terms"
-                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:rounded-md focus:px-1"
-                >
-                  {t('common.footer.terms')}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/privacy"
-                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:rounded-md focus:px-1"
-                >
-                  {t('common.footer.privacy')}
-                </Link>
-              </li>
             </ul>
           </nav>
 
-          {/* Liens utiles */}
-          <nav aria-label="Liens utiles">
+          {/* Ressources */}
+          <nav aria-label="Ressources">
             <h3 className="text-sm font-semibold text-gray-900 mb-4">
-              Liens utiles
+              {t('common.footer.resources')}
             </h3>
             <ul className="space-y-2" role="list">
               <li>
@@ -107,7 +91,40 @@ export function Footer() {
                   href="/blog"
                   className="text-sm text-gray-600 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:rounded-md focus:px-1"
                 >
-                  Blog
+                  {t('common.footer.blog')}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/faq"
+                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:rounded-md focus:px-1"
+                >
+                  {t('common.footer.faq')}
+                </Link>
+              </li>
+            </ul>
+          </nav>
+
+          {/* Légal */}
+          <nav aria-label="Légal">
+            <h3 className="text-sm font-semibold text-gray-900 mb-4">
+              {t('common.footer.legal')}
+            </h3>
+            <ul className="space-y-2" role="list">
+              <li>
+                <Link
+                  href="/legal/privacy"
+                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:rounded-md focus:px-1"
+                >
+                  {t('common.footer.privacy')}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/legal/terms"
+                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:rounded-md focus:px-1"
+                >
+                  {t('common.footer.terms')}
                 </Link>
               </li>
             </ul>

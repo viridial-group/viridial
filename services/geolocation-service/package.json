@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "description": "Geolocation service for Viridial - Geocoding and reverse geocoding",
   "main": "dist/main.js",
+  "engines": {
+    "node": ">=20.0.0 <21.0.0",
+    "npm": ">=10.0.0"
+  },
   "scripts": {
     "start": "node dist/main.js",
     "start:dev": "nest start --watch",

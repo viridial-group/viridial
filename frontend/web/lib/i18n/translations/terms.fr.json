@@ -1,0 +1,32 @@
+{
+  "hero": {
+    "title": "Conditions Générales d'Utilisation",
+    "description": "Lisez attentivement nos conditions d'utilisation avant d'utiliser nos services"
+  },
+  "sections": {
+    "acceptance": {
+      "title": "Acceptation des Conditions",
+      "content": "En accédant et en utilisant Viridial, vous acceptez d'être lié par ces conditions générales d'utilisation. Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser nos services."
+    },
+    "useOfService": {
+      "title": "Utilisation du Service",
+      "content": "Vous vous engagez à utiliser Viridial de manière légale et conforme. Vous acceptez de :",
+      "items": {
+        "legal": "Utiliser le service uniquement à des fins légales",
+        "accurate": "Fournir des informations exactes et à jour",
+        "respect": "Respecter les droits de propriété intellectuelle et la vie privée des autres utilisateurs"
+      }
+    },
+    "liability": {
+      "title": "Limitation de Responsabilité",
+      "content": "Viridial fournit le service \"tel quel\" sans garantie expresse ou implicite. Nous ne serons pas responsables des dommages indirects, consécutifs ou accessoires résultant de l'utilisation ou de l'impossibilité d'utiliser notre service."
+    },
+    "changes": {
+      "title": "Modifications des Conditions",
+      "content": "Nous nous réservons le droit de modifier ces conditions à tout moment. Les modifications prendront effet dès leur publication sur cette page. Il est de votre responsabilité de consulter régulièrement ces conditions."
+    }
+  },
+  "lastUpdated": "Dernière mise à jour",
+  "contact": "Pour toute question concernant ces conditions, contactez-nous à legal@viridial.com"
+}
+

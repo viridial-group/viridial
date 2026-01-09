@@ -21,7 +21,7 @@ async function loadTranslations(lang: Language): Promise<any> {
   }
 
   try {
-    const [common, home, features, pricing, search, property, auth, about, contact, caseStudies, testimonials] = await Promise.all([
+    const [common, home, features, pricing, search, property, auth, about, contact, caseStudies, testimonials, faq, privacy, terms, blog] = await Promise.all([
       import(`@/lib/i18n/translations/common.${lang}.json`).catch(() => import(`@/lib/i18n/translations/common.${defaultLanguage}.json`)),
       import(`@/lib/i18n/translations/home.${lang}.json`).catch(() => import(`@/lib/i18n/translations/home.${defaultLanguage}.json`)),
       import(`@/lib/i18n/translations/features.${lang}.json`).catch(() => import(`@/lib/i18n/translations/features.${defaultLanguage}.json`)),
@@ -33,6 +33,10 @@ async function loadTranslations(lang: Language): Promise<any> {
       import(`@/lib/i18n/translations/contact.${lang}.json`).catch(() => import(`@/lib/i18n/translations/contact.${defaultLanguage}.json`)),
       import(`@/lib/i18n/translations/case-studies.${lang}.json`).catch(() => import(`@/lib/i18n/translations/case-studies.${defaultLanguage}.json`)),
       import(`@/lib/i18n/translations/testimonials.${lang}.json`).catch(() => import(`@/lib/i18n/translations/testimonials.${defaultLanguage}.json`)),
+      import(`@/lib/i18n/translations/faq.${lang}.json`).catch(() => import(`@/lib/i18n/translations/faq.${defaultLanguage}.json`)),
+      import(`@/lib/i18n/translations/privacy.${lang}.json`).catch(() => import(`@/lib/i18n/translations/privacy.${defaultLanguage}.json`)),
+      import(`@/lib/i18n/translations/terms.${lang}.json`).catch(() => import(`@/lib/i18n/translations/terms.${defaultLanguage}.json`)),
+      import(`@/lib/i18n/translations/blog.${lang}.json`).catch(() => import(`@/lib/i18n/translations/blog.${defaultLanguage}.json`)),
     ]);
 
     const translations = {
@@ -47,6 +51,10 @@ async function loadTranslations(lang: Language): Promise<any> {
       contact: contact.default || contact,
       'case-studies': caseStudies.default || caseStudies,
       testimonials: testimonials.default || testimonials,
+      faq: faq.default || faq,
+      privacy: privacy.default || privacy,
+      terms: terms.default || terms,
+      blog: blog.default || blog,
     };
 
     translationsCache[lang] = translations;
