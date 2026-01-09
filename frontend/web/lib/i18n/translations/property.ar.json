@@ -1,31 +1,30 @@
 {
-  "title": "Titre",
-  "description": "Description",
-  "price": "Prix",
-  "location": "Localisation",
-  "type": "Type",
-  "status": "Statut",
-  "bedrooms": "Chambres",
-  "bathrooms": "Salles de bain",
-  "surface": "Surface",
-  "created": "Créé le",
-  "updated": "Mis à jour le",
-  "viewDetails": "Voir les détails",
-  "edit": "Modifier la propriété",
-  "delete": "Supprimer la propriété",
+  "title": "العنوان",
+  "description": "الوصف",
+  "price": "السعر",
+  "location": "الموقع",
+  "type": "النوع",
+  "status": "الحالة",
+  "bedrooms": "غرف نوم",
+  "bathrooms": "حمامات",
+  "surface": "المساحة",
+  "created": "تم الإنشاء في",
+  "updated": "تم التحديث في",
+  "viewDetails": "عرض التفاصيل",
+  "edit": "تعديل العقار",
+  "delete": "حذف العقار",
   "statuses": {
-    "draft": "Brouillon",
-    "pending": "En attente",
-    "listed": "Publié",
-    "sold": "Vendu",
-    "rented": "Loué",
-    "archived": "Archivé"
+    "draft": "مسودة",
+    "pending": "قيد الانتظار",
+    "listed": "منشور",
+    "sold": "مباع",
+    "rented": "مؤجر",
+    "archived": "مؤرشف"
   },
   "types": {
-    "house": "Maison",
-    "apartment": "Appartement",
-    "land": "Terrain",
-    "commercial": "Commercial"
+    "house": "منزل",
+    "apartment": "شقة",
+    "land": "أرض",
+    "commercial": "تجاري"
   }
 }
-

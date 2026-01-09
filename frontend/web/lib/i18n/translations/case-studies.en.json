@@ -1,0 +1,25 @@
+{
+  "hero": {
+    "title": "Case Studies",
+    "subtitle": "Client Success",
+    "description": "Discover how our clients use Viridial to transform their real estate business"
+  },
+  "filter": {
+    "all": "All",
+    "agencies": "Agencies",
+    "owners": "Owners",
+    "enterprise": "Enterprises",
+    "roi": "ROI",
+    "automation": "Automation",
+    "growth": "Growth"
+  },
+  "results": {
+    "title": "Measurable results",
+    "description": "Our clients see concrete results"
+  },
+  "cta": {
+    "title": "Want to become our next success story?",
+    "description": "Contact our team to discuss your needs",
+    "button": "Contact us"
+  }
+}

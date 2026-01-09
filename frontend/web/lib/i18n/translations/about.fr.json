@@ -1,0 +1,43 @@
+{
+  "hero": {
+    "title": "À propos de Viridial",
+    "subtitle": "Révolutionner l'immobilier durable",
+    "description": "Nous construisons la plateforme SaaS immobilière de demain, centrée sur la durabilité et l'innovation technologique."
+  },
+  "mission": {
+    "title": "Notre Mission",
+    "description": "Viridial a été créé avec une vision claire : rendre l'immobilier plus durable, accessible et intelligent grâce à la technologie. Nous croyons que chaque transaction immobilière peut contribuer à un avenir plus vert.",
+    "values": {
+      "sustainability": {
+        "title": "Durabilité",
+        "description": "100% engagés pour l'écologie et les éco-quartiers"
+      },
+      "innovation": {
+        "title": "Innovation",
+        "description": "Technologie de pointe pour une expérience utilisateur exceptionnelle"
+      },
+      "transparency": {
+        "title": "Transparence",
+        "description": "Prix clairs, processus transparents, données fiables"
+      },
+      "accessibility": {
+        "title": "Accessibilité",
+        "description": "Des outils professionnels accessibles à tous"
+      }
+    }
+  },
+  "team": {
+    "title": "Notre Équipe",
+    "subtitle": "Passionnés par l'immobilier et la technologie",
+    "description": "Nous sommes une équipe de développeurs, designers et experts immobiliers dédiés à transformer l'industrie."
+  },
+  "story": {
+    "title": "Notre Histoire",
+    "description": "Fondé en 2024, Viridial est né de la constatation que l'industrie immobilière avait besoin d'outils modernes pour répondre aux défis du 21e siècle : transition écologique, transparence accrue et expérience utilisateur améliorée."
+  },
+  "cta": {
+    "title": "Rejoignez-nous dans cette aventure",
+    "description": "Que vous soyez une agence, un propriétaire ou un chercheur, découvrez comment Viridial peut transformer votre approche de l'immobilier.",
+    "button": "Commencer gratuitement"
+  }
+}

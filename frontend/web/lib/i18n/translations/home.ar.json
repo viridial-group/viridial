@@ -1,64 +1,63 @@
 {
   "hero": {
-    "title": "L'immobilier",
-    "subtitle": "réinventé",
-    "description": "Plateforme SaaS complète pour la recherche, la gestion et l'intelligence immobilière. Géolocalisation automatique, recherche intelligente, analytics avancés.",
-    "ctaPrimary": "Commencer gratuitement",
-    "ctaSecondary": "Explorer les propriétés",
-    "badge": "100% engagée pour l'écologie"
+    "title": "العقارات",
+    "subtitle": "بشكل جديد",
+    "description": "منصة SaaS شاملة للبحث والإدارة والذكاء العقاري. تحديد الموقع الجغرافي التلقائي، البحث الذكي، التحليلات المتقدمة.",
+    "ctaPrimary": "ابدأ مجاناً",
+    "ctaSecondary": "استكشف العقارات",
+    "badge": "100% ملتزمة بالبيئة"
   },
   "stats": {
-    "properties": "Propriétés",
-    "users": "Utilisateurs",
-    "cities": "Villes",
-    "ecoCertified": "Propriétés éco-certifiées",
-    "searchSpeed": "Recherche rapide",
-    "neighborhoods": "Quartiers"
+    "properties": "عقارات",
+    "users": "مستخدمون",
+    "cities": "مدن",
+    "ecoCertified": "عقارات معتمدة بيئياً",
+    "searchSpeed": "بحث سريع",
+    "neighborhoods": "أحياء"
   },
   "features": {
-    "title": "Tout ce dont vous avez besoin",
-    "subtitle": "Pour réussir dans l'immobilier",
+    "title": "كل ما تحتاجه",
+    "subtitle": "للنجاح في العقارات",
     "search": {
-      "title": "Recherche intelligente",
-      "description": "Moteur de recherche avancé avec Meilisearch, filtres géographiques en temps réel et carte interactive avec points d'intérêt."
+      "title": "بحث ذكي",
+      "description": "محرك بحث متقدم مع Meilisearch، فلاتر جغرافية في الوقت الفعلي وخريطة تفاعلية مع نقاط الاهتمام."
     },
     "manage": {
-      "title": "Gestion complète",
-      "description": "Créez, modifiez et gérez vos propriétés avec géolocalisation automatique, médias multiples, workflow de publication et analytics."
+      "title": "إدارة شاملة",
+      "description": "أنشئ وعدل وأدر عقاراتك مع تحديد الموقع الجغرافي التلقائي، وسائط متعددة، سير عمل النشر والتحليلات."
     },
     "analytics": {
-      "title": "Intelligence immobilière",
-      "description": "Estimations de prix, insights sur les quartiers, scoring automatique et recommandations basées sur l'IA."
+      "title": "الذكاء العقاري",
+      "description": "تقديرات الأسعار، رؤى حول الأحياء، التقييم التلقائي والتوصيات القائمة على الذكاء الاصطناعي."
     }
   },
   "howItWorks": {
-    "title": "Comment ça marche",
-    "subtitle": "En 3 étapes simples",
+    "title": "كيف يعمل",
+    "subtitle": "في 3 خطوات بسيطة",
     "step1": {
-      "title": "Créez votre compte",
-      "description": "Inscription gratuite en moins de 2 minutes"
+      "title": "أنشئ حسابك",
+      "description": "تسجيل مجاني في أقل من دقيقتين"
     },
     "step2": {
-      "title": "Ajoutez vos propriétés",
-      "description": "Géolocalisation automatique et upload de médias"
+      "title": "أضف عقاراتك",
+      "description": "تحديد الموقع الجغرافي التلقائي ورفع الوسائط"
     },
     "step3": {
-      "title": "Publiez et gérez",
-      "description": "Workflow de publication et analytics en temps réel"
+      "title": "انشر وأدر",
+      "description": "سير عمل النشر والتحليلات في الوقت الفعلي"
     }
   },
   "ecology": {
-    "title": "Immobilier durable",
-    "subtitle": "100% engagée pour l'écologie",
-    "description": "Nous mettons en avant les éco-quartiers certifiés, les propriétés avec énergies renouvelables et les matériaux durables.",
-    "certified": "Éco-quartiers certifiés",
-    "renewable": "Énergies renouvelables",
-    "materials": "Matériaux durables"
+    "title": "عقارات مستدامة",
+    "subtitle": "100% ملتزمة بالبيئة",
+    "description": "نبرز الأحياء البيئية المعتمدة والعقارات مع الطاقات المتجددة والمواد المستدامة.",
+    "certified": "أحياء بيئية معتمدة",
+    "renewable": "طاقات متجددة",
+    "materials": "مواد مستدامة"
   },
   "cta": {
-    "title": "Prêt à transformer votre immobilier ?",
-    "description": "Rejoignez des milliers d'utilisateurs qui font confiance à Viridial",
-    "button": "Commencer maintenant"
+    "title": "هل أنت مستعد لتحويل عقاراتك؟",
+    "description": "انضم إلى آلاف المستخدمين الذين يثقون بـ Viridial",
+    "button": "ابدأ الآن"
   }
 }
-

@@ -1,181 +1,181 @@
 {
   "login": {
-    "title": "Bienvenue !",
-    "subtitle": "Pas encore de compte ?",
-    "email": "Email",
-    "emailPlaceholder": "votre@email.com",
-    "password": "Mot de passe",
+    "title": "مرحباً!",
+    "subtitle": "ليس لديك حساب بعد؟",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "your@email.com",
+    "password": "كلمة المرور",
     "passwordPlaceholder": "••••••••",
-    "forgotPassword": "Mot de passe oublié ?",
-    "submit": "Continuer",
-    "submitLoading": "Connexion...",
-    "signup": "S'inscrire",
-    "or": "ou",
-    "googleLogin": "Continuer avec Google",
-    "terms": "En vous connectant, vous acceptez nos",
-    "termsLink": "Conditions d'utilisation",
+    "forgotPassword": "نسيت كلمة المرور؟",
+    "submit": "متابعة",
+    "submitLoading": "جاري تسجيل الدخول...",
+    "signup": "إنشاء حساب",
+    "or": "أو",
+    "googleLogin": "المتابعة مع Google",
+    "terms": "بتسجيل الدخول، أنت تقبل",
+    "termsLink": "شروط الاستخدام",
     "toasts": {
       "signupSuccess": {
-        "title": "Inscription réussie",
-        "description": "Vous pouvez maintenant vous connecter."
+        "title": "تم التسجيل بنجاح",
+        "description": "يمكنك الآن تسجيل الدخول."
       },
       "resetSuccess": {
-        "title": "Mot de passe réinitialisé",
-        "description": "Vous pouvez maintenant vous connecter avec votre nouveau mot de passe."
+        "title": "تم إعادة تعيين كلمة المرور",
+        "description": "يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة."
       },
       "loginSuccess": {
-        "title": "Connexion réussie",
-        "description": "Bienvenue ! Redirection en cours..."
+        "title": "تم تسجيل الدخول بنجاح",
+        "description": "مرحباً! جاري إعادة التوجيه..."
       },
       "loginError": {
-        "title": "Erreur de connexion",
-        "description": "Une erreur est survenue lors de la connexion"
+        "title": "خطأ في تسجيل الدخول",
+        "description": "حدث خطأ أثناء تسجيل الدخول"
       }
     },
     "validation": {
-      "emailRequired": "Veuillez entrer une adresse email valide",
-      "passwordRequired": "Le mot de passe est requis"
+      "emailRequired": "يرجى إدخال عنوان بريد إلكتروني صحيح",
+      "passwordRequired": "كلمة المرور مطلوبة"
     },
-    "loading": "Chargement..."
+    "loading": "جاري التحميل..."
   },
   "signup": {
-    "title": "Créer un compte",
-    "subtitle": "Vous avez déjà un compte ?",
-    "email": "Email",
-    "emailPlaceholder": "votre@email.com",
-    "password": "Mot de passe",
+    "title": "إنشاء حساب",
+    "subtitle": "لديك حساب بالفعل؟",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "your@email.com",
+    "password": "كلمة المرور",
     "passwordPlaceholder": "••••••••",
-    "confirmPassword": "Confirmer le mot de passe",
+    "confirmPassword": "تأكيد كلمة المرور",
     "confirmPasswordPlaceholder": "••••••••",
-    "submit": "Créer un compte",
-    "submitLoading": "Création...",
-    "login": "Se connecter",
-    "passwordHint": "Au moins 8 caractères, une majuscule, une minuscule et un chiffre",
-    "terms": "En créant un compte, vous acceptez nos",
-    "termsLink": "Conditions d'utilisation",
+    "submit": "إنشاء حساب",
+    "submitLoading": "جاري الإنشاء...",
+    "login": "تسجيل الدخول",
+    "passwordHint": "8 أحرف على الأقل، حرف كبير، حرف صغير ورقم",
+    "terms": "بإنشاء حساب، أنت تقبل",
+    "termsLink": "شروط الاستخدام",
     "toasts": {
       "success": {
-        "title": "Inscription réussie !",
-        "description": "Un email de vérification a été envoyé à {{email}}. Veuillez vérifier votre boîte de réception."
+        "title": "تم التسجيل بنجاح!",
+        "description": "تم إرسال رسالة تحقق إلى {{email}}. يرجى التحقق من بريدك الوارد."
       },
       "redirect": {
-        "title": "Inscription réussie",
-        "description": "Redirection vers la page de connexion..."
+        "title": "تم التسجيل بنجاح",
+        "description": "جاري إعادة التوجيه إلى صفحة تسجيل الدخول..."
       },
       "error": {
-        "title": "Erreur d'inscription",
-        "description": "Une erreur est survenue lors de l'inscription"
+        "title": "خطأ في التسجيل",
+        "description": "حدث خطأ أثناء التسجيل"
       }
     },
     "validation": {
-      "emailRequired": "Veuillez entrer une adresse email valide",
-      "passwordMin": "Le mot de passe doit contenir au moins 8 caractères",
-      "passwordLowercase": "Le mot de passe doit contenir au moins une minuscule",
-      "passwordUppercase": "Le mot de passe doit contenir au moins une majuscule",
-      "passwordDigit": "Le mot de passe doit contenir au moins un chiffre",
-      "confirmPasswordMatch": "Les mots de passe ne correspondent pas"
+      "emailRequired": "يرجى إدخال عنوان بريد إلكتروني صحيح",
+      "passwordMin": "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل",
+      "passwordLowercase": "يجب أن تحتوي كلمة المرور على حرف صغير على الأقل",
+      "passwordUppercase": "يجب أن تحتوي كلمة المرور على حرف كبير على الأقل",
+      "passwordDigit": "يجب أن تحتوي كلمة المرور على رقم على الأقل",
+      "confirmPasswordMatch": "كلمات المرور غير متطابقة"
     },
-    "loading": "Chargement..."
+    "loading": "جاري التحميل..."
   },
   "forgotPassword": {
-    "title": "Mot de passe oublié ?",
-    "description": "Entrez votre email pour recevoir un lien de réinitialisation",
-    "email": "Email",
-    "emailPlaceholder": "votre@email.com",
-    "submit": "Envoyer le lien",
-    "submitLoading": "Envoi...",
-    "backToLogin": "Retour à la connexion",
+    "title": "نسيت كلمة المرور؟",
+    "description": "أدخل بريدك الإلكتروني لتلقي رابط إعادة التعيين",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "your@email.com",
+    "submit": "إرسال الرابط",
+    "submitLoading": "جاري الإرسال...",
+    "backToLogin": "العودة لتسجيل الدخول",
     "submitted": {
-      "title": "Email envoyé !",
-      "message": "Si cet email est enregistré, un lien de réinitialisation a été envoyé à {{email}}.",
-      "hint": "Vérifiez votre boîte de réception et vos spams. Le lien expirera dans 1 heure."
+      "title": "تم إرسال البريد الإلكتروني!",
+      "message": "إذا كان هذا البريد الإلكتروني مسجلاً، تم إرسال رابط إعادة التعيين إلى {{email}}.",
+      "hint": "تحقق من بريدك الوارد والرسائل غير المرغوب فيها. سينتهي صلاحية الرابط خلال ساعة واحدة."
     },
     "toasts": {
       "success": {
-        "title": "Email envoyé",
-        "description": "Si cet email est enregistré, un lien de réinitialisation a été envoyé."
+        "title": "تم إرسال البريد الإلكتروني",
+        "description": "إذا كان هذا البريد الإلكتروني مسجلاً، تم إرسال رابط إعادة التعيين."
       },
       "error": {
-        "title": "Erreur",
-        "description": "Une erreur est survenue lors de l'envoi de l'email."
+        "title": "خطأ",
+        "description": "حدث خطأ أثناء إرسال البريد الإلكتروني."
       }
     },
     "validation": {
-      "emailRequired": "Veuillez entrer une adresse email valide"
+      "emailRequired": "يرجى إدخال عنوان بريد إلكتروني صحيح"
     }
   },
   "resetPassword": {
-    "title": "Réinitialiser votre mot de passe",
-    "description": "Entrez votre nouveau mot de passe ci-dessous",
-    "password": "Nouveau mot de passe",
+    "title": "إعادة تعيين كلمة المرور",
+    "description": "أدخل كلمة المرور الجديدة أدناه",
+    "password": "كلمة المرور الجديدة",
     "passwordPlaceholder": "••••••••",
-    "confirmPassword": "Confirmer le mot de passe",
+    "confirmPassword": "تأكيد كلمة المرور",
     "confirmPasswordPlaceholder": "••••••••",
-    "passwordHint": "Au moins 8 caractères, une majuscule, une minuscule et un chiffre",
-    "submit": "Réinitialiser le mot de passe",
-    "submitLoading": "Réinitialisation...",
-    "backToLogin": "Retour à la connexion",
-    "requestNewLink": "Demander un nouveau lien",
-    "tokenMissing": "Token de réinitialisation manquant. Veuillez utiliser le lien reçu par email.",
-    "tokenError": "Token de réinitialisation manquant",
-    "loading": "Chargement...",
+    "passwordHint": "8 أحرف على الأقل، حرف كبير، حرف صغير ورقم",
+    "submit": "إعادة تعيين كلمة المرور",
+    "submitLoading": "جاري إعادة التعيين...",
+    "backToLogin": "العودة لتسجيل الدخول",
+    "requestNewLink": "طلب رابط جديد",
+    "tokenMissing": "رمز إعادة التعيين مفقود. يرجى استخدام الرابط المستلم عبر البريد الإلكتروني.",
+    "tokenError": "رمز إعادة التعيين مفقود",
+    "loading": "جاري التحميل...",
     "success": {
-      "title": "Mot de passe réinitialisé !",
-      "message": "Votre mot de passe a été modifié avec succès.",
-      "redirect": "Redirection vers la page de connexion...",
-      "loginNow": "Se connecter maintenant"
+      "title": "تم إعادة تعيين كلمة المرور!",
+      "message": "تم تغيير كلمة المرور بنجاح.",
+      "redirect": "جاري إعادة التوجيه إلى صفحة تسجيل الدخول...",
+      "loginNow": "تسجيل الدخول الآن"
     },
     "toasts": {
       "success": {
-        "title": "Mot de passe réinitialisé",
-        "description": "Votre mot de passe a été réinitialisé avec succès. Redirection..."
+        "title": "تم إعادة تعيين كلمة المرور",
+        "description": "تم إعادة تعيين كلمة المرور بنجاح. جاري إعادة التوجيه..."
       },
       "error": {
-        "title": "Erreur",
-        "description": "Une erreur est survenue lors de la réinitialisation"
+        "title": "خطأ",
+        "description": "حدث خطأ أثناء إعادة التعيين"
       },
       "tokenMissing": {
-        "title": "Token manquant",
-        "description": "Veuillez utiliser le lien reçu par email."
+        "title": "الرمز مفقود",
+        "description": "يرجى استخدام الرابط المستلم عبر البريد الإلكتروني."
       }
     },
     "validation": {
-      "passwordMin": "Le mot de passe doit contenir au moins 8 caractères",
-      "passwordLowercase": "Le mot de passe doit contenir au moins une minuscule",
-      "passwordUppercase": "Le mot de passe doit contenir au moins une majuscule",
-      "passwordDigit": "Le mot de passe doit contenir au moins un chiffre",
-      "confirmPasswordMatch": "Les mots de passe ne correspondent pas"
+      "passwordMin": "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل",
+      "passwordLowercase": "يجب أن تحتوي كلمة المرور على حرف صغير على الأقل",
+      "passwordUppercase": "يجب أن تحتوي كلمة المرور على حرف كبير على الأقل",
+      "passwordDigit": "يجب أن تحتوي كلمة المرور على رقم على الأقل",
+      "confirmPasswordMatch": "كلمات المرور غير متطابقة"
     }
   },
   "verifyEmail": {
-    "title": "Vérification de votre email",
-    "description": "Veuillez patienter pendant la vérification...",
-    "tokenMissing": "Token de vérification manquant. Veuillez utiliser le lien reçu par email.",
-    "tokenMissingMessage": "Token de vérification manquant",
-    "tokenMissingHint": "Veuillez utiliser le lien de vérification reçu par email.",
-    "backToLogin": "Retour à la connexion",
-    "loading": "Chargement...",
-    "verifying": "Vérification en cours...",
+    "title": "التحقق من بريدك الإلكتروني",
+    "description": "يرجى الانتظار أثناء التحقق...",
+    "tokenMissing": "رمز التحقق مفقود. يرجى استخدام الرابط المستلم عبر البريد الإلكتروني.",
+    "tokenMissingMessage": "رمز التحقق مفقود",
+    "tokenMissingHint": "يرجى استخدام رابط التحقق المستلم عبر البريد الإلكتروني.",
+    "backToLogin": "العودة لتسجيل الدخول",
+    "loading": "جاري التحميل...",
+    "verifying": "جاري التحقق...",
     "success": {
-      "title": "Email vérifié avec succès !",
-      "message": "Votre adresse email a été vérifiée. Vous pouvez maintenant vous connecter.",
-      "redirect": "Redirection vers la page de connexion...",
-      "loginNow": "Se connecter maintenant"
+      "title": "تم التحقق من البريد الإلكتروني بنجاح!",
+      "message": "تم التحقق من عنوان بريدك الإلكتروني. يمكنك الآن تسجيل الدخول.",
+      "redirect": "جاري إعادة التوجيه إلى صفحة تسجيل الدخول...",
+      "loginNow": "تسجيل الدخول الآن"
     },
     "error": {
-      "title": "Erreur de vérification",
-      "message": "Le lien a peut-être expiré ou a déjà été utilisé.",
-      "helpLink": "Besoin d'aide ?"
+      "title": "خطأ في التحقق",
+      "message": "ربما انتهت صلاحية الرابط أو تم استخدامه بالفعل.",
+      "helpLink": "تحتاج مساعدة؟"
     },
-    "resend": "Renvoyer l'email",
+    "resend": "إعادة إرسال البريد الإلكتروني",
     "toasts": {
       "resendSuccess": {
-        "title": "Email renvoyé",
-        "description": "Un nouvel email de vérification a été envoyé."
+        "title": "تم إعادة إرسال البريد الإلكتروني",
+        "description": "تم إرسال رسالة تحقق جديدة."
       },
       "resendError": {
-        "title": "Erreur",
-        "description": "Une erreur est survenue lors de l'envoi de l'email."
+        "title": "خطأ",
+        "description": "حدث خطأ أثناء إرسال البريد الإلكتروني."
       }
     }
   }

@@ -47,10 +47,42 @@ export function Footer() {
             <ul className="space-y-2" role="list">
               <li>
                 <Link
+                  href="/about"
+                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:rounded-md focus:px-1"
+                >
+                  {t('common.nav.about')}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/contact"
+                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:rounded-md focus:px-1"
+                >
+                  {t('common.nav.contact')}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/testimonials"
+                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:rounded-md focus:px-1"
+                >
+                  {t('common.nav.testimonials')}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/case-studies"
+                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:rounded-md focus:px-1"
+                >
+                  {t('common.nav.caseStudies')}
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/terms"
                   className="text-sm text-gray-600 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:rounded-md focus:px-1"
                 >
-                  {t('footer.terms')}
+                  {t('common.footer.terms')}
                 </Link>
               </li>
               <li>
@@ -58,7 +90,7 @@ export function Footer() {
                   href="/privacy"
                   className="text-sm text-gray-600 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:rounded-md focus:px-1"
                 >
-                  {t('footer.privacy')}
+                  {t('common.footer.privacy')}
                 </Link>
               </li>
             </ul>

@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from '@/contexts/I18nContext';
+import { GuaranteeBadge, TrustSignals } from '@/components/marketing/TrustSignals';
 import { DashboardIllustration } from '@/components/pricing/DashboardIllustration';
 import { PropertyManagementIllustration } from '@/components/pricing/PropertyManagementIllustration';
 import { AnalyticsIllustration } from '@/components/pricing/AnalyticsIllustration';
@@ -658,9 +659,17 @@ export default function PricingPage() {
               <h2 className="text-4xl font-bold text-gray-900 mb-4">
                 {t('pricing.trust.title')}
               </h2>
-              <p className="text-xl text-gray-600">
+              <p className="text-xl text-gray-600 mb-6">
                 {t('pricing.trust.description')}
               </p>
+              {/* Guarantee Badge */}
+              <div className="flex justify-center mb-8">
+                <GuaranteeBadge />
+              </div>
+              {/* Trust Signals */}
+              <div className="max-w-3xl mx-auto mb-12">
+                <TrustSignals />
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">

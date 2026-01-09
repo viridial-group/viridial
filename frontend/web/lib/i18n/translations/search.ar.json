@@ -1,32 +1,31 @@
 {
-  "title": "Rechercher une propriété",
-  "placeholder": "Rechercher une propriété, un lieu, une adresse...",
-  "noResults": "Aucun résultat trouvé",
-  "resultsCount": "{{count}} résultat(s) trouvé(s)",
-  "filters": "Filtres",
-  "priceRange": "Fourchette de prix",
-  "propertyType": "Type de propriété",
-  "status": "Statut",
-  "sortBy": "Trier par",
-  "sortRelevance": "Pertinence",
-  "sortPriceAsc": "Prix croissant",
-  "sortPriceDesc": "Prix décroissant",
-  "sortDistance": "Distance",
-  "viewMode": "Mode d'affichage",
-  "list": "Liste",
-  "grid": "Grille",
-  "map": "Carte",
+  "title": "البحث عن عقار",
+  "placeholder": "ابحث عن عقار، موقع، عنوان...",
+  "noResults": "لم يتم العثور على نتائج",
+  "resultsCount": "تم العثور على {{count}} نتيجة",
+  "filters": "الفلاتر",
+  "priceRange": "نطاق السعر",
+  "propertyType": "نوع العقار",
+  "status": "الحالة",
+  "sortBy": "ترتيب حسب",
+  "sortRelevance": "الأهمية",
+  "sortPriceAsc": "السعر تصاعدياً",
+  "sortPriceDesc": "السعر تنازلياً",
+  "sortDistance": "المسافة",
+  "viewMode": "وضع العرض",
+  "list": "قائمة",
+  "grid": "شبكة",
+  "map": "خريطة",
   "quickFilters": {
-    "ecoCertified": "Éco-certifié",
-    "newListings": "Nouveautés",
-    "priceReduced": "Prix réduits",
-    "featured": "À la une"
+    "ecoCertified": "معتمد بيئياً",
+    "newListings": "قوائم جديدة",
+    "priceReduced": "أسعار مخفضة",
+    "featured": "مميز"
   },
   "property": {
-    "viewDetails": "Voir détails",
-    "bedrooms": "chambres",
-    "bathrooms": "salles de bain",
-    "surface": "m²"
+    "viewDetails": "عرض التفاصيل",
+    "bedrooms": "غرف نوم",
+    "bathrooms": "حمامات",
+    "surface": "م²"
   }
 }
-

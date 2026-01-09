@@ -1,277 +1,277 @@
 {
   "hero": {
-    "badge": "Tarifs simples et transparents",
-    "title": "Choisissez votre plan",
-    "subtitle": "sans engagement",
-    "description": "Commencez gratuitement et passez à un plan payant quand vous êtes prêt. Économisez jusqu'à 17% avec l'abonnement annuel.",
-    "monthly": "Mensuel",
-    "yearly": "Annuel",
-    "save": "Économisez 17%",
-    "free": "Gratuit",
-    "foreverNoCard": "Pour toujours, sans carte de crédit",
-    "perMonth": "mois",
-    "perYear": "an",
-    "or": "Soit",
-    "billingToggle": "Basculer entre mensuel et annuel"
+    "badge": "أسعار بسيطة وشفافة",
+    "title": "اختر خطتك",
+    "subtitle": "بدون التزام",
+    "description": "ابدأ مجاناً وانتقل إلى خطة مدفوعة عندما تكون جاهزاً. وفر حتى 17% مع الاشتراك السنوي.",
+    "monthly": "شهري",
+    "yearly": "سنوي",
+    "save": "وفر 17%",
+    "free": "مجاني",
+    "foreverNoCard": "للأبد، بدون بطاقة ائتمانية",
+    "perMonth": "شهر",
+    "perYear": "سنة",
+    "or": "أي",
+    "billingToggle": "التبديل بين شهري وسنوي"
   },
   "savingsCalculator": {
-    "title": "Calcul de vos économies",
-    "monthlyPrice": "Prix mensuel (x12):",
-    "annualSavings": "Économie annuelle:",
-    "annualPrice": "Prix annuel:",
-    "note": "Soit 2 mois offerts chaque année",
-    "youSave": "Vous économisez avec l'abonnement annuel",
-    "saveUpTo": "L'abonnement annuel vous fait économiser jusqu'à 2 mois de facturation par an.",
+    "title": "حساب توفيراتك",
+    "monthlyPrice": "السعر الشهري (×12):",
+    "annualSavings": "التوفير السنوي:",
+    "annualPrice": "السعر السنوي:",
+    "note": "أي شهران مجاناً كل عام",
+    "youSave": "توفر مع الاشتراك السنوي",
+    "saveUpTo": "الاشتراك السنوي يوفر لك ما يصل إلى شهرين من الفوترة سنوياً.",
     "discount": "-17%",
-    "or2Months": "soit 2 mois offerts",
-    "savePercent": "Économisez 17%"
+    "or2Months": "أي شهران مجاناً",
+    "savePercent": "وفر 17%"
   },
   "featuresShowcase": {
-    "title": "Une interface moderne et intuitive",
-    "description": "Découvrez les fonctionnalités qui font de Viridial la solution SaaS la plus complète pour la gestion immobilière",
+    "title": "واجهة حديثة وبديهية",
+    "description": "اكتشف المميزات التي تجعل Viridial الحل SaaS الأكثر اكتمالاً لإدارة العقارات",
     "dashboard": {
-      "title": "Dashboard Analytics",
-      "description": "Visualisez vos performances en temps réel avec des graphiques et métriques détaillées"
+      "title": "لوحة تحكم التحليلات",
+      "description": "تصور أداءك في الوقت الفعلي مع رسوم بيانية ومقاييس مفصلة"
     },
     "propertyManagement": {
-      "title": "Gestion de Propriétés",
-      "description": "Gérez efficacement votre portefeuille avec une vue d'ensemble claire et des filtres avancés"
+      "title": "إدارة العقارات",
+      "description": "أدر محفظتك بكفاءة مع نظرة عامة واضحة وفلاتر متقدمة"
     },
     "analytics": {
-      "title": "Analytics Avancés",
-      "description": "Analysez les tendances du marché et optimisez vos stratégies avec des données précises"
+      "title": "تحليلات متقدمة",
+      "description": "حلل اتجاهات السوق وحدّث استراتيجياتك مع بيانات دقيقة"
     },
     "leadManagement": {
-      "title": "Gestion des Leads",
-      "description": "Suivez vos prospects, automatisez le scoring et maximisez vos conversions"
+      "title": "إدارة العملاء المحتملين",
+      "description": "تتبع عملائك المحتملين، أتمتة التقييم وزيادة تحويلاتك"
     },
     "mobileApp": {
-      "title": "Application Mobile",
-      "description": "Accédez à votre backoffice depuis n'importe où avec notre application mobile responsive. Gérez vos propriétés, consultez vos analytics et répondez aux leads en déplacement.",
-      "mobileOptimized": "Interface optimisée mobile",
-      "realTimeNotifications": "Notifications en temps réel",
-      "autoSync": "Synchronisation automatique"
+      "title": "تطبيق الجوال",
+      "description": "الوصول إلى مكتبك الخلفي من أي مكان مع تطبيق الجوال المتجاوب. أدر عقاراتك، راجع تحليلاتك ورد على العملاء المحتملين أثناء التنقل.",
+      "mobileOptimized": "واجهة محسّنة للجوال",
+      "realTimeNotifications": "إشعارات في الوقت الفعلي",
+      "autoSync": "مزامنة تلقائية"
     }
   },
   "plans": {
     "free": {
-      "name": "Gratuit",
-      "description": "Parfait pour découvrir et tester la plateforme",
-      "badge": "Gratuit à vie",
-      "cta": "Commencer gratuitement",
-      "popular": "Le plus populaire"
+      "name": "مجاني",
+      "description": "مثالي للاستكشاف واختبار المنصة",
+      "badge": "مجاني مدى الحياة",
+      "cta": "ابدأ مجاناً",
+      "popular": "الأكثر شعبية"
     },
     "starter": {
       "name": "Starter",
-      "description": "Idéal pour les particuliers et petites agences",
-      "cta": "Essayer Starter",
-      "popular": "Populaire"
+      "description": "مثالي للأفراد والوكالات الصغيرة",
+      "cta": "جرب Starter",
+      "popular": "شائع"
     },
     "pro": {
       "name": "Pro",
-      "description": "Pour les agences qui veulent maximiser leur performance",
-      "badge": "Le plus populaire",
-      "cta": "Essayer Pro"
+      "description": "للوكالات التي تريد تعظيم أدائها",
+      "badge": "الأكثر شعبية",
+      "cta": "جرب Pro"
     },
     "enterprise": {
       "name": "Enterprise",
-      "description": "Solution sur mesure pour les grandes organisations",
-      "badge": "Sur mesure",
-      "cta": "Contacter les ventes"
+      "description": "حل مخصص للمنظمات الكبيرة",
+      "badge": "مخصص",
+      "cta": "اتصل بالمبيعات"
     }
   },
   "features": {
-    "upTo": "Jusqu'à",
-    "properties": "propriétés",
-    "unlimited": "illimitées",
-    "basicSearch": "Recherche de base",
-    "intelligentSearch": "Recherche intelligente",
-    "advancedSearch": "Recherche intelligente avancée",
-    "autoGeolocation": "Géolocalisation automatique",
-    "geolocationPOI": "Géolocalisation + Points d'intérêt",
-    "mediaUpload": "Upload de médias",
-    "mediaPerProperty": "par propriété",
-    "unlimitedMedia": "illimité",
-    "unlimitedMediaTours": "Médias illimités + Visites virtuelles",
-    "emailSupport": "Support par email",
-    "basicDashboard": "Dashboard de base",
-    "improvedDashboard": "Dashboard amélioré",
-    "basicAnalytics": "Analytics de base",
-    "advancedAnalytics": "Analytics avancés complets",
-    "basicNeighborhood": "Insights quartiers de base",
-    "detailedNeighborhood": "Insights quartiers détaillés",
-    "ecoFilters": "Filtres écologiques",
-    "advancedEcoFilters": "Filtres écologiques avancés",
-    "basicLeads": "Gestion des leads (basique)",
-    "completeLeads": "Gestion complète des leads",
-    "autoLeadScoring": "Scoring automatique des leads",
-    "users": "utilisateurs",
-    "limitedAPI": "API limitée",
-    "completeAPI": "API complète",
-    "crmSync": "Synchronisation CRM (HubSpot)",
-    "prioritySupport": "Support prioritaire",
-    "customization": "Personnalisation",
-    "basicCustomization": "Personnalisation de base",
-    "completeCustomization": "Personnalisation complète",
-    "allInPro": "Tout dans Pro",
-    "unlimitedUsers": "Utilisateurs illimités",
-    "multiOrg": "Multi-organisations",
-    "advancedRBAC": "RBAC avancé",
-    "customAnalytics": "Analytics personnalisés",
-    "customIntegrations": "Intégrations sur mesure",
-    "dedicatedDev": "Développements dédiés",
-    "support24": "Support 24/7 dédié",
-    "accountManager": "Account Manager dédié",
-    "training": "Formation et onboarding",
-    "sla": "SLA garantis",
-    "dedicatedHosting": "Hébergement dédié (optionnel)",
-    "securityAudit": "Audit de sécurité",
+    "upTo": "حتى",
+    "properties": "عقارات",
+    "unlimited": "غير محدود",
+    "basicSearch": "بحث أساسي",
+    "intelligentSearch": "بحث ذكي",
+    "advancedSearch": "بحث ذكي متقدم",
+    "autoGeolocation": "تحديد الموقع الجغرافي التلقائي",
+    "geolocationPOI": "تحديد الموقع + نقاط الاهتمام",
+    "mediaUpload": "رفع الوسائط",
+    "mediaPerProperty": "لكل عقار",
+    "unlimitedMedia": "غير محدود",
+    "unlimitedMediaTours": "وسائط غير محدودة + جولات افتراضية",
+    "emailSupport": "دعم عبر البريد الإلكتروني",
+    "basicDashboard": "لوحة تحكم أساسية",
+    "improvedDashboard": "لوحة تحكم محسّنة",
+    "basicAnalytics": "تحليلات أساسية",
+    "advancedAnalytics": "تحليلات متقدمة كاملة",
+    "basicNeighborhood": "رؤى الأحياء الأساسية",
+    "detailedNeighborhood": "رؤى الأحياء المفصلة",
+    "ecoFilters": "فلاتر بيئية",
+    "advancedEcoFilters": "فلاتر بيئية متقدمة",
+    "basicLeads": "إدارة العملاء المحتملين (أساسي)",
+    "completeLeads": "إدارة كاملة للعملاء المحتملين",
+    "autoLeadScoring": "تقييم تلقائي للعملاء المحتملين",
+    "users": "مستخدمون",
+    "limitedAPI": "API محدود",
+    "completeAPI": "API كامل",
+    "crmSync": "مزامنة CRM (HubSpot)",
+    "prioritySupport": "دعم ذو أولوية",
+    "customization": "التخصيص",
+    "basicCustomization": "تخصيص أساسي",
+    "completeCustomization": "تخصيص كامل",
+    "allInPro": "كل ما في Pro",
+    "unlimitedUsers": "مستخدمون غير محدودين",
+    "multiOrg": "منظمات متعددة",
+    "advancedRBAC": "RBAC متقدم",
+    "customAnalytics": "تحليلات مخصصة",
+    "customIntegrations": "تكاملات مخصصة",
+    "dedicatedDev": "تطوير مخصص",
+    "support24": "دعم مخصص 24/7",
+    "accountManager": "مدير حساب مخصص",
+    "training": "التدريب والإعداد",
+    "sla": "SLA مضمون",
+    "dedicatedHosting": "استضافة مخصصة (اختياري)",
+    "securityAudit": "تدقيق أمني",
     "tooltips": {
-      "upTo10Properties": "Créez et gérez jusqu'à 10 annonces immobilières simultanément",
-      "upTo50Properties": "Créez et gérez jusqu'à 50 annonces immobilières simultanément",
-      "unlimitedProperties": "Aucune limite sur le nombre d'annonces que vous pouvez créer et gérer",
-      "basicSearch": "Recherche par mots-clés, localisation et type de propriété",
-      "intelligentSearch": "Recherche avancée avec filtres multiples et suggestions intelligentes",
-      "advancedSearch": "Recherche avec IA, filtres avancés, sauvegarde de recherches et alertes",
-      "basicAnalytics": "Vues des statistiques de base sur vos propriétés (vues, clics, contacts)",
-      "advancedAnalytics": "Dashboard complet avec analyses détaillées, conversion tracking, et rapports personnalisables",
-      "basicNeighborhood": "Informations de base sur les quartiers (prix moyen, transports, écoles)",
-      "detailedNeighborhood": "Analyse approfondie des quartiers avec données détaillées, tendances du marché et projections",
-      "basicLeads": "Système de base pour suivre et gérer les contacts intéressés par vos propriétés",
-      "completeLeads": "CRM intégré avec pipeline, scoring automatique, et gestion complète du cycle de vente",
-      "autoLeadScoring": "Système IA qui évalue et priorise automatiquement vos leads selon leur potentiel",
-      "crmSync": "Intégration native avec HubSpot pour synchroniser automatiquement vos leads et contacts",
-      "limitedAPI": "Accès API avec limite de 1000 requêtes par jour",
-      "completeAPI": "Accès API illimité avec documentation complète et support technique",
-      "prioritySupport": "Temps de réponse garanti sous 24h avec canal de communication dédié",
-      "basicCustomization": "Personnalisation limitée de l'interface et des workflows",
-      "completeCustomization": "Personnalisation complète de l'interface, workflows, et intégrations sur mesure",
-      "multiOrg": "Gérez plusieurs organisations depuis un seul compte avec facturation centralisée",
-      "advancedRBAC": "Système de rôles et permissions granulaires pour un contrôle d'accès précis",
-      "customAnalytics": "Création de dashboards et rapports personnalisés selon vos besoins spécifiques",
-      "customIntegrations": "Développement d'intégrations personnalisées avec vos outils existants",
-      "dedicatedDev": "Équipe de développement dédiée pour créer des fonctionnalités exclusives",
-      "accountManager": "Responsable de compte dédié pour vous accompagner dans l'utilisation optimale de la plateforme",
-      "sla": "Garanties contractuelles sur le temps de disponibilité (99.9% uptime) et les temps de réponse",
-      "securityAudit": "Audit de sécurité régulier de votre instance pour garantir la protection de vos données"
+      "upTo10Properties": "أنشئ وأدر حتى 10 إعلان عقاري في نفس الوقت",
+      "upTo50Properties": "أنشئ وأدر حتى 50 إعلان عقاري في نفس الوقت",
+      "unlimitedProperties": "لا يوجد حد على عدد الإعلانات التي يمكنك إنشاؤها وإدارتها",
+      "basicSearch": "بحث بالكلمات المفتاحية، الموقع ونوع العقار",
+      "intelligentSearch": "بحث متقدم مع فلاتر متعددة واقتراحات ذكية",
+      "advancedSearch": "بحث مع الذكاء الاصطناعي، فلاتر متقدمة، حفظ عمليات البحث والتنبيهات",
+      "basicAnalytics": "عرض إحصائيات أساسية حول عقاراتك (مشاهدات، نقرات، جهات اتصال)",
+      "advancedAnalytics": "لوحة تحكم كاملة مع تحليلات مفصلة، تتبع التحويلات وتقارير قابلة للتخصيص",
+      "basicNeighborhood": "معلومات أساسية حول الأحياء (متوسط السعر، وسائل النقل، المدارس)",
+      "detailedNeighborhood": "تحليل متعمق للأحياء مع بيانات مفصلة، اتجاهات السوق والتوقعات",
+      "basicLeads": "نظام أساسي لتتبع وإدارة الجهات الاتصال المهتمة بعقاراتك",
+      "completeLeads": "CRM مدمج مع خط الأنابيب، تقييم تلقائي وإدارة كاملة لدورة المبيعات",
+      "autoLeadScoring": "نظام ذكاء اصطناعي يقيم ويحدد أولويات عملائك المحتملين تلقائياً حسب إمكاناتهم",
+      "crmSync": "تكامل أصلي مع HubSpot لمزامنة عملائك المحتملين وجهات الاتصال تلقائياً",
+      "limitedAPI": "الوصول إلى API مع حد 1000 طلب يومياً",
+      "completeAPI": "الوصول إلى API غير محدود مع توثيق كامل ودعم فني",
+      "prioritySupport": "وقت استجابة مضمون تحت 24 ساعة مع قناة اتصال مخصصة",
+      "basicCustomization": "تخصيص محدود للواجهة وسير العمل",
+      "completeCustomization": "تخصيص كامل للواجهة، سير العمل والتكاملات المخصصة",
+      "multiOrg": "أدر منظمات متعددة من حساب واحد مع فوترة مركزية",
+      "advancedRBAC": "نظام أدوار وصلاحيات دقيق للتحكم الدقيق في الوصول",
+      "customAnalytics": "إنشاء لوحات تحكم وتقارير مخصصة حسب احتياجاتك الخاصة",
+      "customIntegrations": "تطوير تكاملات مخصصة مع أدواتك الحالية",
+      "dedicatedDev": "فريق تطوير مخصص لإنشاء مميزات حصرية",
+      "accountManager": "مدير حساب مخصص لمساعدتك في الاستخدام الأمثل للمنصة",
+      "sla": "ضمانات تعاقدية على وقت التوفر (99.9% وقت التشغيل) وأوقات الاستجابة",
+      "securityAudit": "تدقيق أمني منتظم لنسختك لضمان حماية بياناتك"
     }
   },
   "comparison": {
-    "title": "Comparaison des plans",
-    "description": "Comparez toutes les fonctionnalités pour trouver le plan adapté à vos besoins",
-    "feature": "Fonctionnalité",
-    "properties": "Propriétés",
-    "users": "Utilisateurs",
-    "support": "Support",
+    "title": "مقارنة الخطط",
+    "description": "قارن جميع المميزات للعثور على الخطة المناسبة لاحتياجاتك",
+    "feature": "الميزة",
+    "properties": "العقارات",
+    "users": "المستخدمون",
+    "support": "الدعم",
     "api": "API",
-    "analytics": "Analytics",
-    "crmIntegration": "CRM Integration",
-    "customization": "Personnalisation",
-    "monthlyPrice": "Prix mensuel",
-    "annualPrice": "Prix annuel",
-    "email": "Email",
-    "priority": "Prioritaire",
-    "dedicated24": "24/7 Dédié",
-    "basic": "De base",
-    "custom": "Personnalisés",
-    "limited": "Limitée",
-    "included": "Inclus",
-    "notIncluded": "Non inclus"
+    "analytics": "التحليلات",
+    "crmIntegration": "تكامل CRM",
+    "customization": "التخصيص",
+    "monthlyPrice": "السعر الشهري",
+    "annualPrice": "السعر السنوي",
+    "email": "البريد الإلكتروني",
+    "priority": "ذو أولوية",
+    "dedicated24": "مخصص 24/7",
+    "basic": "أساسي",
+    "custom": "مخصص",
+    "limited": "محدود",
+    "included": "مشمول",
+    "notIncluded": "غير مشمول"
   },
   "trust": {
-    "title": "Garanties et avantages inclus",
-    "description": "Nous nous engageons à votre satisfaction avec des garanties claires",
+    "title": "الضمانات والمزايا المشمولة",
+    "description": "نلتزم برضاك مع ضمانات واضحة",
     "cancellation": {
-      "title": "Annulation à tout moment",
-      "description": "Annulez votre abonnement à tout moment sans pénalité. Vous conservez l'accès jusqu'à la fin de la période payée."
+      "title": "إلغاء في أي وقت",
+      "description": "ألغ اشتراكك في أي وقت دون غرامة. تحتفظ بالوصول حتى نهاية الفترة المدفوعة."
     },
     "noHiddenFees": {
-      "title": "Pas de frais cachés",
-      "description": "Le prix affiché est le prix que vous payez. Aucun frais de transaction, aucun frais caché. Transparence totale."
+      "title": "لا توجد رسوم خفية",
+      "description": "السعر المعروض هو السعر الذي تدفعه. لا توجد رسوم معاملة، لا توجد رسوم خفية. شفافية تامة."
     },
     "supportIncluded": {
-      "title": "Support inclus",
-      "description": "Support par email pour tous les plans. Support prioritaire et dédié pour les plans Pro et Enterprise."
+      "title": "دعم مشمول",
+      "description": "دعم عبر البريد الإلكتروني لجميع الخطط. دعم ذو أولوية ومخصص لخطط Pro و Enterprise."
     },
-    "trustTitle": "Ils nous font confiance",
-    "trustDescription": "Rejoignez des milliers d'agences immobilières qui utilisent Viridial",
+    "trustTitle": "يثقون بنا",
+    "trustDescription": "انضم إلى آلاف الوكالات العقارية التي تستخدم Viridial",
     "testimonials": {
       "jean": {
         "name": "Jean Dupont",
-        "role": "Agence Immobilière Paris",
-        "text": "Viridial a transformé notre façon de gérer nos propriétés. L'interface est intuitive et les analytics nous aident à prendre de meilleures décisions. ROI impressionnant en seulement 3 mois."
+        "role": "وكالة عقارية باريس",
+        "text": "حول Viridial طريقة إدارتنا لعقاراتنا. الواجهة بديهية والتحليلات تساعدنا في اتخاذ قرارات أفضل. عائد الاستثمار مثير للإعجاب في 3 أشهر فقط."
       },
       "marie": {
         "name": "Marie Laurent",
-        "role": "Agence Pro, Lyon",
-        "text": "La gestion des leads est devenue tellement plus simple. Le scoring automatique nous fait gagner des heures chaque semaine. Support excellent et réactif."
+        "role": "وكالة Pro، ليون",
+        "text": "أصبحت إدارة العملاء المحتملين أسهل بكثير. التقييم التلقائي يوفر لنا ساعات كل أسبوع. دعم ممتاز وسريع الاستجابة."
       },
       "pierre": {
         "name": "Pierre Martin",
-        "role": "Immobilier Premium, Marseille",
-        "text": "Plan Enterprise personnalisé qui répond parfaitement à nos besoins. L'équipe dédiée est toujours là pour nous aider. Investissement qui en vaut vraiment la peine."
+        "role": "عقارات Premium، مرسيليا",
+        "text": "خطة Enterprise مخصصة تناسب احتياجاتنا تماماً. الفريق المخصص دائماً موجود لمساعدتنا. استثمار يستحق العناء حقاً."
       }
     },
     "stats": {
-      "agencies": "Agences actives",
-      "properties": "Propriétés gérées",
-      "uptime": "Uptime garanti",
-      "enterpriseSupport": "Support Enterprise"
+      "agencies": "وكالات نشطة",
+      "properties": "عقارات مُدارة",
+      "uptime": "وقت تشغيل مضمون",
+      "enterpriseSupport": "دعم Enterprise"
     }
   },
   "faq": {
-    "title": "Questions fréquentes",
-    "description": "Tout ce que vous devez savoir sur nos tarifs et plans",
+    "title": "الأسئلة الشائعة",
+    "description": "كل ما تحتاج معرفته عن أسعارنا وخططنا",
     "changePlan": {
-      "question": "Puis-je changer de plan à tout moment ?",
-      "answer": "Oui, vous pouvez upgrader ou downgrader votre plan à tout moment. Les changements sont appliqués immédiatement avec un ajustement de facturation au prorata. Si vous passez à un plan supérieur, vous ne payez que la différence pour le reste de la période. Si vous passez à un plan inférieur, le crédit est appliqué à votre prochaine facture."
+      "question": "هل يمكنني تغيير الخطة في أي وقت؟",
+      "answer": "نعم، يمكنك الترقية أو خفض خطتك في أي وقت. يتم تطبيق التغييرات فوراً مع تعديل الفوترة بشكل متناسب. إذا انتقلت إلى خطة أعلى، تدفع فقط الفرق لبقية الفترة. إذا انتقلت إلى خطة أقل، يتم تطبيق الائتمان على فاتورتك القادمة."
     },
     "hiddenFees": {
-      "question": "Y a-t-il des frais cachés ?",
-      "answer": "Non, nos tarifs sont totalement transparents. Le prix affiché est le prix que vous payez. Il n'y a pas de frais de transaction, pas de frais cachés, pas de frais d'installation. L'abonnement annuel vous fait économiser 2 mois (soit 17% de réduction) par rapport à l'abonnement mensuel."
+      "question": "هل توجد رسوم خفية؟",
+      "answer": "لا، أسعارنا شفافة تماماً. السعر المعروض هو السعر الذي تدفعه. لا توجد رسوم معاملة، لا توجد رسوم خفية، لا توجد رسوم تثبيت. الاشتراك السنوي يوفر لك شهرين (أي خصم 17%) مقارنة بالاشتراك الشهري."
     },
     "cancel": {
-      "question": "Que se passe-t-il si j'annule mon abonnement ?",
-      "answer": "Vous pouvez annuler votre abonnement à tout moment depuis votre tableau de bord. Votre accès reste actif jusqu'à la fin de la période payée (mois ou année). Aucun remboursement n'est effectué pour les périodes déjà payées, mais vous conservez l'accès complet jusqu'à l'expiration de votre abonnement. Vous pouvez réactiver votre abonnement à tout moment."
+      "question": "ماذا يحدث إذا ألغيت اشتراكي؟",
+      "answer": "يمكنك إلغاء اشتراكك في أي وقت من لوحة التحكم. يبقى وصولك نشطاً حتى نهاية الفترة المدفوعة (شهر أو سنة). لا يتم استرداد الأموال للفترات المدفوعة مسبقاً، لكنك تحتفظ بالوصول الكامل حتى انتهاء اشتراكك. يمكنك إعادة تفعيل اشتراكك في أي وقت."
     },
     "freeLimit": {
-      "question": "Le plan gratuit a-t-il une limite de temps ?",
-      "answer": "Non, le plan gratuit est disponible indéfiniment et sans aucune limite de temps. Vous pouvez l'utiliser aussi longtemps que vous le souhaitez, sans carte de crédit requise. Passez à un plan payant uniquement lorsque vous avez besoin de fonctionnalités supplémentaires ou de limites plus élevées."
+      "question": "هل الخطة المجانية لها حد زمني؟",
+      "answer": "لا، الخطة المجانية متاحة إلى ما لا نهاية وبدون أي حد زمني. يمكنك استخدامها طالما رغبت، بدون الحاجة إلى بطاقة ائتمانية. انتقل إلى خطة مدفوعة فقط عندما تحتاج مميزات إضافية أو حدود أعلى."
     },
     "vat": {
-      "question": "Les prix incluent-ils la TVA ?",
-      "answer": "Les prix affichés sont hors taxes (HT). La TVA sera ajoutée lors du paiement selon votre localisation géographique. Pour les entreprises européennes disposant d'un numéro de TVA intracommunautaire valide, la TVA est reverse-charge (vous reversez vous-même la TVA). Contactez-nous pour plus d'informations sur la facturation pour votre pays."
+      "question": "هل تشمل الأسعار ضريبة القيمة المضافة؟",
+      "answer": "الأسعار المعروضة غير شاملة الضرائب. ستضاف ضريبة القيمة المضافة عند الدفع حسب موقعك الجغرافي. للشركات الأوروبية التي لديها رقم ضريبة القيمة المضافة داخل الاتحاد الأوروبي صالح، الضريبة هي reverse-charge (تقومون بتحويل الضريبة بأنفسكم). اتصل بنا لمزيد من المعلومات حول الفوترة لبلدك."
     },
     "discounts": {
-      "question": "Proposez-vous des réductions pour les startups ou les ONG ?",
-      "answer": "Oui, nous proposons des tarifs préférentiels pour les startups éligibles (moins de 3 ans, moins de 10 employés) et les organisations à but non lucratif reconnues. Les réductions peuvent aller jusqu'à 50% selon votre situation. Contactez notre équipe commerciale avec les détails de votre organisation pour discuter de votre éligibilité et obtenir une proposition personnalisée."
+      "question": "هل تقدمون خصومات للشركات الناشئة أو المنظمات غير الربحية؟",
+      "answer": "نعم، نقدم أسعاراً تفضيلية للشركات الناشئة المؤهلة (أقل من 3 سنوات، أقل من 10 موظفين) والمنظمات غير الربحية المعترف بها. يمكن أن تصل الخصومات إلى 50% حسب وضعك. اتصل بفريق المبيعات مع تفاصيل منظمتك لمناقشة أهليتك والحصول على عرض مخصص."
     },
     "trial": {
-      "question": "Puis-je tester un plan payant avant de m'engager ?",
-      "answer": "Oui, tous nos plans payants incluent une période d'essai gratuit de 14 jours. Vous pouvez tester toutes les fonctionnalités du plan sans carte de crédit. À la fin de la période d'essai, vous pouvez choisir de continuer avec le plan ou revenir au plan gratuit sans aucun engagement."
+      "question": "هل يمكنني تجربة خطة مدفوعة قبل الالتزام؟",
+      "answer": "نعم، جميع خططنا المدفوعة تتضمن فترة تجريبية مجانية لمدة 14 يوماً. يمكنك تجربة جميع مميزات الخطة بدون بطاقة ائتمانية. في نهاية فترة التجربة، يمكنك اختيار المتابعة مع الخطة أو العودة إلى الخطة المجانية بدون أي التزام."
     },
     "payment": {
-      "question": "Comment puis-je payer mon abonnement ?",
-      "answer": "Nous acceptons les paiements par carte de crédit (Visa, Mastercard, American Express) et les virements bancaires pour les abonnements annuels et Enterprise. Les paiements sont sécurisés via Stripe (certifié PCI-DSS). Pour les plans Enterprise, nous proposons également des options de facturation personnalisées avec des conditions de paiement négociables."
+      "question": "كيف يمكنني دفع اشتراكي؟",
+      "answer": "نقبل المدفوعات ببطاقة الائتمان (Visa، Mastercard، American Express) والتحويلات البنكية للاشتراكات السنوية و Enterprise. المدفوعات آمنة عبر Stripe (معتمد PCI-DSS). لخطط Enterprise، نقدم أيضاً خيارات فوترة مخصصة مع شروط دفع قابلة للتفاوض."
     }
   },
   "enterprise": {
-    "title": "Besoin d'une solution sur mesure ?",
-    "description": "Notre équipe peut créer un plan Enterprise adapté à vos besoins spécifiques, avec des fonctionnalités personnalisées, un support dédié 24/7 et des SLA garantis.",
-    "cta": "Contacter les ventes",
-    "ctaSecondary": "Voir toutes les fonctionnalités",
+    "title": "هل تحتاج حل مخصص؟",
+    "description": "يمكن لفريقنا إنشاء خطة Enterprise مخصصة لاحتياجاتك الخاصة، مع مميزات مخصصة ودعم مخصص 24/7 و SLA مضمون.",
+    "cta": "اتصل بالمبيعات",
+    "ctaSecondary": "عرض جميع المميزات",
     "benefits": {
       "exclusiveFeatures": {
-        "title": "Fonctionnalités exclusives",
-        "description": "Développements dédiés pour répondre à vos besoins spécifiques"
+        "title": "مميزات حصرية",
+        "description": "تطوير مخصص لتلبية احتياجاتك الخاصة"
       },
       "dedicatedSupport": {
-        "title": "Support dédié 24/7",
-        "description": "Équipe de support dédiée toujours disponible pour vous aider"
+        "title": "دعم مخصص 24/7",
+        "description": "فريق دعم مخصص متاح دائماً لمساعدتك"
       },
       "slaGuaranteed": {
-        "title": "SLA garantis",
-        "description": "99.9% uptime garanti avec compensation en cas de non-respect"
+        "title": "SLA مضمون",
+        "description": "99.9% وقت تشغيل مضمون مع تعويض في حال عدم الامتثال"
       }
     }
   }

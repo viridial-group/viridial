@@ -6,6 +6,11 @@ import { I18nProvider } from "@/contexts/I18nContext";
 import { ToastProvider } from "@/components/ui/simple-toast";
 import { AlertDialogProvider } from "@/components/ui/simple-alert-dialog";
 import { SkipLink } from "@/components/layout/SkipLink";
+import { StructuredData } from "@/components/seo/StructuredData";
+import {
+  generateOrganizationSchema,
+  generateWebSiteSchema,
+} from "@/lib/seo/structured-data";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -59,12 +64,43 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Global structured data for all pages
+  const organizationSchema = generateOrganizationSchema({
+    name: siteName,
+    url: siteUrl,
+    logo: `${siteUrl}/logo.png`,
+    contactPoint: {
+      telephone: "+33-1-XX-XX-XX-XX",
+      contactType: "customer service",
+      email: "contact@viridial.com",
+    },
+    sameAs: [
+      "https://twitter.com/viridial",
+      "https://linkedin.com/company/viridial",
+      "https://facebook.com/viridial",
+    ],
+  });
+
+  const websiteSchema = generateWebSiteSchema({
+    name: siteName,
+    url: siteUrl,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${siteUrl}/search?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
+  });
+
   return (
     <html lang="fr" suppressHydrationWarning>
       <body
         className={`${inter.variable} font-sans antialiased`}
         suppressHydrationWarning
       >
+        <StructuredData data={[organizationSchema, websiteSchema]} />
         <I18nProvider>
           <SkipLink />
           <AuthProvider>

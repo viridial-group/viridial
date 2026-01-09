@@ -1,0 +1,43 @@
+{
+  "hero": {
+    "title": "About Viridial",
+    "subtitle": "Revolutionizing sustainable real estate",
+    "description": "We're building tomorrow's real estate SaaS platform, centered on sustainability and technological innovation."
+  },
+  "mission": {
+    "title": "Our Mission",
+    "description": "Viridial was created with a clear vision: making real estate more sustainable, accessible, and intelligent through technology. We believe every real estate transaction can contribute to a greener future.",
+    "values": {
+      "sustainability": {
+        "title": "Sustainability",
+        "description": "100% committed to ecology and eco-neighborhoods"
+      },
+      "innovation": {
+        "title": "Innovation",
+        "description": "Cutting-edge technology for an exceptional user experience"
+      },
+      "transparency": {
+        "title": "Transparency",
+        "description": "Clear pricing, transparent processes, reliable data"
+      },
+      "accessibility": {
+        "title": "Accessibility",
+        "description": "Professional tools accessible to everyone"
+      }
+    }
+  },
+  "team": {
+    "title": "Our Team",
+    "subtitle": "Passionate about real estate and technology",
+    "description": "We are a team of developers, designers, and real estate experts dedicated to transforming the industry."
+  },
+  "story": {
+    "title": "Our Story",
+    "description": "Founded in 2024, Viridial was born from the realization that the real estate industry needed modern tools to address 21st-century challenges: ecological transition, increased transparency, and improved user experience."
+  },
+  "cta": {
+    "title": "Join us on this adventure",
+    "description": "Whether you're an agency, owner, or searcher, discover how Viridial can transform your approach to real estate.",
+    "button": "Start for free"
+  }
+}

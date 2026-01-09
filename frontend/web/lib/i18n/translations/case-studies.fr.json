@@ -1,0 +1,25 @@
+{
+  "hero": {
+    "title": "Études de Cas",
+    "subtitle": "Succès clients",
+    "description": "Découvrez comment nos clients utilisent Viridial pour transformer leur activité immobilière"
+  },
+  "filter": {
+    "all": "Tous",
+    "agencies": "Agences",
+    "owners": "Propriétaires",
+    "enterprise": "Entreprises",
+    "roi": "ROI",
+    "automation": "Automatisation",
+    "growth": "Croissance"
+  },
+  "results": {
+    "title": "Résultats mesurables",
+    "description": "Nos clients constatent des résultats concrets"
+  },
+  "cta": {
+    "title": "Vous souhaitez devenir notre prochain cas de succès ?",
+    "description": "Contactez notre équipe pour discuter de vos besoins",
+    "button": "Nous contacter"
+  }
+}

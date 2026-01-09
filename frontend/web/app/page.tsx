@@ -22,6 +22,7 @@ import {
   SearchBackofficeSVG,
 } from '@/components/home/BackofficeIllustrations';
 import { useTranslation } from '@/contexts/I18nContext';
+import { TrustSignals, SocialProofBadge, GuaranteeBadge } from '@/components/marketing/TrustSignals';
 
 export default function Home() {
   const { t } = useTranslation();
@@ -138,7 +139,7 @@ export default function Home() {
                 </div>
 
                 {/* Trust indicators */}
-                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-6 text-sm text-gray-600">
+                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-6 text-sm text-gray-600 mb-6">
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="h-5 w-5 text-viridial-600" />
                     <span className="font-medium">{t('home.trustIndicators.noCommitment')}</span>
@@ -155,6 +156,11 @@ export default function Home() {
                     <Leaf className="h-5 w-5 text-viridial-500" />
                     <span className="font-medium">{t('home.trustIndicators.sustainableRealEstate')}</span>
                   </div>
+                </div>
+                
+                {/* Social Proof Badge */}
+                <div className="mt-6">
+                  <SocialProofBadge />
                 </div>
               </div>
 
@@ -347,9 +353,14 @@ export default function Home() {
                   </Button>
                 </Link>
               </div>
-              <p className="text-sm text-viridial-100 mt-6">
+              <p className="text-sm text-viridial-100 mt-6 mb-8">
                 {t('home.cta.features')}
               </p>
+              
+              {/* Trust Signals */}
+              <div className="mt-8 pt-8 border-t border-white/20">
+                <TrustSignals className="max-w-4xl mx-auto" />
+              </div>
             </div>
           </div>
         </section>

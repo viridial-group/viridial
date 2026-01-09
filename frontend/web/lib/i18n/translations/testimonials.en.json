@@ -1,0 +1,42 @@
+{
+  "hero": {
+    "title": "Client Testimonials",
+    "subtitle": "They trust us",
+    "description": "Discover how Viridial transforms real estate for our clients"
+  },
+  "stats": {
+    "title": "In numbers",
+    "satisfaction": {
+      "value": "98%",
+      "label": "Satisfaction rate"
+    },
+    "clients": {
+      "value": "500+",
+      "label": "Satisfied clients"
+    },
+    "roi": {
+      "value": "3 months",
+      "label": "Average ROI"
+    },
+    "uptime": {
+      "value": "99.9%",
+      "label": "Availability"
+    }
+  },
+  "filter": {
+    "all": "All",
+    "agencies": "Agencies",
+    "owners": "Owners",
+    "enterprise": "Enterprises"
+  },
+  "categories": {
+    "agencies": "Real Estate Agencies",
+    "owners": "Owners",
+    "enterprise": "Large Companies"
+  },
+  "cta": {
+    "title": "Join our satisfied clients",
+    "description": "Start your free trial today",
+    "button": "Try for free"
+  }
+}

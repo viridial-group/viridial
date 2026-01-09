@@ -1,12 +1,19 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { ChevronDown, Menu } from 'lucide-react';
 import { LanguageSelector } from '@/components/layout/LanguageSelector';
 import { useTranslation } from '@/contexts/I18nContext';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 
 export function Header() {
   const { t } = useTranslation();
+  const [isProductMenuOpen, setIsProductMenuOpen] = useState(false);
   
   return (
     <nav 
@@ -49,22 +56,72 @@ export function Header() {
           role="list"
         >
           <li className="relative">
-            <button 
-              className="flex items-center gap-1 hover:opacity-70 transition-opacity text-gray-900 focus:outline-none focus:ring-2 focus:ring-viridial-500 focus:ring-offset-2 focus:rounded-md focus:px-2 focus:py-1"
-              aria-label={t('nav.product')}
-              aria-expanded="false"
-              aria-haspopup="true"
-            >
-              {t('nav.product')}
-              <ChevronDown className="w-4 h-4" aria-hidden="true" />
-            </button>
+            <Popover open={isProductMenuOpen} onOpenChange={setIsProductMenuOpen}>
+              <PopoverTrigger asChild>
+                <button 
+                  className="flex items-center gap-1 hover:opacity-70 transition-opacity text-gray-900 focus:outline-none focus:ring-2 focus:ring-viridial-500 focus:ring-offset-2 focus:rounded-md focus:px-2 focus:py-1"
+                  aria-label={t('common.nav.product')}
+                  aria-expanded={isProductMenuOpen}
+                  aria-haspopup="true"
+                >
+                  {t('common.nav.product')}
+                  <ChevronDown className={`w-4 h-4 transition-transform ${isProductMenuOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-48 p-1" align="start">
+                <nav className="flex flex-col">
+                  <Link
+                    href="/features"
+                    className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                    onClick={() => setIsProductMenuOpen(false)}
+                  >
+                    {t('common.nav.features')}
+                  </Link>
+                  <Link
+                    href="/pricing"
+                    className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                    onClick={() => setIsProductMenuOpen(false)}
+                  >
+                    {t('common.nav.pricing')}
+                  </Link>
+                  <Link
+                    href="/about"
+                    className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                    onClick={() => setIsProductMenuOpen(false)}
+                  >
+                    {t('common.nav.about')}
+                  </Link>
+                  <Link
+                    href="/contact"
+                    className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                    onClick={() => setIsProductMenuOpen(false)}
+                  >
+                    {t('common.nav.contact')}
+                  </Link>
+                  <Link
+                    href="/testimonials"
+                    className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                    onClick={() => setIsProductMenuOpen(false)}
+                  >
+                    {t('common.nav.testimonials')}
+                  </Link>
+                  <Link
+                    href="/case-studies"
+                    className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                    onClick={() => setIsProductMenuOpen(false)}
+                  >
+                    {t('common.nav.caseStudies')}
+                  </Link>
+                </nav>
+              </PopoverContent>
+            </Popover>
           </li>
           <li>
             <Link
               href="/search"
               className="text-gray-900 hover:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-viridial-500 focus:ring-offset-2 focus:rounded-md focus:px-2 focus:py-1"
             >
-              {t('nav.search')}
+              {t('common.nav.search')}
             </Link>
           </li>
           <li>
@@ -72,7 +129,7 @@ export function Header() {
               href="/browse"
               className="text-gray-900 hover:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-viridial-500 focus:ring-offset-2 focus:rounded-md focus:px-2 focus:py-1"
             >
-              {t('nav.properties')}
+              {t('common.nav.properties')}
             </Link>
           </li>
           <li>
@@ -80,23 +137,7 @@ export function Header() {
               href="/neighborhoods"
               className="text-gray-900 hover:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-viridial-500 focus:ring-offset-2 focus:rounded-md focus:px-2 focus:py-1"
             >
-              {t('nav.neighborhoods')}
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/features"
-              className="text-gray-900 hover:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-viridial-500 focus:ring-offset-2 focus:rounded-md focus:px-2 focus:py-1"
-            >
-              {t('nav.features')}
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/pricing"
-              className="text-gray-900 hover:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-viridial-500 focus:ring-offset-2 focus:rounded-md focus:px-2 focus:py-1"
-            >
-              {t('nav.pricing')}
+              {t('common.nav.neighborhoods')}
             </Link>
           </li>
         </ul>
@@ -108,7 +149,7 @@ export function Header() {
             href="/dashboard"
             className="p-4 rounded-full font-medium transition-all duration-200 flex items-center cursor-pointer bg-gradient-to-r from-viridial-600 to-viridial-500 text-white hover:from-viridial-700 hover:to-viridial-600 shadow-sm hover:shadow-md"
           >
-            {t('nav.accessApp')}
+            {t('common.nav.accessApp')}
           </Link>
         </div>
 

@@ -1,0 +1,65 @@
+{
+  "hero": {
+    "title": "Contactez-nous",
+    "subtitle": "Nous sommes là pour vous aider",
+    "description": "Une question ? Un besoin spécifique ? Notre équipe est à votre écoute."
+  },
+  "form": {
+    "title": "Envoyez-nous un message",
+    "name": "Nom complet",
+    "namePlaceholder": "Votre nom",
+    "email": "Email",
+    "emailPlaceholder": "votre@email.com",
+    "company": "Entreprise (optionnel)",
+    "companyPlaceholder": "Nom de votre entreprise",
+    "subject": "Sujet",
+    "subjectPlaceholder": "Sélectionnez un sujet",
+    "subjects": {
+      "general": "Question générale",
+      "sales": "Demande commerciale",
+      "support": "Support technique",
+      "partnership": "Partenariat",
+      "press": "Presse / Média",
+      "other": "Autre"
+    },
+    "message": "Message",
+    "messagePlaceholder": "Décrivez votre demande...",
+    "submit": "Envoyer le message",
+    "submitLoading": "Envoi en cours...",
+    "success": {
+      "title": "Message envoyé !",
+      "description": "Nous vous répondrons dans les plus brefs délais."
+    },
+    "error": {
+      "title": "Erreur",
+      "description": "Une erreur est survenue. Veuillez réessayer."
+    }
+  },
+  "info": {
+    "title": "Autres moyens de nous contacter",
+    "email": {
+      "title": "Email",
+      "value": "contact@viridial.com",
+      "description": "Réponse sous 24h"
+    },
+    "sales": {
+      "title": "Ventes",
+      "value": "sales@viridial.com",
+      "description": "Pour les questions commerciales"
+    },
+    "support": {
+      "title": "Support",
+      "value": "support@viridial.com",
+      "description": "Support technique"
+    },
+    "address": {
+      "title": "Adresse",
+      "value": "Paris, France",
+      "description": "Siège social"
+    }
+  },
+  "faq": {
+    "title": "Questions fréquentes",
+    "cta": "Vous ne trouvez pas la réponse ?"
+  }
+}

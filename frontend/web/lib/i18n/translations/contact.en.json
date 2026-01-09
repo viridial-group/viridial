@@ -1,0 +1,65 @@
+{
+  "hero": {
+    "title": "Contact Us",
+    "subtitle": "We're here to help",
+    "description": "Have a question? A specific need? Our team is listening."
+  },
+  "form": {
+    "title": "Send us a message",
+    "name": "Full name",
+    "namePlaceholder": "Your name",
+    "email": "Email",
+    "emailPlaceholder": "your@email.com",
+    "company": "Company (optional)",
+    "companyPlaceholder": "Your company name",
+    "subject": "Subject",
+    "subjectPlaceholder": "Select a subject",
+    "subjects": {
+      "general": "General question",
+      "sales": "Sales inquiry",
+      "support": "Technical support",
+      "partnership": "Partnership",
+      "press": "Press / Media",
+      "other": "Other"
+    },
+    "message": "Message",
+    "messagePlaceholder": "Describe your request...",
+    "submit": "Send message",
+    "submitLoading": "Sending...",
+    "success": {
+      "title": "Message sent!",
+      "description": "We will respond as soon as possible."
+    },
+    "error": {
+      "title": "Error",
+      "description": "An error occurred. Please try again."
+    }
+  },
+  "info": {
+    "title": "Other ways to contact us",
+    "email": {
+      "title": "Email",
+      "value": "contact@viridial.com",
+      "description": "Response within 24h"
+    },
+    "sales": {
+      "title": "Sales",
+      "value": "sales@viridial.com",
+      "description": "For sales inquiries"
+    },
+    "support": {
+      "title": "Support",
+      "value": "support@viridial.com",
+      "description": "Technical support"
+    },
+    "address": {
+      "title": "Address",
+      "value": "Paris, France",
+      "description": "Headquarters"
+    }
+  },
+  "faq": {
+    "title": "Frequently asked questions",
+    "cta": "Can't find the answer?"
+  }
+}
