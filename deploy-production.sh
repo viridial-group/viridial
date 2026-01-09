@@ -34,7 +34,7 @@ echo -e "${BLUE}║  🚀 Déploiement Production Viridial                      
 echo -e "${BLUE}╚══════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
-# Détecter l'utilisateur réel (même sous sudo)
+# Détecter l'utilisateur réel (même sous sudo) 
 REAL_USER="${SUDO_USER:-$USER}"
 REAL_HOME=$(eval echo ~$REAL_USER)
 
