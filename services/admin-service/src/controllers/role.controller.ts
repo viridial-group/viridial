@@ -40,7 +40,7 @@ export class RoleController {
     @Query('organizationId') organizationId?: string,
     @Query('isActive') isActive?: string,
     @Query('search') search?: string,
-    @Request() req: any,
+    @Request() req: Express.Request,
   ): Promise<Role[]> {
     const filters: any = {};
 
@@ -65,26 +65,30 @@ export class RoleController {
   @Get(':id')
   async findOne(
     @Param('id') id: string,
-    @Request() req: any,
+    @Request() req: Express.Request,
   ): Promise<Role> {
     const organizationId = req.user?.organizationId;
     return this.roleService.findOne(id, organizationId);
   }
 
   @Put(':id')
+  @Roles('admin', 'owner')
+  @UseGuards(RolesGuard)
   async update(
     @Param('id') id: string,
     @Body() updateDto: UpdateRoleDto,
-    @Request() req: any,
+    @Request() req: Express.Request,
   ): Promise<Role> {
     const organizationId = req.user?.organizationId;
     return this.roleService.update(id, updateDto, organizationId);
   }
 
   @Delete(':id')
+  @Roles('admin')
+  @UseGuards(RolesGuard)
   async remove(
     @Param('id') id: string,
-    @Request() req: any,
+    @Request() req: Express.Request,
   ): Promise<{ message: string }> {
     const organizationId = req.user?.organizationId;
     await this.roleService.remove(id, organizationId);

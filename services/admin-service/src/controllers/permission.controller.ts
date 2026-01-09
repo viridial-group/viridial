@@ -13,16 +13,17 @@ import { PermissionService } from '../services/permission.service';
 import { CreatePermissionDto } from '../dto/create-permission.dto';
 import { UpdatePermissionDto } from '../dto/update-permission.dto';
 import { Permission } from '../entities/permission.entity';
-// TODO: Implémenter JwtAuthGuard et RolesGuard
-// import { JwtAuthGuard } from '../guards/jwt-auth.guard';
-// import { RolesGuard } from '../guards/roles.guard';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { RolesGuard, Roles } from '../guards/roles.guard';
 
 @Controller('api/admin/permissions')
-// @UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard)
 export class PermissionController {
   constructor(private readonly permissionService: PermissionService) {}
 
   @Post()
+  @Roles('admin')
+  @UseGuards(RolesGuard)
   async create(@Body() createDto: CreatePermissionDto): Promise<Permission> {
     return this.permissionService.create(createDto);
   }
@@ -53,6 +54,8 @@ export class PermissionController {
   }
 
   @Put(':id')
+  @Roles('admin')
+  @UseGuards(RolesGuard)
   async update(
     @Param('id') id: string,
     @Body() updateDto: UpdatePermissionDto,
