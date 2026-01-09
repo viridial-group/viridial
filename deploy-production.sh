@@ -283,37 +283,116 @@ done
 cd "$PROJECT_ROOT"
 
 echo ""
-echo -e "${BLUE}📋 Étape 2/5: Build du frontend...${NC}"
+echo -e "${BLUE}📋 Étape 2/5: Build du frontend web...${NC}"
 echo ""
 
 cd "$PROJECT_ROOT/frontend/web"
 
-# Détecter pnpm (chercher aussi dans le même répertoire que node)
-PNPM_CMD=""
-if command -v pnpm >/dev/null 2>&1; then
-    PNPM_CMD="pnpm"
-elif [ -n "$NODE_CMD" ] && [ -x "$(dirname "$NODE_CMD")/pnpm" ]; then
-    PNPM_CMD="$(dirname "$NODE_CMD")/pnpm"
-elif [ -n "$REAL_HOME" ] && [ -x "$REAL_HOME/.local/share/pnpm/pnpm" ]; then
-    PNPM_CMD="$REAL_HOME/.local/share/pnpm/pnpm"
-elif [ -x "/usr/local/bin/pnpm" ]; then
-    PNPM_CMD="/usr/local/bin/pnpm"
-elif [ -x "/opt/homebrew/bin/pnpm" ]; then
-    PNPM_CMD="/opt/homebrew/bin/pnpm"
+# Vérifier que le répertoire existe
+if [ ! -d "$PROJECT_ROOT/frontend/web" ]; then
+    echo -e "${RED}❌ Répertoire frontend/web non trouvé${NC}"
+    exit 1
 fi
 
-if [ -n "$PNPM_CMD" ]; then
-    echo -e "${BLUE}📦 Build frontend avec pnpm...${NC}"
-    $PNPM_CMD run build
+# Vérifier que package.json existe
+if [ ! -f "package.json" ]; then
+    echo -e "${RED}❌ package.json non trouvé dans frontend/web${NC}"
+    exit 1
+fi
+
+# Nettoyer le build précédent si nécessaire
+if [ -d ".next" ] && [ ! -w ".next" ]; then
+    echo -e "${YELLOW}   Correction des permissions du répertoire .next...${NC}"
+    $SUDO_CMD chown -R $(whoami):$(id -gn) .next 2>/dev/null || true
+fi
+
+# Installer les dépendances si nécessaire
+if [ ! -d "node_modules" ] || [ ! -f "node_modules/.package-lock.json" ] && [ ! -f "pnpm-lock.yaml" ]; then
+    echo -e "${BLUE}   Installation des dépendances frontend...${NC}"
+    
+    # Détecter pnpm (chercher aussi dans le même répertoire que node)
+    PNPM_CMD=""
+    if command -v pnpm >/dev/null 2>&1; then
+        PNPM_CMD="pnpm"
+    elif [ -n "$NODE_CMD" ] && [ -x "$(dirname "$NODE_CMD")/pnpm" ]; then
+        PNPM_CMD="$(dirname "$NODE_CMD")/pnpm"
+    elif [ -n "$REAL_HOME" ] && [ -x "$REAL_HOME/.local/share/pnpm/pnpm" ]; then
+        PNPM_CMD="$REAL_HOME/.local/share/pnpm/pnpm"
+    elif [ -x "/usr/local/bin/pnpm" ]; then
+        PNPM_CMD="/usr/local/bin/pnpm"
+    elif [ -x "/opt/homebrew/bin/pnpm" ]; then
+        PNPM_CMD="/opt/homebrew/bin/pnpm"
+    fi
+    
+    if [ -n "$PNPM_CMD" ] && [ -f "pnpm-lock.yaml" ]; then
+        echo -e "${BLUE}   Installation avec pnpm...${NC}"
+        $PNPM_CMD install
+    elif [ -n "$NPM_CMD" ]; then
+        echo -e "${BLUE}   Installation avec npm...${NC}"
+        $NPM_CMD install
+    else
+        echo -e "${RED}❌ Ni pnpm ni npm trouvés pour installer les dépendances${NC}"
+        exit 1
+    fi
+fi
+
+# Détecter pnpm pour le build (réutiliser la détection ou redétecter)
+if [ -z "$PNPM_CMD" ]; then
+    if command -v pnpm >/dev/null 2>&1; then
+        PNPM_CMD="pnpm"
+    elif [ -n "$NODE_CMD" ] && [ -x "$(dirname "$NODE_CMD")/pnpm" ]; then
+        PNPM_CMD="$(dirname "$NODE_CMD")/pnpm"
+    elif [ -n "$REAL_HOME" ] && [ -x "$REAL_HOME/.local/share/pnpm/pnpm" ]; then
+        PNPM_CMD="$REAL_HOME/.local/share/pnpm/pnpm"
+    elif [ -x "/usr/local/bin/pnpm" ]; then
+        PNPM_CMD="/usr/local/bin/pnpm"
+    elif [ -x "/opt/homebrew/bin/pnpm" ]; then
+        PNPM_CMD="/opt/homebrew/bin/pnpm"
+    fi
+fi
+
+# Build du frontend avec gestion d'erreur
+echo -e "${BLUE}📦 Build frontend web...${NC}"
+
+BUILD_SUCCESS=false
+if [ -n "$PNPM_CMD" ] && [ -f "pnpm-lock.yaml" ]; then
+    echo -e "${BLUE}   Utilisation de pnpm pour le build...${NC}"
+    BUILD_OUTPUT=$($PNPM_CMD run build 2>&1)
+    BUILD_EXIT_CODE=$?
 elif [ -n "$NPM_CMD" ]; then
-    echo -e "${BLUE}📦 Build frontend avec npm...${NC}"
-    $NPM_CMD run build
+    echo -e "${BLUE}   Utilisation de npm pour le build...${NC}"
+    BUILD_OUTPUT=$($NPM_CMD run build 2>&1)
+    BUILD_EXIT_CODE=$?
 else
     echo -e "${RED}❌ Ni pnpm ni npm trouvés pour build frontend${NC}"
     exit 1
 fi
 
-echo -e "${GREEN}✅ Frontend buildé avec succès${NC}"
+# Sauvegarder le log
+echo "$BUILD_OUTPUT" > /tmp/frontend-web-build.log
+
+# Vérifier le résultat du build
+if [ $BUILD_EXIT_CODE -eq 0 ] && [ -d ".next" ]; then
+    # Vérifier que le répertoire .next contient les fichiers de build
+    if [ -d ".next/standalone" ] || [ -d ".next/server" ]; then
+        echo -e "${GREEN}✅ Frontend web buildé avec succès${NC}"
+        BUILD_SUCCESS=true
+    else
+        echo -e "${YELLOW}⚠️  Build terminé mais structure .next incomplète${NC}"
+        echo -e "${YELLOW}      Vérifiez /tmp/frontend-web-build.log${NC}"
+        BUILD_SUCCESS=false
+    fi
+else
+    echo -e "${RED}❌ Erreur lors du build du frontend web${NC}"
+    echo -e "${YELLOW}      Voir /tmp/frontend-web-build.log pour les détails${NC}"
+    echo "$BUILD_OUTPUT" | tail -30
+    exit 1
+fi
+
+if [ "$BUILD_SUCCESS" = "false" ]; then
+    echo -e "${RED}❌ Le build du frontend a échoué${NC}"
+    exit 1
+fi
 
 cd "$PROJECT_ROOT"
 
@@ -344,15 +423,133 @@ for service in "${BACKEND_SERVICES[@]}"; do
     fi
 done
 
-    # Copier le frontend
+# Copier le frontend web
+FRONTEND_SRC="$PROJECT_ROOT/frontend/web"
 FRONTEND_DST="$PROD_DIR/frontend/web"
+
+if [ ! -d "$FRONTEND_SRC/.next" ]; then
+    echo -e "${RED}   ❌ Répertoire .next non trouvé dans frontend/web. Le build doit avoir échoué.${NC}"
+    exit 1
+fi
+
 $SUDO_CMD mkdir -p "$FRONTEND_DST"
-echo -e "   Copie frontend..."
-$SUDO_CMD cp -r "$PROJECT_ROOT/frontend/web/.next" "$FRONTEND_DST/" 2>/dev/null || true
-$SUDO_CMD cp -r "$PROJECT_ROOT/frontend/web/public" "$FRONTEND_DST/" 2>/dev/null || true
-$SUDO_CMD cp "$PROJECT_ROOT/frontend/web/package.json" "$FRONTEND_DST/" 2>/dev/null || true
-$SUDO_CMD cp "$PROJECT_ROOT/frontend/web/next.config.js" "$FRONTEND_DST/" 2>/dev/null || true
-$SUDO_CMD cp "$PROJECT_ROOT/frontend/web/next.config.ts" "$FRONTEND_DST/" 2>/dev/null || true
+echo -e "${BLUE}   Copie frontend web vers $FRONTEND_DST...${NC}"
+
+# Vérifier le mode de build (standalone ou server)
+IS_STANDALONE=false
+if [ -d "$FRONTEND_SRC/.next/standalone" ]; then
+    IS_STANDALONE=true
+    echo -e "      Mode standalone détecté (Next.js 13+ output: 'standalone')"
+else
+    echo -e "      Mode server standard (nécessite node_modules)"
+fi
+
+if [ "$IS_STANDALONE" = "true" ]; then
+    # Mode standalone : copier toute la structure standalone
+    echo -e "      Copie structure standalone..."
+    
+    # Copier le dossier standalone complet
+    if [ -d "$FRONTEND_SRC/.next/standalone" ]; then
+        $SUDO_CMD cp -r "$FRONTEND_SRC/.next/standalone"/* "$FRONTEND_DST/" 2>/dev/null || {
+            echo -e "${RED}      ❌ Erreur lors de la copie de .next/standalone${NC}"
+            exit 1
+        }
+    fi
+    
+    # Copier .next (contient les assets statiques)
+    if [ -d "$FRONTEND_SRC/.next" ]; then
+        echo -e "      Copie .next (assets et cache)..."
+        $SUDO_CMD mkdir -p "$FRONTEND_DST/.next"
+        
+        # Copier les répertoires importants de .next (sauf standalone qui est déjà copié)
+        for dir in static cache server; do
+            if [ -d "$FRONTEND_SRC/.next/$dir" ]; then
+                $SUDO_CMD cp -r "$FRONTEND_SRC/.next/$dir" "$FRONTEND_DST/.next/" 2>/dev/null || true
+            fi
+        done
+    fi
+    
+    # Copier public (assets statiques)
+    if [ -d "$FRONTEND_SRC/public" ]; then
+        echo -e "      Copie public (assets statiques)..."
+        $SUDO_CMD cp -r "$FRONTEND_SRC/public" "$FRONTEND_DST/" 2>/dev/null || true
+    fi
+    
+    # Vérifier que server.js existe (point d'entrée standalone)
+    if [ ! -f "$FRONTEND_DST/server.js" ]; then
+        echo -e "${YELLOW}      ⚠️  server.js non trouvé dans standalone, recherche dans .next/standalone${NC}"
+        if [ -f "$FRONTEND_SRC/.next/standalone/server.js" ]; then
+            $SUDO_CMD cp "$FRONTEND_SRC/.next/standalone/server.js" "$FRONTEND_DST/" 2>/dev/null || true
+        fi
+    fi
+else
+    # Mode server standard : copier .next + node_modules
+    echo -e "      Mode server standard..."
+    
+    # Copier .next
+    if [ -d "$FRONTEND_SRC/.next" ]; then
+        echo -e "      Copie .next (build Next.js complet)..."
+        $SUDO_CMD cp -r "$FRONTEND_SRC/.next" "$FRONTEND_DST/" 2>/dev/null || {
+            echo -e "${RED}      ❌ Erreur lors de la copie de .next${NC}"
+            exit 1
+        }
+    fi
+    
+    # Copier public
+    if [ -d "$FRONTEND_SRC/public" ]; then
+        echo -e "      Copie public (assets statiques)..."
+        $SUDO_CMD cp -r "$FRONTEND_SRC/public" "$FRONTEND_DST/" 2>/dev/null || true
+    fi
+    
+    # Copier package.json et fichiers de config
+    if [ -f "$FRONTEND_SRC/package.json" ]; then
+        $SUDO_CMD cp "$FRONTEND_SRC/package.json" "$FRONTEND_DST/" 2>/dev/null || true
+    fi
+    
+    if [ -f "$FRONTEND_SRC/next.config.js" ]; then
+        $SUDO_CMD cp "$FRONTEND_SRC/next.config.js" "$FRONTEND_DST/" 2>/dev/null || true
+    fi
+    
+    if [ -f "$FRONTEND_SRC/next.config.ts" ]; then
+        $SUDO_CMD cp "$FRONTEND_SRC/next.config.ts" "$FRONTEND_DST/" 2>/dev/null || true
+    fi
+    
+    if [ -f "$FRONTEND_SRC/next.config.mjs" ]; then
+        $SUDO_CMD cp "$FRONTEND_SRC/next.config.mjs" "$FRONTEND_DST/" 2>/dev/null || true
+    fi
+    
+    # Installer les dépendances de production
+    echo -e "      Installation des dépendances production..."
+    cd "$FRONTEND_DST"
+    $SUDO_CMD chown -R $(whoami):$(id -gn) . 2>/dev/null || true
+    
+    if [ -n "$PNPM_CMD" ] && command -v "$PNPM_CMD" >/dev/null 2>&1 && [ -f "pnpm-lock.yaml" ]; then
+        $PNPM_CMD install --prod --frozen-lockfile || {
+            echo -e "${YELLOW}         ⚠️  Installation pnpm échouée, essai avec npm...${NC}"
+            [ -n "$NPM_CMD" ] && $NPM_CMD ci --only=production || true
+        }
+    elif [ -n "$NPM_CMD" ] && command -v "$NPM_CMD" >/dev/null 2>&1; then
+        $NPM_CMD ci --only=production || $NPM_CMD install --production || {
+            echo -e "${YELLOW}         ⚠️  Installation npm échouée, copie node_modules source...${NC}"
+            if [ -d "$FRONTEND_SRC/node_modules" ]; then
+                $SUDO_CMD cp -r "$FRONTEND_SRC/node_modules" "$FRONTEND_DST/" 2>/dev/null || true
+            fi
+        }
+    else
+        echo -e "${YELLOW}         ⚠️  Aucun gestionnaire de paquets trouvé, copie node_modules source...${NC}"
+        if [ -d "$FRONTEND_SRC/node_modules" ]; then
+            $SUDO_CMD cp -r "$FRONTEND_SRC/node_modules" "$FRONTEND_DST/" 2>/dev/null || true
+        fi
+    fi
+    
+    cd "$PROJECT_ROOT"
+fi
+
+# Corriger les permissions
+echo -e "      Correction des permissions..."
+$SUDO_CMD chown -R $(whoami):$(id -gn) "$FRONTEND_DST" 2>/dev/null || true
+
+echo -e "${GREEN}   ✅ Frontend web copié vers $FRONTEND_DST${NC}"
 
 # Copier .env et créer .env.local pour le frontend avec les bonnes URLs
 if [ -f "$PROJECT_ROOT/.env" ]; then
@@ -500,7 +697,7 @@ fi
 cd "$PROD_DIR"
 
 # Arrêter les services existants s'ils sont en cours d'exécution
-pm2 delete all 2>/dev/null || true
+$PM2_CMD delete all 2>/dev/null || true
 
 # Démarrer les services backend
 for service in "${BACKEND_SERVICES[@]}"; do
@@ -576,26 +773,25 @@ done
 
 # Démarrer le frontend
 FRONTEND_DST="$PROD_DIR/frontend/web"
-if [ -d "$FRONTEND_DST" ] && [ -d "$FRONTEND_DST/.next" ]; then
+if [ -d "$FRONTEND_DST" ]; then
     cd "$FRONTEND_DST"
-    echo -e "${BLUE}   Démarrage frontend...${NC}"
+    echo -e "${BLUE}   Démarrage frontend web...${NC}"
 
-    # Réutiliser les commandes détectées au début
-    # PNPM_CMD et NPM_CMD sont déjà définis plus haut
-
-    if [ ! -d "node_modules" ]; then
-        echo -e "${YELLOW}      Installation des dépendances production...${NC}"
-        if [ -n "$PNPM_CMD" ]; then
-            $PNPM_CMD install --prod
-        elif [ -n "$NPM_CMD" ]; then
-            $NPM_CMD ci --only=production
-        else
-            echo -e "${RED}      ❌ pnpm et npm non trouvés${NC}"
+    # Vérifier le mode (standalone ou server)
+    IS_STANDALONE=false
+    if [ -f "server.js" ] || [ -f ".next/standalone/server.js" ]; then
+        IS_STANDALONE=true
+        echo -e "${BLUE}      Mode standalone détecté${NC}"
+    else
+        echo -e "${BLUE}      Mode server standard${NC}"
+        # Vérifier que .next existe
+        if [ ! -d ".next" ]; then
+            echo -e "${RED}      ❌ Répertoire .next manquant dans $FRONTEND_DST${NC}"
             exit 1
         fi
     fi
 
-    # S'assurer que .env.local existe
+    # S'assurer que .env.local existe avec les URLs de production
     if [ ! -f ".env.local" ]; then
         echo -e "${YELLOW}      Création .env.local...${NC}"
         cat > ".env.local" <<EOF
@@ -606,33 +802,75 @@ NEXT_PUBLIC_SEARCH_API_URL=https://www.viridial.com
 NEXT_PUBLIC_MARKETING_API_URL=https://www.viridial.com
 NEXT_PUBLIC_REVIEW_API_URL=https://www.viridial.com
 NEXT_PUBLIC_GEOLOCATION_API_URL=https://www.viridial.com
+# Port pour Next.js
+PORT=3000
+NODE_ENV=production
 EOF
         chown $(whoami):$(id -gn) ".env.local" 2>/dev/null || true
     fi
 
     $PM2_CMD delete frontend 2>/dev/null || true
     
-    # S'assurer que pnpm/npm est dans le PATH pour PM2
-    if [ -n "$PNPM_CMD" ] && [[ "$PNPM_CMD" == *"/nvm/"* ]]; then
-        PNPM_DIR="$(dirname "$PNPM_CMD")"
-        export PATH="$PNPM_DIR:$PATH"
-    elif [ -n "$NPM_CMD" ] && [[ "$NPM_CMD" == *"/nvm/"* ]]; then
-        NPM_DIR="$(dirname "$NPM_CMD")"
-        export PATH="$NPM_DIR:$PATH"
+    # S'assurer que node/npm est dans le PATH pour PM2
+    if [ -n "$NODE_CMD" ] && [[ "$NODE_CMD" == *"/nvm/"* ]]; then
+        NODE_DIR="$(dirname "$NODE_CMD")"
+        export PATH="$NODE_DIR:$PATH"
     fi
     
-    if [ -n "$PNPM_CMD" ]; then
-        $PM2_CMD start $PNPM_CMD --name "frontend" -- start || $PM2_CMD restart frontend --update-env
-    elif [ -n "$NPM_CMD" ]; then
-        $PM2_CMD start npm --name "frontend" -- start || $PM2_CMD restart frontend --update-env
+    # Démarrage selon le mode
+    if [ "$IS_STANDALONE" = "true" ]; then
+        # Mode standalone : démarrer server.js directement
+        SERVER_JS="server.js"
+        if [ ! -f "$SERVER_JS" ] && [ -f ".next/standalone/server.js" ]; then
+            SERVER_JS=".next/standalone/server.js"
+        fi
+        
+        if [ -f "$SERVER_JS" ]; then
+            echo -e "${BLUE}      Démarrage avec server.js (standalone)...${NC}"
+            $PM2_CMD start "$NODE_CMD" --name "frontend" -- "$SERVER_JS" --port 3000 || $PM2_CMD restart frontend --update-env
+        else
+            echo -e "${RED}      ❌ server.js non trouvé en mode standalone${NC}"
+            exit 1
+        fi
     else
-        echo -e "${RED}   ❌ Impossible de démarrer le frontend: ni pnpm ni npm trouvé${NC}"
-        exit 1
+        # Mode server standard : utiliser npm/pnpm start
+        # Installer les dépendances si nécessaire
+        if [ ! -d "node_modules" ]; then
+            echo -e "${YELLOW}      Installation des dépendances production...${NC}"
+            if [ -n "$PNPM_CMD" ] && [ -f "pnpm-lock.yaml" ]; then
+                $PNPM_CMD install --prod --frozen-lockfile
+            elif [ -n "$NPM_CMD" ]; then
+                $NPM_CMD ci --only=production
+            else
+                echo -e "${RED}      ❌ pnpm et npm non trouvés${NC}"
+                exit 1
+            fi
+        fi
+        
+        # S'assurer que pnpm/npm est dans le PATH pour PM2
+        if [ -n "$PNPM_CMD" ] && [[ "$PNPM_CMD" == *"/nvm/"* ]]; then
+            PNPM_DIR="$(dirname "$PNPM_CMD")"
+            export PATH="$PNPM_DIR:$PATH"
+        elif [ -n "$NPM_CMD" ] && [[ "$NPM_CMD" == *"/nvm/"* ]]; then
+            NPM_DIR="$(dirname "$NPM_CMD")"
+            export PATH="$NPM_DIR:$PATH"
+        fi
+        
+        if [ -n "$PNPM_CMD" ] && [ -f "pnpm-lock.yaml" ]; then
+            echo -e "${BLUE}      Démarrage avec pnpm start...${NC}"
+            $PM2_CMD start $PNPM_CMD --name "frontend" -- start || $PM2_CMD restart frontend --update-env
+        elif [ -n "$NPM_CMD" ]; then
+            echo -e "${BLUE}      Démarrage avec npm start...${NC}"
+            $PM2_CMD start npm --name "frontend" -- start || $PM2_CMD restart frontend --update-env
+        else
+            echo -e "${RED}   ❌ Impossible de démarrer le frontend: ni pnpm ni npm trouvé${NC}"
+            exit 1
+        fi
     fi
     
-    echo -e "${GREEN}   ✅ Frontend démarré sur port 3000${NC}"
+    echo -e "${GREEN}   ✅ Frontend web démarré sur port 3000${NC}"
 else
-    echo -e "${YELLOW}   ⚠️  Frontend/.next manquant, frontend ignoré${NC}"
+    echo -e "${YELLOW}   ⚠️  Frontend web manquant dans $FRONTEND_DST, frontend ignoré${NC}"
 fi
 
 # Sauvegarder la configuration PM2

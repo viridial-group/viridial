@@ -14,19 +14,21 @@ import { RoleService } from '../services/role.service';
 import { CreateRoleDto } from '../dto/create-role.dto';
 import { UpdateRoleDto } from '../dto/update-role.dto';
 import { Role } from '../entities/role.entity';
-// TODO: Implémenter JwtAuthGuard et RolesGuard
-// import { JwtAuthGuard } from '../guards/jwt-auth.guard';
-// import { RolesGuard } from '../guards/roles.guard';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { RolesGuard, Roles } from '../guards/roles.guard';
+import { MultiTenantGuard } from '../guards/multi-tenant.guard';
 
 @Controller('api/admin/roles')
-// @UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, MultiTenantGuard)
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
   @Post()
+  @Roles('admin', 'owner')
+  @UseGuards(RolesGuard)
   async create(
     @Body() createDto: CreateRoleDto,
-    @Request() req: any, // TODO: Type avec AuthenticatedUser
+    @Request() req: Express.Request,
   ): Promise<Role> {
     // Récupérer organizationId depuis le token JWT ou le body
     const organizationId = createDto.organizationId ?? req.user?.organizationId;
