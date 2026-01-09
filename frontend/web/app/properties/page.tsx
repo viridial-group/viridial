@@ -320,7 +320,8 @@ export default function PropertiesPage() {
               })}
             </div>
           )}
-        </div>
+          </div>
+        </section>
       </main>
       <Footer />
     </div>
