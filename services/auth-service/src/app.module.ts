@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { join } from 'path';
 import { AuthController } from './controllers/auth.controller';
 import { AuthService } from './services/auth.service';
 import { OidcService } from './services/oidc.service';
@@ -36,8 +38,23 @@ function parseDatabaseUrl(url?: string) {
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: [
+        join(__dirname, '..', '.env.local'), // .env.local pour développement local
+        join(__dirname, '..', '.env'), // .env dans le répertoire du service
+        join(__dirname, '..', '..', '..', '.env'), // .env à la racine du projet
+        join(__dirname, '..', '..', '..', 'infrastructure', 'docker-compose', '.env'), // .env docker-compose
+      ],
+      expandVariables: true,
+    }),
     TypeOrmModule.forRootAsync({
-      useFactory: () => parseDatabaseUrl(process.env.DATABASE_URL),
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => {
+        const databaseUrl = configService.get<string>('DATABASE_URL') || process.env.DATABASE_URL;
+        return parseDatabaseUrl(databaseUrl);
+      },
+      inject: [ConfigService],
     }),
     TypeOrmModule.forFeature([User, PasswordResetToken, EmailVerificationToken]),
     PassportModule,

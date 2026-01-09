@@ -15,7 +15,7 @@ export class SegmentService {
 
   async create(createDto: any): Promise<Segment> {
     const segment = this.segmentRepository.create(createDto);
-    return await this.segmentRepository.save(segment);
+    return await this.segmentRepository.save(segment) as unknown as Segment;
   }
 
   async findAll(organizationId: string): Promise<Segment[]> {

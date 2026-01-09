@@ -2,7 +2,7 @@
 
 Ce guide montre comment utiliser SASS dans le projet Viridial avec Next.js.
 
-![SASS Logo](/sass-logo.svg)
+![SaaS Logo](/saas-logo.svg)
 
 ## 🎨 Logo SASS
 

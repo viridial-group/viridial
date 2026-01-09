@@ -50,44 +50,61 @@ if [ "$MODE" == "local" ]; then
   
   cd infrastructure/docker-compose
   
-  # Vérifier et corriger MINIO_ROOT_PASSWORD si nécessaire
+  # Charger et vérifier les variables d'environnement
   if [ -f ".env" ]; then
-    # Charger les variables d'environnement
     set -a
     source .env
     set +a
     
-    # Vérifier que MINIO_ROOT_PASSWORD est défini et non vide
-    if [ -z "${MINIO_ROOT_PASSWORD}" ] || [ "${MINIO_ROOT_PASSWORD}" = "" ]; then
-      echo -e "${YELLOW}⚠️  MINIO_ROOT_PASSWORD manquant ou vide. Correction...${NC}"
-      if [ -f "fix-minio-env.sh" ]; then
-        ./fix-minio-env.sh
-        # Recharger les variables
-        set -a
-        source .env
-        set +a
-      else
-        # Générer un mot de passe sécurisé
+    # Vérifier et corriger MINIO_ROOT_PASSWORD si manquant ou vide
+    if [ -z "${MINIO_ROOT_PASSWORD}" ] || grep -q "^MINIO_ROOT_PASSWORD=$" .env || grep -q "^MINIO_ROOT_PASSWORD=\s*$" .env; then
+      echo -e "${YELLOW}⚠️  MINIO_ROOT_PASSWORD manquant ou vide. Génération d'un mot de passe...${NC}"
+      # Générer un mot de passe sécurisé
+      if command -v openssl &> /dev/null; then
         MINIO_PASSWORD=$(openssl rand -base64 32 2>/dev/null | tr -d "=+/" | cut -c1-24 || echo "minioadmin123")
-        # Ajouter ou remplacer dans .env
-        if grep -q "^MINIO_ROOT_PASSWORD=" .env; then
+      else
+        MINIO_PASSWORD="minioadmin123"
+      fi
+      
+      # Ajouter ou remplacer dans .env
+      if grep -q "^MINIO_ROOT_PASSWORD=" .env; then
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+          sed -i '' "s/^MINIO_ROOT_PASSWORD=.*/MINIO_ROOT_PASSWORD=${MINIO_PASSWORD}/" .env
+        else
+          sed -i "s/^MINIO_ROOT_PASSWORD=.*/MINIO_ROOT_PASSWORD=${MINIO_PASSWORD}/" .env
+        fi
+      else
+        # Ajouter après MINIO_ROOT_USER si elle existe, sinon à la fin
+        if grep -q "^MINIO_ROOT_USER=" .env; then
           if [[ "$OSTYPE" == "darwin"* ]]; then
-            sed -i '' "s/^MINIO_ROOT_PASSWORD=.*/MINIO_ROOT_PASSWORD=${MINIO_PASSWORD}/" .env
+            sed -i '' "/^MINIO_ROOT_USER=/a\\
+MINIO_ROOT_PASSWORD=${MINIO_PASSWORD}" .env
           else
-            sed -i "s/^MINIO_ROOT_PASSWORD=.*/MINIO_ROOT_PASSWORD=${MINIO_PASSWORD}/" .env
+            sed -i "/^MINIO_ROOT_USER=/a MINIO_ROOT_PASSWORD=${MINIO_PASSWORD}" .env
           fi
         else
+          echo "MINIO_ROOT_USER=minioadmin" >> .env
           echo "MINIO_ROOT_PASSWORD=${MINIO_PASSWORD}" >> .env
         fi
-        export MINIO_ROOT_PASSWORD="${MINIO_PASSWORD}"
-        echo -e "${GREEN}✅ MINIO_ROOT_PASSWORD défini${NC}"
       fi
+      
+      export MINIO_ROOT_PASSWORD="${MINIO_PASSWORD}"
+      echo -e "${GREEN}✅ MINIO_ROOT_PASSWORD défini: ${MINIO_PASSWORD}${NC}"
     fi
     
-    # S'assurer que MINIO_ROOT_USER existe aussi
+    # S'assurer que MINIO_ROOT_USER existe
     if [ -z "${MINIO_ROOT_USER}" ]; then
       if ! grep -q "^MINIO_ROOT_USER=" .env; then
-        echo "MINIO_ROOT_USER=minioadmin" >> .env
+        if grep -q "^MINIO_ROOT_PASSWORD=" .env; then
+          if [[ "$OSTYPE" == "darwin"* ]]; then
+            sed -i '' "/^MINIO_ROOT_PASSWORD=/i\\
+MINIO_ROOT_USER=minioadmin" .env
+          else
+            sed -i "/^MINIO_ROOT_PASSWORD=/i MINIO_ROOT_USER=minioadmin" .env
+          fi
+        else
+          echo "MINIO_ROOT_USER=minioadmin" >> .env
+        fi
       fi
       export MINIO_ROOT_USER="minioadmin"
     fi
@@ -146,6 +163,23 @@ if [ "$MODE" == "local" ]; then
     counter=$((counter + 2))
   done
   echo -e "${GREEN}✅ Meilisearch est prêt${NC}"
+  
+  # Attendre MinIO
+  echo -e "${BLUE}⏳ Attente de MinIO...${NC}"
+  counter=0
+  while ! curl -s http://localhost:9000/minio/health/live >/dev/null 2>&1; do
+    if [ $counter -ge $timeout ]; then
+      echo -e "${YELLOW}⚠️  MinIO prend plus de temps, continuons...${NC}"
+      break
+    fi
+    sleep 2
+    counter=$((counter + 2))
+  done
+  if docker ps | grep -q viridial-minio.*healthy; then
+    echo -e "${GREEN}✅ MinIO est prêt${NC}"
+  else
+    echo -e "${YELLOW}⚠️  MinIO est démarré mais pas encore healthy${NC}"
+  fi
   
   # Étape 2: Initialiser la base de données
   echo ""

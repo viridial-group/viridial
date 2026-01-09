@@ -28,7 +28,7 @@ export class CampaignService {
    */
   async create(createCampaignDto: any): Promise<Campaign> {
     const campaign = this.campaignRepository.create(createCampaignDto);
-    return await this.campaignRepository.save(campaign);
+    return await this.campaignRepository.save(campaign) as unknown as Campaign;
   }
 
   /**
@@ -78,7 +78,7 @@ export class CampaignService {
 
     campaign.status = CampaignStatus.SCHEDULED;
     campaign.scheduledAt = scheduledAt;
-    return await this.campaignRepository.save(campaign);
+    return await this.campaignRepository.save(campaign) as unknown as Campaign;
   }
 
   /**

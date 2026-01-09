@@ -8,48 +8,66 @@ import EcologyIllustration from './EcologyIllustration';
 export default function EcologySection() {
   const ecoFeatures = [
     {
-      icon: <Leaf className="h-6 w-6 text-primary" />,
+      icon: <Leaf className="h-6 w-6 text-emerald-700" />,
       title: 'Éco-quartiers certifiés',
       description: 'Accédez à des données détaillées sur les quartiers écologiques, leurs certifications environnementales et leurs performances énergétiques.',
-      color: 'bg-viridial-50 border-viridial-200',
+      gradient: 'from-emerald-50 via-green-50 to-teal-50',
+      border: 'border-emerald-200/60',
+      iconBg: 'bg-gradient-to-br from-emerald-400 to-green-500',
+      hoverShadow: 'hover:shadow-emerald-200/50',
     },
     {
-      icon: <Zap className="h-6 w-6 text-yellow-600" />,
+      icon: <Zap className="h-6 w-6 text-amber-700" />,
       title: 'Énergies renouvelables',
       description: 'Identifiez les propriétés équipées de panneaux solaires, éoliennes ou autres systèmes d\'énergie verte pour réduire votre empreinte carbone.',
-      color: 'bg-yellow-50 border-yellow-200',
+      gradient: 'from-amber-50 via-yellow-50 to-orange-50',
+      border: 'border-amber-200/60',
+      iconBg: 'bg-gradient-to-br from-amber-400 to-yellow-500',
+      hoverShadow: 'hover:shadow-amber-200/50',
     },
     {
-      icon: <Droplets className="h-6 w-6 text-blue-600" />,
+      icon: <Droplets className="h-6 w-6 text-cyan-700" />,
       title: 'Gestion de l\'eau',
       description: 'Informations sur les systèmes de récupération d\'eau de pluie, jardins écologiques et infrastructures hydrauliques durables.',
-      color: 'bg-blue-50 border-blue-200',
+      gradient: 'from-cyan-50 via-blue-50 to-sky-50',
+      border: 'border-cyan-200/60',
+      iconBg: 'bg-gradient-to-br from-cyan-400 to-blue-500',
+      hoverShadow: 'hover:shadow-cyan-200/50',
     },
     {
-      icon: <Recycle className="h-6 w-6 text-purple-600" />,
+      icon: <Recycle className="h-6 w-6 text-violet-700" />,
       title: 'Construction durable',
       description: 'Découvrez les matériaux écologiques, les normes de construction durable et les certifications environnementales des bâtiments.',
-      color: 'bg-purple-50 border-purple-200',
+      gradient: 'from-violet-50 via-purple-50 to-fuchsia-50',
+      border: 'border-violet-200/60',
+      iconBg: 'bg-gradient-to-br from-violet-400 to-purple-500',
+      hoverShadow: 'hover:shadow-violet-200/50',
     },
     {
-      icon: <Trees className="h-6 w-6 text-viridial-600" />,
+      icon: <Trees className="h-6 w-6 text-green-700" />,
       title: 'Espaces verts',
       description: 'Analysez la présence de parcs, jardins partagés, toits végétalisés et la qualité de l\'air dans chaque quartier.',
-      color: 'bg-viridial-50 border-viridial-200',
+      gradient: 'from-green-50 via-emerald-50 to-lime-50',
+      border: 'border-green-200/60',
+      iconBg: 'bg-gradient-to-br from-green-400 to-emerald-500',
+      hoverShadow: 'hover:shadow-green-200/50',
     },
     {
-      icon: <Building2 className="h-6 w-6 text-teal-600" />,
+      icon: <Building2 className="h-6 w-6 text-teal-700" />,
       title: 'Transport durable',
       description: 'Informations sur les transports en commun, pistes cyclables, bornes de recharge électrique et accessibilité piétonne.',
-      color: 'bg-teal-50 border-teal-200',
+      gradient: 'from-teal-50 via-cyan-50 to-sky-50',
+      border: 'border-teal-200/60',
+      iconBg: 'bg-gradient-to-br from-teal-400 to-cyan-500',
+      hoverShadow: 'hover:shadow-teal-200/50',
     },
   ];
 
   const ecoStats = [
-    { value: '500+', label: 'Propriétés éco-certifiées', icon: <Leaf className="h-5 w-5 text-primary" /> },
-    { value: '2.5T', label: 'CO₂ économisé par an', icon: <Recycle className="h-5 w-5 text-primary" /> },
-    { value: '80%', label: 'Énergies renouvelables', icon: <Zap className="h-5 w-5 text-primary" /> },
-    { value: '150+', label: 'Éco-quartiers référencés', icon: <Trees className="h-5 w-5 text-primary" /> },
+    { value: '500+', label: 'Propriétés éco-certifiées', icon: <Leaf className="h-5 w-5 text-white" /> },
+    { value: '2.5T', label: 'CO₂ économisé par an', icon: <Recycle className="h-5 w-5 text-white" /> },
+    { value: '80%', label: 'Énergies renouvelables', icon: <Zap className="h-5 w-5 text-white" /> },
+    { value: '150+', label: 'Éco-quartiers référencés', icon: <Trees className="h-5 w-5 text-white" /> },
   ];
 
   return (
@@ -107,13 +125,17 @@ export default function EcologySection() {
                 {ecoStats.map((stat, index) => (
                   <div
                     key={index}
-                    className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+                    className="bg-white/80 backdrop-blur-sm rounded-xl p-5 border border-viridial-200/50 shadow-md hover:shadow-lg hover:border-viridial-300 transition-all duration-300 hover:-translate-y-1 group"
                   >
                     <div className="flex items-center gap-3 mb-2">
-                      {stat.icon}
-                      <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
+                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-viridial-400 to-viridial-600 flex items-center justify-center text-white shadow-md group-hover:shadow-lg group-hover:scale-110 transition-all duration-300">
+                        {stat.icon}
+                      </div>
+                      <div className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent group-hover:from-viridial-700 group-hover:to-viridial-600 transition-all">
+                        {stat.value}
+                      </div>
                     </div>
-                    <div className="text-sm text-gray-600">{stat.label}</div>
+                    <div className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors">{stat.label}</div>
                   </div>
                 ))}
               </div>
@@ -133,16 +155,21 @@ export default function EcologySection() {
           {ecoFeatures.map((feature, index) => (
             <Card
               key={index}
-              className={`border-2 ${feature.color} hover:shadow-lg transition-all duration-300 hover:-translate-y-1`}
+              className={`relative overflow-hidden border-2 ${feature.border} bg-gradient-to-br ${feature.gradient} backdrop-blur-sm hover:shadow-xl ${feature.hoverShadow} transition-all duration-500 hover:-translate-y-2 hover:scale-[1.02] group`}
             >
-              <CardHeader className="pb-3">
-                <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center mb-4 shadow-sm">
-                  {feature.icon}
+              {/* Decorative gradient overlay on hover */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-30 transition-opacity duration-500`}></div>
+              
+              <CardHeader className="pb-3 relative z-10">
+                <div className={`w-14 h-14 rounded-2xl ${feature.iconBg} flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300 backdrop-blur-sm`}>
+                  <div className="text-white drop-shadow-sm">
+                    {feature.icon}
+                  </div>
                 </div>
-                <CardTitle className="text-lg font-bold text-gray-900 mb-2">
+                <CardTitle className="text-xl font-bold text-gray-900 mb-3 group-hover:text-gray-950 transition-colors">
                   {feature.title}
                 </CardTitle>
-                <CardDescription className="text-gray-700 leading-relaxed">
+                <CardDescription className="text-gray-700 leading-relaxed text-[15px] group-hover:text-gray-800 transition-colors">
                   {feature.description}
                 </CardDescription>
               </CardHeader>

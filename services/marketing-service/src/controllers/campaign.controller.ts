@@ -61,7 +61,7 @@ export class CampaignController {
   @Post(':id/schedule')
   async schedule(
     @Param('id') id: string,
-    @Body() body: { scheduledAt: Date },
+    @Body() body: { scheduledAt: Date; organizationId?: string },
     @Request() req: any,
   ): Promise<Campaign> {
     const organizationId = req.user?.organizationId || body.organizationId;

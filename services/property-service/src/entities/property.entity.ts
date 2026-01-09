@@ -95,7 +95,7 @@ export class Property {
   neighborhoodId!: string | null;
 
   // Media URLs (JSON array of URLs - will be stored in separate table later)
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ name: 'media_urls', type: 'jsonb', nullable: true })
   mediaUrls!: string[] | null;
 
   // Metadata

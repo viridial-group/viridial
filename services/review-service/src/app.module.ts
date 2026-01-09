@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { join } from 'path';
 import { ReviewController } from './controllers/review.controller';
 import { ReviewService } from './services/review.service';
 import { ReviewVoteService } from './services/review-vote.service';
@@ -38,9 +39,21 @@ function parseDatabaseUrl(url?: string) {
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: [
+        join(__dirname, '..', '.env.local'), // .env.local pour développement local
+        join(__dirname, '..', '.env'), // .env dans le répertoire du service
+        join(__dirname, '..', '..', '..', '.env'), // .env à la racine du projet
+        join(__dirname, '..', '..', '..', 'infrastructure', 'docker-compose', '.env'), // .env docker-compose
+      ],
+      expandVariables: true,
     }),
     TypeOrmModule.forRootAsync({
-      useFactory: () => parseDatabaseUrl(process.env.DATABASE_URL),
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => {
+        const databaseUrl = configService.get<string>('DATABASE_URL') || process.env.DATABASE_URL;
+        return parseDatabaseUrl(databaseUrl);
+      },
+      inject: [ConfigService],
     }),
     TypeOrmModule.forFeature([Review, ReviewPhoto, ReviewVote, ReviewResponseEntity]),
     AuthModule, // Import AuthModule for JWT authentication

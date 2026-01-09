@@ -25,7 +25,7 @@ export class FormService {
 
   async create(createDto: any): Promise<Form> {
     const form = this.formRepository.create(createDto);
-    return await this.formRepository.save(form);
+    return await this.formRepository.save(form) as unknown as Form;
   }
 
   async findAll(organizationId: string): Promise<Form[]> {

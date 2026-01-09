@@ -12,12 +12,20 @@ $color-success: #10b981;
 $color-warning: #f59e0b;
 $color-info: #3b82f6;
 $color-danger: #ef4444;
+$color-border: rgba(229, 231, 235, 1);
 
-// Couleurs SASS (officielles)
+// Couleurs SASS (officielles) - CSS Preprocessor
 $sass-primary: #CF649A;
 $sass-secondary: #C6538C;
 $sass-dark: #BF4080;
 $sass-light: #E91E63;
+
+// Couleurs SaaS (Software as a Service) - Viridial
+$saas-primary: #10b981;
+$saas-secondary: #059669;
+$saas-dark: #047857;
+$saas-light: #34d399;
+$saas-cloud: #e0f2fe;
 
 // Espacements
 $spacing-xs: 0.25rem;
@@ -34,6 +42,7 @@ $breakpoint-desktop: 1280px;
 
 // Typographie
 $font-family-sans: 'Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', sans-serif;
+$font-size-xs: 0.75rem;
 $font-size-sm: 0.875rem;
 $font-size-base: 1rem;
 $font-size-lg: 1.125rem;
@@ -46,9 +55,12 @@ $radius-sm: 0.25rem;
 $radius-md: 0.5rem;
 $radius-lg: 0.75rem;
 $radius-xl: 1rem;
+$radius-2xl: 1.5rem;
 
 // Shadows
 $shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 $shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
 $shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+$shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+$shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
 

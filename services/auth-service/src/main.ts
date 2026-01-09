@@ -13,8 +13,23 @@ async function bootstrap() {
     'https://viridial.com',
     'https://www.viridial.com',
     'https://148.230.112.148',
-    // Development/Testing
+    // Development/Testing - Localhost variants
+    'http://localhost',
     'http://localhost:3000',
+    'http://localhost:3001',
+    'http://localhost:3002',
+    'http://localhost:3003',
+    'http://localhost:3004',
+    'http://localhost:3005',
+    'http://localhost:3006',
+    'http://127.0.0.1',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:3001',
+    'http://127.0.0.1:3002',
+    'http://127.0.0.1:3003',
+    'http://127.0.0.1:3004',
+    'http://127.0.0.1:3005',
+    'http://127.0.0.1:3006',
     'http://148.230.112.148',
     'http://viridial.com',
     'http://www.viridial.com',
@@ -36,7 +51,7 @@ async function bootstrap() {
     }),
   );
 
-  const port = process.env.PORT ? Number(process.env.PORT) : 3000;
+  const port = process.env.PORT ? Number(process.env.PORT) : 3001;
   await app.listen(port);
 
   // eslint-disable-next-line no-console

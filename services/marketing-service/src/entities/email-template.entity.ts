@@ -7,7 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Campaign } from './campaign.entity';
-import { Workflow } from './workflow.entity';
+import { WorkflowStep } from './workflow-step.entity';
 
 export enum EmailTemplateCategory {
   WELCOME = 'welcome',
@@ -70,7 +70,7 @@ export class EmailTemplate {
   @OneToMany(() => Campaign, (campaign) => campaign.emailTemplateId)
   campaigns: Campaign[];
 
-  @OneToMany(() => Workflow, (workflow) => workflow.emailTemplateId)
-  workflows: Workflow[];
+  @OneToMany(() => WorkflowStep, (step) => step.emailTemplate)
+  workflowSteps: WorkflowStep[];
 }
 

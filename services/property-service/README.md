@@ -1,185 +1,75 @@
-# Property Service - Viridial
+# Property Service
 
-Service de gestion des propriétés immobilières pour Viridial.
+Service de gestion des propriétés pour Viridial.
 
-## 🚀 Fonctionnalités
+## Configuration
 
-- ✅ CRUD propriétés complet
-- ✅ Support multilingue (translations)
-- ✅ Workflow de publication (draft → review → listed)
-- ✅ Géolocalisation (latitude/longitude + adresse structurée)
-- ✅ Gestion des médias (URLs)
-- ⏳ Indexation Meilisearch (à implémenter)
-- ⏳ Géocodage automatique (à implémenter)
+### Variables d'environnement
 
-## 📋 Endpoints API
+Le service charge les variables d'environnement dans cet ordre :
 
-### Health Check
-```
-GET /properties/health
-```
+1. `.env.local` - Pour développement local (priorité la plus élevée)
+2. `.env` - Dans le répertoire du service
+3. `.env` - À la racine du projet
+4. `infrastructure/docker-compose/.env` - Configuration Docker Compose
 
-### CRUD Propriétés
+### Configuration locale
 
-#### Lister les propriétés
-```
-GET /properties?userId=UUID&status=listed&limit=20&offset=0
-```
-
-#### Créer une propriété
-```
-POST /properties
-Body: {
-  "userId": "uuid",
-  "type": "apartment",
-  "price": 250000,
-  "currency": "EUR",
-  "street": "10 Rue Exemple",
-  "postalCode": "75001",
-  "city": "Paris",
-  "country": "France",
-  "translations": [{
-    "language": "fr",
-    "title": "Appartement centre ville",
-    "description": "..."
-  }]
-}
-```
-
-#### Obtenir une propriété
-```
-GET /properties/:id
-```
-
-#### Modifier une propriété
-```
-PUT /properties/:id
-Body: { ... }
-```
-
-#### Supprimer une propriété
-```
-DELETE /properties/:id
-```
-
-#### Publier une propriété
-```
-POST /properties/:id/publish
-```
-
-## 🗄️ Structure de Base de Données
-
-### Table `properties`
-- Informations principales (type, prix, statut)
-- Géolocalisation (latitude, longitude)
-- Adresse structurée (street, postalCode, city, region, country)
-- Médias (JSON array d'URLs)
-- Workflow status (draft, review, listed, flagged, archived)
-
-### Table `property_translations`
-- Traductions multilingues (title, description, notes)
-- SEO (metaTitle, metaDescription)
-- Relation 1-N avec properties (unique par language)
-
-## 🔧 Configuration
-
-### Variables d'Environnement
-
-```env
-# Database
-DATABASE_URL=postgresql://user:password@host:5432/viridial
-
-# Server
-PORT=3001
-NODE_ENV=production
-
-# Frontend (pour CORS)
-FRONTEND_URL=https://viridial.com
-```
-
-## 🚀 Développement Local
+Pour exécuter le service localement (hors Docker), créez un fichier `.env.local` :
 
 ```bash
-cd services/property-service
+# Dans services/property-service/.env.local
+DATABASE_URL=postgres://viridial:viridial_dev_password_2024@localhost:5432/viridial
+NODE_ENV=development
+PORT=3001
+JWT_ACCESS_SECRET=jwt_access_secret_dev_local_minimum_32_characters_long
+FRONTEND_URL=http://localhost:3000
+GEOLOCATION_SERVICE_URL=http://localhost:3002
+SEARCH_SERVICE_URL=http://localhost:3003
+```
 
-# Installer les dépendances
-npm install
+**Important :** Quand vous exécutez localement, utilisez `localhost` au lieu de `viridial-postgres` pour la `DATABASE_URL` si la base de données est dans Docker mais accessible via le port exposé.
 
-# Démarrer en mode dev (watch)
-npm run start:dev
+### Scripts disponibles
 
-# Build
+- `npm run build` - Compiler le service
+- `npm start` - Démarrer le service (utilise les variables d'environnement)
+- `npm run start:dev` - Mode développement avec watch
+- `npm run start:local` - Démarrer avec DATABASE_URL locale préconfigurée
+
+## Démarrer le service
+
+### Mode Docker (recommandé)
+
+Le service est configuré dans `infrastructure/docker-compose/app-property.yml` :
+
+```bash
+cd infrastructure/docker-compose
+docker-compose -f app-property.yml up -d
+```
+
+### Mode local (pour développement)
+
+1. Assurez-vous que la base de données PostgreSQL est accessible
+2. Créez `.env.local` avec la configuration ci-dessus
+3. Compilez et démarrez :
+
+```bash
 npm run build
-
-# Production
 npm start
 ```
 
-## 🐳 Déploiement Docker
+## APIs principales
 
-### Build
-```bash
-docker build -t viridial/property-service:latest .
-```
+- `GET /properties` - Liste des propriétés
+- `POST /properties` - Créer une propriété
+- `GET /properties/:id` - Détails d'une propriété
+- `PUT /properties/:id` - Modifier une propriété
+- `DELETE /properties/:id` - Supprimer une propriété
 
-### Run
-```bash
-docker run -d \
-  -p 3001:3001 \
-  -e DATABASE_URL=postgresql://... \
-  -e FRONTEND_URL=https://viridial.com \
-  --name viridial-property-service \
-  viridial/property-service:latest
-```
+## Technologies
 
-### Déploiement VPS
-```bash
-./scripts/deploy-property-service-vps.sh
-```
-
-## 📊 Migrations
-
-Les tables sont créées automatiquement en dev (`synchronize: true`).
-
-Pour la production, appliquer la migration manuelle:
-```bash
-psql $DATABASE_URL < services/property-service/src/migrations/create-properties-tables.sql
-```
-
-## 🧪 Tests
-
-```bash
-# Tests unitaires
-npm test
-
-# Tests e2e
-npm run test:e2e
-```
-
-## 📝 Stories
-
-- **US-007:** CRUD annonces (Agency) - ✅ Implémenté
-- **US-019:** Système de géolocalisation (Geocoding) - ⏳ À implémenter
-
-## 🔄 Prochaines Étapes
-
-- [ ] Implémenter l'authentification JWT (intégration avec auth-service)
-- [ ] Ajouter le géocodage automatique (US-019)
-- [ ] Intégration Meilisearch pour l'indexation
-- [ ] Upload et optimisation d'images (MinIO/S3)
-- [ ] Workflow de modération (flagged status)
-- [ ] Bulk import CSV/XLS
-- [ ] Export JSON-LD Schema.org pour SEO
-
-## 🔗 Intégration
-
-### Nginx
-Le service est accessible via Nginx à:
-- `https://viridial.com/properties/*`
-
-### Frontend
-L'API est disponible pour le frontend:
-```typescript
-const API_URL = process.env.NEXT_PUBLIC_PROPERTY_API_URL || 'https://viridial.com/properties';
-```
-
+- NestJS
+- TypeORM
+- PostgreSQL
+- MinIO (storage)

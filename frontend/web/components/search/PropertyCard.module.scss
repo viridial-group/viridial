@@ -1,0 +1,571 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+// Carte de propriété améliorée avec SASS moderne
+.propertyCard {
+  @include card;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid rgba(229, 231, 235, 0.8);
+  background: linear-gradient(to bottom, white 0%, rgba(249, 250, 251, 0.5) 100%);
+  backdrop-filter: blur(8px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  border-radius: $radius-xl;
+  
+  // Gradient overlay décoratif au hover
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba($saas-primary, 0.05) 0%, rgba($saas-secondary, 0.02) 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  &:hover {
+    border-color: rgba($saas-primary, 0.6);
+    box-shadow: 0 10px 30px rgba($saas-primary, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-6px) scale(1.01);
+    
+    &::before {
+      opacity: 1;
+    }
+  }
+  
+  &.selected {
+    border-color: $saas-primary;
+    background: linear-gradient(to bottom, white 0%, rgba($saas-primary, 0.08) 100%);
+    box-shadow: 0 0 0 4px rgba($saas-primary, 0.25), 
+                0 12px 40px rgba($saas-primary, 0.2),
+                0 4px 16px rgba(0, 0, 0, 0.12);
+    transform: scale(1.02);
+    
+    &::before {
+      opacity: 1;
+      background: linear-gradient(135deg, rgba($saas-primary, 0.1) 0%, rgba($saas-secondary, 0.05) 100%);
+    }
+  }
+  
+  &.ecoProperty {
+    border-color: rgba(16, 185, 129, 0.4); // emerald-400
+    background: linear-gradient(to bottom, white 0%, rgba(16, 185, 129, 0.03) 100%);
+    
+    &:hover {
+      border-color: rgba(5, 150, 105, 0.7); // emerald-600
+      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2), 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    &.selected {
+      border-color: #10b981; // emerald-500
+      background: linear-gradient(to bottom, white 0%, rgba(16, 185, 129, 0.1) 100%);
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.3), 
+                  0 12px 40px rgba(16, 185, 129, 0.25),
+                  0 4px 16px rgba(0, 0, 0, 0.12);
+    }
+  }
+  
+  &.listView {
+    margin: 0 12px 12px 12px;
+  }
+  
+  &.gridView {
+    margin: 0;
+  }
+}
+
+// Image de propriété avec styles modernes
+.propertyImage {
+  position: relative;
+  width: 100%;
+  background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 50%, #9ca3af 100%);
+  overflow: hidden;
+  z-index: 1;
+  
+  &.listView {
+    height: 192px;
+  }
+  
+  &.gridView {
+    height: 224px;
+  }
+  
+  .imageContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    
+    .loadingPlaceholder {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, 
+        rgba(229, 231, 235, 1) 0%, 
+        rgba(243, 244, 246, 1) 50%, 
+        rgba(229, 231, 235, 1) 100%);
+      background-size: 200% 200%;
+      animation: property-card-shimmer 2s ease-in-out infinite;
+      @include flex-center;
+      
+      .placeholderIcon {
+        color: rgba(156, 163, 175, 1);
+        animation: property-card-pulse 2s ease-in-out infinite;
+      }
+    }
+    
+    .propertyImageElement {
+      object-fit: cover;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      filter: brightness(1) saturate(1);
+      
+      &.loading {
+        opacity: 0;
+      }
+      
+      &.loaded {
+        opacity: 1;
+      }
+      
+      .propertyCard:hover & {
+        transform: scale(1.12);
+        filter: brightness(1.05) saturate(1.1);
+      }
+    }
+    
+    .imageOverlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, 
+        rgba(0, 0, 0, 0.35) 0%, 
+        rgba(0, 0, 0, 0.15) 40%,
+        transparent 70%);
+      transition: opacity 0.4s ease;
+      z-index: 2;
+      
+      .propertyCard:hover & {
+        opacity: 0.85;
+        background: linear-gradient(to top, 
+          rgba(0, 0, 0, 0.45) 0%, 
+          rgba(0, 0, 0, 0.2) 40%,
+          transparent 70%);
+      }
+    }
+  }
+  
+  .noImageFallback {
+    width: 100%;
+    height: 100%;
+    @include flex-center;
+    background: linear-gradient(135deg, 
+      rgba($saas-primary, 0.1) 0%, 
+      rgba($saas-secondary, 0.05) 50%,
+      rgba($saas-cloud, 0.1) 100%);
+    color: rgba(107, 114, 128, 1);
+    
+    .fallbackContent {
+      text-align: center;
+      padding: $spacing-md;
+      
+      .fallbackIcon {
+        margin-bottom: 8px;
+        color: rgba($saas-primary, 0.6);
+      }
+      
+      .fallbackText {
+        font-size: $font-size-xs;
+        font-weight: 600;
+        color: rgba(75, 85, 99, 1);
+        text-transform: capitalize;
+      }
+    }
+  }
+  
+  .statusBadge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+    backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(229, 231, 235, 0.8);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    
+    .propertyCard:hover & {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+  }
+  
+  .ecoBadge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    padding: 6px 10px;
+    border-radius: $radius-lg;
+    font-size: $font-size-xs;
+    font-weight: 700;
+    @include flex-center;
+    gap: 5px;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4),
+                0 2px 4px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+    
+    .propertyCard:hover & {
+      transform: scale(1.1) translateY(-2px);
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.5),
+                  0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    .leafIcon {
+      width: 14px;
+      height: 14px;
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+    }
+  }
+}
+
+// Contenu de la carte avec styles modernes
+.propertyContent {
+  padding: $spacing-lg;
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(to bottom, white 0%, rgba(249, 250, 251, 0.3) 100%);
+  
+  .propertyHeader {
+    margin-bottom: $spacing-md;
+    
+    .propertyTitle {
+      font-size: $font-size-xl;
+      font-weight: 700;
+      color: rgba(17, 24, 39, 1);
+      margin-bottom: 8px;
+      @include truncate-lines(2);
+      line-height: 1.5;
+      transition: all 0.3s ease;
+      background: linear-gradient(135deg, rgba(17, 24, 39, 1) 0%, rgba(55, 65, 81, 1) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      
+      .propertyCard:hover & {
+        background: linear-gradient(135deg, $saas-primary 0%, $saas-secondary 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        transform: translateX(2px);
+      }
+    }
+    
+    .propertyLocation {
+      @include flex-center;
+      gap: 6px;
+      font-size: $font-size-sm;
+      color: rgba(107, 114, 128, 1);
+      margin-top: 8px;
+      font-weight: 500;
+      
+      .locationIcon {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+        color: rgba($saas-primary, 0.7);
+        transition: all 0.3s ease;
+      }
+      
+      .locationText {
+        @include truncate;
+        transition: color 0.3s ease;
+      }
+      
+      .propertyCard:hover & {
+        .locationIcon {
+          color: $saas-primary;
+          transform: scale(1.1);
+        }
+        .locationText {
+          color: rgba(55, 65, 81, 1);
+        }
+      }
+    }
+  }
+  
+  .propertyDescription {
+    font-size: $font-size-sm;
+    color: rgba(107, 114, 128, 1);
+    @include truncate-lines(2);
+    line-height: 1.6;
+    margin-bottom: $spacing-sm;
+    transition: color 0.3s ease;
+    
+    .propertyCard:hover & {
+      color: rgba(75, 85, 99, 1);
+    }
+  }
+  
+  .propertyNeighborhood {
+    @include flex-center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: $spacing-md;
+    
+    .neighborhoodBadge {
+      padding: 4px 10px;
+      border-radius: $radius-lg;
+      font-size: $font-size-xs;
+      font-weight: 600;
+      border: 1.5px solid rgba(229, 231, 235, 1);
+      background: linear-gradient(135deg, rgba(249, 250, 251, 1) 0%, white 100%);
+      color: rgba(75, 85, 99, 1);
+      transition: all 0.3s ease;
+      
+      .neighborhoodIcon {
+        width: 12px;
+        height: 12px;
+        margin-right: 4px;
+      }
+      
+      &.eco {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%);
+        border-color: rgba(16, 185, 129, 0.4);
+        color: rgba(5, 150, 105, 1);
+        box-shadow: 0 2px 4px rgba(16, 185, 129, 0.1);
+        
+        .propertyCard:hover & {
+          background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.1) 100%);
+          border-color: rgba(16, 185, 129, 0.6);
+          transform: scale(1.05);
+        }
+      }
+    }
+  }
+  
+  .propertyDetails {
+    @include flex-between;
+    gap: $spacing-md;
+    margin-top: $spacing-lg;
+    padding-top: $spacing-lg;
+    border-top: 2px solid rgba(229, 231, 235, 0.6);
+    align-items: center;
+    
+    .detailItem {
+      @include flex-center;
+      gap: 6px;
+      font-size: $font-size-sm;
+      color: rgba(107, 114, 128, 1);
+      
+      .detailIcon {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+        color: rgba($saas-primary, 0.6);
+        transition: all 0.3s ease;
+      }
+      
+      .detailValue {
+        font-weight: 600;
+        color: rgba(55, 65, 81, 1);
+        transition: color 0.3s ease;
+      }
+      
+      .propertyCard:hover & {
+        .detailIcon {
+          color: $saas-primary;
+          transform: scale(1.1);
+        }
+        .detailValue {
+          color: rgba(17, 24, 39, 1);
+        }
+      }
+    }
+    
+    .propertyPrice {
+      @include flex-center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: $radius-lg;
+      background: linear-gradient(135deg, rgba($saas-primary, 0.1) 0%, rgba($saas-secondary, 0.05) 100%);
+      border: 1.5px solid rgba($saas-primary, 0.2);
+      transition: all 0.3s ease;
+      
+      .priceIcon {
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+        color: $saas-primary;
+        transition: all 0.3s ease;
+      }
+      
+      .priceValue {
+        font-size: $font-size-2xl;
+        font-weight: 800;
+        background: linear-gradient(135deg, $saas-primary 0%, $saas-secondary 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.02em;
+        transition: all 0.3s ease;
+      }
+      
+      .propertyCard:hover & {
+        background: linear-gradient(135deg, rgba($saas-primary, 0.15) 0%, rgba($saas-secondary, 0.1) 100%);
+        border-color: rgba($saas-primary, 0.4);
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba($saas-primary, 0.2);
+        
+        .priceIcon {
+          transform: scale(1.15) rotate(5deg);
+        }
+      }
+    }
+  }
+  
+  .propertyType {
+    @include flex-center;
+    gap: 6px;
+    margin-top: $spacing-sm;
+    
+    .typeIcon {
+      width: 16px;
+      height: 16px;
+      color: rgba(156, 163, 175, 1);
+    }
+    
+    .typeText {
+      font-size: $font-size-xs;
+      color: rgba(107, 114, 128, 1);
+      text-transform: capitalize;
+    }
+  }
+  
+  .propertyFooter {
+    margin-top: $spacing-lg;
+    padding-top: $spacing-md;
+    border-top: 1px solid rgba(229, 231, 235, 0.5);
+    @include flex-between;
+    align-items: center;
+    gap: $spacing-md;
+    
+    .propertyLink {
+      @include flex-center;
+      gap: 8px;
+      font-size: $font-size-base;
+      font-weight: 600;
+      color: white;
+      background: linear-gradient(135deg, $saas-primary 0%, $saas-secondary 100%);
+      padding: 10px 20px;
+      border-radius: $radius-xl;
+      box-shadow: 0 4px 12px rgba($saas-primary, 0.3),
+                  0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      
+      &:hover {
+        background: linear-gradient(135deg, darken($saas-primary, 5%) 0%, darken($saas-secondary, 5%) 100%);
+        transform: translateX(4px) scale(1.05);
+        box-shadow: 0 6px 20px rgba($saas-primary, 0.4),
+                    0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+      
+      &:active {
+        transform: translateX(2px) scale(0.98);
+      }
+      
+      .linkIcon {
+        width: 18px;
+        height: 18px;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+      }
+      
+      &:hover .linkIcon {
+        transform: translateX(4px);
+      }
+    }
+  }
+}
+
+// Animations modernes
+@keyframes property-card-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(0.98);
+  }
+}
+
+@keyframes property-card-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes property-card-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes property-card-stagger {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.propertyCard {
+  animation: property-card-fade-in 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  // Stagger animation pour les cartes multiples
+  @for $i from 1 through 10 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.05}s;
+    }
+  }
+}
+
+// Responsive
+@include mobile {
+  .propertyCard {
+    border-radius: $radius-lg;
+    margin: 0 12px 12px 12px;
+  }
+  
+  .propertyImage {
+    height: 180px;
+  }
+  
+  .propertyContent {
+    padding: $spacing-sm;
+    
+    .propertyHeader .propertyTitle {
+      font-size: $font-size-base;
+    }
+    
+    .propertyDetails .propertyPrice {
+      font-size: $font-size-lg;
+    }
+  }
+}
+

@@ -40,7 +40,7 @@ export class WorkflowService {
    */
   async create(createWorkflowDto: any): Promise<Workflow> {
     const workflow = this.workflowRepository.create(createWorkflowDto);
-    return await this.workflowRepository.save(workflow);
+    return await this.workflowRepository.save(workflow) as unknown as Workflow;
   }
 
   /**
@@ -58,11 +58,17 @@ export class WorkflowService {
    * Récupère un workflow par ID
    */
   async findOne(id: string, organizationId: string): Promise<Workflow> {
-    return await this.workflowRepository.findOne({
+    const workflow = await this.workflowRepository.findOne({
       where: { id, organizationId },
       relations: ['steps', 'segment'],
-      order: { 'steps.order': 'ASC' },
     });
+    
+    if (workflow && workflow.steps) {
+      // Trier les steps par ordre
+      workflow.steps.sort((a, b) => a.order - b.order);
+    }
+    
+    return workflow;
   }
 
   /**
@@ -86,7 +92,7 @@ export class WorkflowService {
   async activate(id: string, organizationId: string): Promise<Workflow> {
     const workflow = await this.findOne(id, organizationId);
     workflow.status = WorkflowStatus.ACTIVE;
-    return await this.workflowRepository.save(workflow);
+    return await this.workflowRepository.save(workflow) as unknown as Workflow;
   }
 
   /**

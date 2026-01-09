@@ -130,11 +130,9 @@ export interface SearchFacets {
 
 export class SearchService {
   private baseUrl: string;
-  public useMock: boolean; // Made public for type checking
 
-  constructor(baseUrl: string = SEARCH_API_URL, useMock: boolean = false) {
+  constructor(baseUrl: string = SEARCH_API_URL) {
     this.baseUrl = baseUrl;
-    this.useMock = useMock || process.env.NEXT_PUBLIC_USE_MOCK_SEARCH === 'true';
   }
 
   /**
@@ -146,11 +144,6 @@ export class SearchService {
     filters: SearchFilters = {},
     options: SearchOptions = {},
   ): Promise<SearchResult> {
-    // Use mock data if enabled
-    if (this.useMock) {
-      const { mockSearch } = await import('@/lib/mocks/search-mock-data');
-      return mockSearch(query, filters, { ...options, sortBy: options.sort?.[0] || 'relevance' });
-    }
     const params = new URLSearchParams();
     
     if (query) params.append('q', query);
@@ -230,17 +223,6 @@ export class SearchService {
       return [];
     }
 
-    // Use mock data if enabled
-    if (this.useMock) {
-      const { mockSuggestionsCall } = await import('@/lib/mocks/search-mock-data');
-      const suggestions = await mockSuggestionsCall(query);
-      return suggestions.map((s, idx) => ({
-        id: `mock-${idx}`,
-        title: s.title,
-        city: s.city,
-      }));
-    }
-
     const params = new URLSearchParams();
     params.append('q', query);
     params.append('limit', limit.toString());
@@ -304,36 +286,19 @@ export class SearchService {
   }
 }
 
-// Export singleton instance - will be recreated based on mock mode
+// Export singleton instance
 let searchServiceInstance: SearchService | null = null;
 
 /**
- * Get or create SearchService instance with current mock mode
+ * Get or create SearchService instance
  */
-export function getSearchService(useMock?: boolean): SearchService {
-  // Check localStorage if useMock not explicitly provided
-  if (useMock === undefined && typeof window !== 'undefined') {
-    useMock = localStorage.getItem('useMockSearch') === 'true';
+export function getSearchService(): SearchService {
+  if (!searchServiceInstance) {
+    searchServiceInstance = new SearchService(SEARCH_API_URL);
   }
-  
-  // Check env variable if still undefined
-  if (useMock === undefined) {
-    useMock = process.env.NEXT_PUBLIC_USE_MOCK_SEARCH === 'true';
-  }
-
-  // In development, default to mock mode if not explicitly disabled
-  if (useMock === undefined && process.env.NODE_ENV === 'development') {
-    useMock = true; // Default to mock in local dev
-  }
-
-  // Recreate instance if mock mode changed
-  if (!searchServiceInstance || searchServiceInstance['useMock'] !== useMock) {
-    searchServiceInstance = new SearchService(SEARCH_API_URL, useMock || false);
-  }
-
   return searchServiceInstance;
 }
 
-// Export default instance (legacy support, will use mock mode from env/localStorage)
+// Export default instance
 export const searchService = getSearchService();
 

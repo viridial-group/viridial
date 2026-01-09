@@ -88,33 +88,15 @@ export interface NeighborhoodFilters {
 
 class NeighborhoodService {
   private baseUrl: string;
-  private useMock: boolean;
 
-  constructor(baseUrl: string = PROPERTY_API_URL, useMock?: boolean) {
+  constructor(baseUrl: string = PROPERTY_API_URL) {
     this.baseUrl = baseUrl;
-    // Check localStorage if useMock not explicitly provided
-    if (useMock === undefined && typeof window !== 'undefined') {
-      useMock = localStorage.getItem('useMockNeighborhood') === 'true';
-    }
-    // Check env variable if still undefined
-    if (useMock === undefined) {
-      useMock = process.env.NEXT_PUBLIC_USE_MOCK_NEIGHBORHOOD === 'true';
-    }
-    // In development, default to mock mode if not explicitly disabled
-    if (useMock === undefined && process.env.NODE_ENV === 'development') {
-      useMock = true; // Default to mock in local dev
-    }
-    this.useMock = useMock || false;
   }
 
   /**
    * Récupère tous les quartiers avec filtres optionnels
    */
   async findAll(filters?: NeighborhoodFilters): Promise<NeighborhoodListResponse> {
-    if (this.useMock) {
-      const { mockGetAllNeighborhoods } = await import('@/lib/mocks/neighborhood-mock-data');
-      return mockGetAllNeighborhoods(filters);
-    }
 
     const params = new URLSearchParams();
     if (filters?.city) params.append('city', filters.city);
@@ -137,15 +119,6 @@ class NeighborhoodService {
    * Récupère un quartier par ID
    */
   async findOne(id: string): Promise<Neighborhood> {
-    if (this.useMock) {
-      // Mock mode: search in mock data by ID
-      const { mockNeighborhoods } = await import('@/lib/mocks/neighborhood-mock-data');
-      const found = mockNeighborhoods.find(n => n.id === id);
-      if (!found) {
-        throw new Error(`Neighborhood with ID ${id} not found`);
-      }
-      return found;
-    }
 
     const response = await fetch(`${this.baseUrl}/neighborhoods/${id}`);
 
@@ -160,14 +133,6 @@ class NeighborhoodService {
    * Récupère un quartier par slug
    */
   async findBySlug(slug: string): Promise<Neighborhood> {
-    if (this.useMock) {
-      const { mockGetNeighborhoodBySlug } = await import('@/lib/mocks/neighborhood-mock-data');
-      const neighborhood = mockGetNeighborhoodBySlug(slug);
-      if (!neighborhood) {
-        throw new Error(`Neighborhood with slug ${slug} not found`);
-      }
-      return neighborhood;
-    }
 
     const response = await fetch(`${this.baseUrl}/neighborhoods/slug/${slug}`);
 
@@ -182,10 +147,6 @@ class NeighborhoodService {
    * Recherche de quartiers par nom
    */
   async search(query: string, limit = 10): Promise<Neighborhood[]> {
-    if (this.useMock) {
-      const { mockSearchNeighborhoods } = await import('@/lib/mocks/neighborhood-mock-data');
-      return mockSearchNeighborhoods(query, limit);
-    }
 
     const params = new URLSearchParams();
     params.append('q', query);
@@ -237,36 +198,19 @@ class NeighborhoodService {
   }
 }
 
-// Export singleton instance - will be recreated based on mock mode
+// Export singleton instance
 let neighborhoodServiceInstance: NeighborhoodService | null = null;
 
 /**
- * Get or create NeighborhoodService instance with current mock mode
+ * Get or create NeighborhoodService instance
  */
-export function getNeighborhoodService(useMock?: boolean): NeighborhoodService {
-  // Check localStorage if useMock not explicitly provided
-  if (useMock === undefined && typeof window !== 'undefined') {
-    useMock = localStorage.getItem('useMockNeighborhood') === 'true';
+export function getNeighborhoodService(): NeighborhoodService {
+  if (!neighborhoodServiceInstance) {
+    neighborhoodServiceInstance = new NeighborhoodService(PROPERTY_API_URL);
   }
-  
-  // Check env variable if still undefined
-  if (useMock === undefined) {
-    useMock = process.env.NEXT_PUBLIC_USE_MOCK_NEIGHBORHOOD === 'true';
-  }
-
-  // In development, default to mock mode if not explicitly disabled
-  if (useMock === undefined && process.env.NODE_ENV === 'development') {
-    useMock = true; // Default to mock in local dev
-  }
-
-  // Recreate instance if mock mode changed
-  if (!neighborhoodServiceInstance || neighborhoodServiceInstance['useMock'] !== useMock) {
-    neighborhoodServiceInstance = new NeighborhoodService(PROPERTY_API_URL, useMock || false);
-  }
-
   return neighborhoodServiceInstance;
 }
 
-// Export default instance (legacy support, will use mock mode from env/localStorage)
+// Export default instance
 export const neighborhoodService = getNeighborhoodService();
 

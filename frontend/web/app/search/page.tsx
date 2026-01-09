@@ -24,7 +24,6 @@ import SavedSearches, { useSaveSearch } from '@/components/search/SavedSearches'
 import NeighborhoodFilter from '@/components/search/NeighborhoodFilter';
 import { useToast } from '@/components/ui/simple-toast';
 import { SearchResultsSkeleton } from '@/components/ui/loading-skeleton';
-import { MockIndicator } from '@/components/ui/mock-indicator';
 import { EmptyState } from '@/components/ui/empty-state';
 import PropertyQuickDetailPanel from '@/components/search/PropertyQuickDetailPanel';
 import POIFloatingPanel from '@/components/search/POIFloatingPanel';
@@ -32,6 +31,7 @@ import QuickFilters from '@/components/search/QuickFilters';
 import PropertyCard from '@/components/search/PropertyCard';
 import { SmartSearchSuggestions } from '@/components/search/SmartSearchSuggestions';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import styles from './search.module.scss';
 
 // Dynamically import Map component (client-side only)
 const MapComponent = dynamic(() => import('@/components/search/MapComponent'), {
@@ -172,36 +172,6 @@ function SearchPageContent() {
     search();
   }, [quickFilters, toast, search]);
   
-  // Mock mode state - default to true in development for local testing
-  const [isMockMode, setIsMockMode] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('useMockSearch');
-      if (saved !== null) return saved === 'true';
-    }
-    // Default to true in development, false in production
-    return process.env.NODE_ENV === 'development';
-  });
-  
-  // Sync mock mode with localStorage on client mount
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedMockMode = localStorage.getItem('useMockSearch') === 'true';
-      const envMockMode = process.env.NEXT_PUBLIC_USE_MOCK_SEARCH === 'true';
-      const devDefault = process.env.NODE_ENV === 'development';
-      setIsMockMode(envMockMode || savedMockMode || devDefault);
-    }
-  }, []);
-  
-  // Update localStorage when mock mode changes
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      if (isMockMode) {
-        localStorage.setItem('useMockSearch', 'true');
-      } else {
-        localStorage.removeItem('useMockSearch');
-      }
-    }
-  }, [isMockMode]);
 
   // Count active filters (excluding bounds coordinates when using radius) - Memoized
   const activeFiltersCount = useMemo(() => {
@@ -215,25 +185,13 @@ function SearchPageContent() {
     }).length;
   }, [filters]);
 
-  // Perform initial search if query exists, or show mock data by default in mock mode
+  // Perform initial search if query exists
   useEffect(() => {
     if (query || Object.keys(filters).length > 0) {
       search();
-    } else if (isMockMode && !results) {
-      // Auto-search with empty query to show mock data immediately in mock mode
-      search('', {}, { limit: 20, offset: 0, language: 'fr' });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Only run on mount
-
-  // Re-search when mock mode changes to update results immediately
-  useEffect(() => {
-    if (isMockMode) {
-      // When switching to mock mode, trigger search to show mock data
-      search();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isMockMode]);
 
   const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
@@ -307,70 +265,64 @@ function SearchPageContent() {
   }, [isSearchFocused]);
 
   return (
-    <div className="h-screen flex flex-col bg-white overflow-hidden relative">
+    <div className={styles.searchPage}>
       {/* Main content area for skip link */}
       <div id="main-content" className="sr-only" aria-label="Contenu principal"></div>
       
-      {/* Mock Mode Indicator - Fixed position */}
-      {isMockMode && <MockIndicator />}
-      {/* Top Search Bar - Enhanced Google Maps style with modern design */}
-      <div className="relative z-50 bg-white/95 backdrop-blur-sm shadow-lg border-b border-gray-200/50 flex-shrink-0">
-        <div className="max-w-[1800px] mx-auto px-4 py-4 relative">
-          <div className="flex items-center gap-3">
+      {/* Top Search Bar - Enhanced with SASS styles */}
+      <div className={styles.searchBar}>
+        <div className={styles.searchContainer}>
+          <div className={styles.searchRow}>
             {/* Logo/Brand - Enhanced */}
-            <Link href="/" className="flex-shrink-0 hidden sm:block group/logo">
-              <div className="text-xl font-bold bg-gradient-to-r from-primary to-viridial-600 bg-clip-text text-transparent hover:from-viridial-700 hover:to-viridial-800 transition-all duration-300">
-                Viridial
+            <Link href="/" className={`${styles.searchLogo} hidden sm:block`}>
+              <div className={styles.logoLink}>
+                <span className={styles.logoText}>Viridial</span>
               </div>
             </Link>
 
             {/* Enhanced Search Input - Modern clean style with smooth animations */}
-            <form onSubmit={handleSubmit} className="flex-1 relative max-w-2xl" ref={searchInputRef as any}>
-              <div className="relative group/search">
-                <Search className={`absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 z-10 transition-colors duration-200 ${
-                  isSearchFocused ? 'text-primary' : 'text-gray-400 group-hover/search:text-gray-600'
-                }`} />
-                <Input
-                  ref={searchInputRef}
-                  type="text"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  onFocus={() => setIsSearchFocused(true)}
-                  placeholder={t('search.placeholder')}
-                  className={`pl-12 pr-12 h-14 text-base border-2 rounded-2xl shadow-sm transition-all duration-300 ${
-                    isSearchFocused
-                      ? 'border-primary ring-4 ring-primary/10 shadow-xl bg-white scale-[1.01]'
-                      : 'border-gray-300 hover:border-viridial-300 hover:shadow-lg hover:bg-gray-50/50'
-                  }`}
-                  aria-label="Recherche de propriété"
-                  aria-autocomplete="list"
-                  aria-expanded={isSearchFocused}
-                  aria-controls="search-suggestions"
-                  role="combobox"
-                />
-                {query && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setQuery('');
-                      search();
-                      setIsSearchFocused(false);
-                    }}
-                    className="absolute right-14 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-all duration-200 p-1.5 rounded-full hover:bg-gray-100 active:scale-95"
-                    aria-label="Effacer la recherche"
-                  >
-                    <X className="h-5 w-5" />
-                  </button>
-                )}
-                {query && (
-                  <button
-                    type="submit"
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white bg-gradient-to-r from-primary to-viridial-600 hover:from-viridial-700 hover:to-viridial-700 rounded-xl p-2.5 transition-all duration-200 shadow-md hover:shadow-xl hover:scale-105 active:scale-95"
-                    aria-label="Rechercher"
-                  >
-                    <Search className="h-4 w-4" />
-                  </button>
-                )}
+            <form onSubmit={handleSubmit} className={styles.searchInputWrapper} ref={searchInputRef as any}>
+              <div className={styles.searchForm}>
+                <div className={styles.searchGroup}>
+                  <Search className={`${styles.searchIcon} ${isSearchFocused ? styles.focused : ''}`} />
+                  <Input
+                    ref={searchInputRef}
+                    type="text"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    onFocus={() => setIsSearchFocused(true)}
+                    placeholder={t('search.placeholder')}
+                    className={`${styles.searchInput} ${isSearchFocused ? styles.focused : ''}`}
+                    aria-label="Recherche de propriété"
+                    aria-autocomplete="list"
+                    aria-expanded={isSearchFocused}
+                    aria-controls="search-suggestions"
+                    role="combobox"
+                  />
+                  {query && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setQuery('');
+                        search();
+                        setIsSearchFocused(false);
+                      }}
+                      className={styles.clearButton}
+                      aria-label="Effacer la recherche"
+                    >
+                      <X className="h-5 w-5" />
+                    </button>
+                  )}
+                  {query && (
+                    <button
+                      type="submit"
+                      className={styles.searchSubmitButton}
+                      aria-label="Rechercher"
+                    >
+                      <Search className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
               </div>
 
               {/* Smart Search Suggestions */}
@@ -388,7 +340,7 @@ function SearchPageContent() {
             </form>
 
             {/* Action Buttons Group - Enhanced with better spacing and animations */}
-            <div className="flex items-center gap-2.5">
+            <div className={styles.searchActions}>
               {/* Save Search Button - Enhanced */}
               {(query || activeFiltersCount > 0) && (
                 <Button
@@ -432,44 +384,6 @@ function SearchPageContent() {
                 />
               </div>
 
-              {/* Toggle Mock Mode Button - Always visible in dev, configurable in prod */}
-              {(process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_SHOW_MOCK_TOGGLE === 'true') && (
-              <Button
-                type="button"
-                variant={isMockMode ? 'default' : 'outline'}
-                onClick={() => {
-                  const newMockMode = !isMockMode;
-                  setIsMockMode(newMockMode);
-                  // Trigger a new search to use updated mock mode
-                  setTimeout(() => {
-                    if (query || Object.keys(filters).length > 0) {
-                      search();
-                    } else if (newMockMode) {
-                      // If switching to mock mode with no query, show mock data immediately
-                      search('', {}, { limit: 20, offset: 0, language: 'fr' });
-                    }
-                  }, 100);
-                }}
-                className={`flex items-center gap-2 rounded-full text-xs transition-all ${
-                  isMockMode 
-                    ? 'bg-primary hover:bg-viridial-700 text-white shadow-md pulse-glow' 
-                    : 'border-gray-300 hover:bg-gray-50'
-                }`}
-                title={isMockMode ? 'Mode test actif - Données mockées | Cliquez pour désactiver' : 'Activer le mode test - Utiliser les données mockées'}
-              >
-                {isMockMode ? (
-                  <>
-                    <span className="animate-pulse">🧪</span>
-                    <span className="font-semibold">MOCK ACTIF</span>
-                  </>
-                ) : (
-                  <>
-                    <span>🧪</span>
-                    <span>Mode réel</span>
-                  </>
-                )}
-              </Button>
-            )}
 
             {/* Draw Zone Button */}
             <Button
@@ -606,24 +520,25 @@ function SearchPageContent() {
             </Button>
           </div>
 
-          {/* Enhanced Filters Panel - Modern design with smooth animations */}
+          {/* Enhanced Filters Panel - Modern design with SASS styles */}
           {showFilters && (
-            <div className="absolute top-full left-0 right-0 mt-3 bg-white/98 backdrop-blur-md border-2 border-gray-200 rounded-2xl shadow-2xl z-50 p-6 animate-in slide-in-from-top-2 duration-300 max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar">
-              <div className="mb-4 flex items-center justify-between border-b border-gray-200 pb-3">
-                <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                  <Filter className="h-5 w-5 text-primary" />
+            <div className={styles.filtersPanel}>
+              <div className={styles.filtersHeader}>
+                <h3 className={styles.filtersTitle}>
+                  <Filter className={styles.filterIcon} />
                   Filtres de recherche
                 </h3>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowFilters(false)}
-                  className="h-8 w-8 p-0 rounded-lg hover:bg-gray-100"
+                  className={styles.closeButton}
+                  aria-label="Fermer les filtres"
                 >
                   <X className="h-4 w-4" />
                 </Button>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+              <div className={styles.filtersGrid}>
                 <div className="space-y-1.5">
                   <Label htmlFor="type">Type</Label>
                   <Select
@@ -681,7 +596,7 @@ function SearchPageContent() {
                   }}
                 />
 
-                <div className="flex items-end gap-2">
+                <div className={styles.filtersActions}>
                   <Button 
                     onClick={clearFilters} 
                     variant="outline" 
@@ -802,19 +717,19 @@ function SearchPageContent() {
       </div>
 
       {/* Main Content Area - Map + Results + Quick Detail */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Results Panel - Left Side with smooth transitions - Enlarged */}
+      <div className={styles.mainContentArea}>
+        {/* Results Panel - Left Side with smooth transitions - Enhanced with SASS */}
         {showResultsPanel && (
           <div 
-            className={`w-full md:w-[500px] lg:w-[600px] xl:w-[700px] bg-white border-r border-gray-200 flex flex-col overflow-hidden transition-all duration-300 ${
-              showResultsPanel ? 'translate-x-0' : '-translate-x-full'
+            className={`${styles.resultsPanel} ${
+              showResultsPanel ? styles.show : styles.hide
             }`}
           >
-            {/* Enhanced Results Header - Modern design */}
-            <div className="p-5 border-b border-gray-200 bg-gradient-to-r from-white to-gray-50/50 sticky top-0 z-10 backdrop-blur-sm">
-              <div className="flex items-center justify-between mb-4">
+            {/* Enhanced Results Header - Modern design with SASS */}
+            <div className={styles.resultsHeader}>
+              <div className={styles.resultsTitleRow}>
                 <div className="flex items-center gap-3 flex-1">
-                  <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                  <h2 className={styles.resultsTitle}>
                     {isLoading ? (
                       <span className="flex items-center gap-2">
                         <div className="animate-spin rounded-full h-5 w-5 border-2 border-primary border-t-transparent"></div>
@@ -834,15 +749,6 @@ function SearchPageContent() {
                       {results.totalHits} {results.totalHits > 1 ? 'biens' : 'bien'}
                     </Badge>
                   )}
-                  {isMockMode && (
-                    <Badge 
-                      variant="outline" 
-                      className="text-xs font-semibold bg-yellow-50 text-yellow-700 border-yellow-300 animate-pulse shadow-sm"
-                      title="Mode test actif - Données mockées pour le développement"
-                    >
-                      🧪 MOCK
-                    </Badge>
-                  )}
                 </div>
                 {/* Close panel button */}
                 <Button
@@ -856,7 +762,7 @@ function SearchPageContent() {
               </div>
               
               {/* Sort & Query Info */}
-              <div className="flex items-center justify-between gap-3">
+              <div className={styles.resultsInfoRow}>
                 {query && (
                   <p className="text-xs text-gray-500 flex items-center gap-1.5 flex-1 font-medium">
                     <Search className="h-3.5 w-3.5" />
@@ -960,19 +866,19 @@ function SearchPageContent() {
             <ScrollArea className="flex-1 h-full">
               <div>
                 {error && (
-                  <div className="m-5 p-5 text-red-700 bg-gradient-to-br from-red-50 to-red-100/50 border-2 border-red-300 rounded-2xl flex items-start gap-3 shadow-lg animate-in fade-in slide-in-from-top duration-300">
-                    <div className="p-2 rounded-xl bg-red-100 border border-red-300 flex-shrink-0">
-                      <X className="h-5 w-5 text-red-600" />
+                  <div className={styles.errorMessage}>
+                    <div className={styles.errorIcon}>
+                      <X className={styles.icon} />
                     </div>
-                    <div className="flex-1">
-                      <p className="font-bold text-sm mb-1.5">Erreur de recherche</p>
-                      <p className="text-xs text-red-700 leading-relaxed">{error}</p>
+                    <div className={styles.errorContent}>
+                      <p className={styles.errorTitle}>Erreur de recherche</p>
+                      <p className={styles.errorDescription}>{error}</p>
                     </div>
                   </div>
                 )}
 
                 {!isLoading && results && results.hits.length === 0 && (
-                  <div className="p-8">
+                  <div className={styles.emptyState}>
                     <EmptyState
                       icon={Search}
                       title="Aucun résultat trouvé"
@@ -985,13 +891,13 @@ function SearchPageContent() {
                 )}
 
                 {isLoading && !results && (
-                  <div className="p-5">
+                  <div className={styles.loadingState}>
                     <SearchResultsSkeleton />
                   </div>
                 )}
 
                 {!isLoading && results && results.hits.length > 0 && (
-                  <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-3' : 'divide-y divide-gray-100'}>
+                  <div className={viewMode === 'grid' ? styles.resultsGrid : styles.resultsList}>
                     {results.hits.map((property) => (
                       <PropertyCard
                         key={property.id}
@@ -1007,18 +913,18 @@ function SearchPageContent() {
                   </div>
                 )}
 
-                {/* Enhanced Pagination */}
+                {/* Enhanced Pagination with SASS styles */}
                 {!isLoading && results && results.totalHits > (results.limit || 20) && (
-                  <div className="p-5 border-t border-gray-200 bg-white">
-                    <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
-                      <span className="font-medium text-gray-700">
+                  <div className={styles.pagination}>
+                    <div className={styles.paginationInfo}>
+                      <span className={styles.infoText}>
                         Affichage de {results.offset + 1} à {Math.min(results.offset + results.limit, results.totalHits)} sur {results.totalHits} résultats
                       </span>
-                      <span className="font-medium">
+                      <span className={styles.infoText}>
                         Page {Math.floor(results.offset / results.limit) + 1} sur {Math.ceil(results.totalHits / results.limit)}
                       </span>
                     </div>
-                    <div className="flex items-center justify-center gap-2">
+                    <div className={styles.paginationControls}>
                       <Button
                         variant="outline"
                         size="sm"
@@ -1028,7 +934,8 @@ function SearchPageContent() {
                           setSearchOptions((prev) => ({ ...prev, offset: newOffset }));
                           search();
                         }}
-                        className="h-9 px-4 border-gray-300"
+                        className={styles.pageButton}
+                        aria-label="Page précédente"
                       >
                         <ChevronLeft className="h-4 w-4 mr-1" />
                         Précédent
@@ -1063,11 +970,9 @@ function SearchPageContent() {
                                 setSearchOptions((prev) => ({ ...prev, offset: newOffset }));
                                 search();
                               }}
-                              className={`h-10 w-10 p-0 rounded-xl border-2 font-bold transition-all duration-200 ${
-                                isActive 
-                                  ? 'bg-gradient-to-r from-primary to-viridial-600 hover:from-viridial-700 hover:to-viridial-700 text-white border-primary shadow-lg scale-105' 
-                                  : 'border-gray-300 hover:border-primary hover:bg-primary/5 hover:scale-110'
-                              }`}
+                              className={`${styles.pageButton} ${isActive ? styles.active : ''}`}
+                              aria-label={`Aller à la page ${pageNum}`}
+                              aria-current={isActive ? 'page' : undefined}
                             >
                               {pageNum}
                             </Button>
@@ -1084,7 +989,8 @@ function SearchPageContent() {
                                 setSearchOptions((prev) => ({ ...prev, offset: newOffset }));
                                 search();
                               }}
-                              className="h-9 w-9 p-0 border-gray-300"
+                              className={styles.pageButton}
+                              aria-label={`Aller à la dernière page (${Math.ceil(results.totalHits / results.limit)})`}
                             >
                               {Math.ceil(results.totalHits / results.limit)}
                             </Button>
@@ -1101,7 +1007,8 @@ function SearchPageContent() {
                           setSearchOptions((prev) => ({ ...prev, offset: newOffset }));
                           search();
                         }}
-                        className="h-10 px-4 border-2 border-gray-300 rounded-xl hover:border-primary hover:bg-primary/5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className={styles.pageButton}
+                        aria-label="Page suivante"
                       >
                         Suivant
                         <ChevronRight className="h-4 w-4 ml-1" />
@@ -1126,13 +1033,14 @@ function SearchPageContent() {
         )}
 
         {/* Map - Right Side / Full Screen with toggle button */}
-        <div className="flex-1 relative">
-          {/* Toggle Results Panel Button - Floating */}
+        <div className={styles.mapContainer}>
+          {/* Toggle Results Panel Button - Floating with SASS styles */}
           {!showResultsPanel && (
             <button
               onClick={() => setShowResultsPanel(true)}
-              className="absolute top-4 left-4 z-[1000] bg-white hover:bg-gray-50 shadow-lg rounded-full p-3 transition-all hover:scale-110"
+              className={styles.floatingToggleButton}
               title="Afficher les résultats"
+              aria-label="Afficher le panneau de résultats"
             >
               <List className="h-5 w-5 text-gray-700" />
             </button>

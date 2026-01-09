@@ -1,0 +1,85 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.logoContainer {
+  @include flex-center;
+  gap: $spacing-sm;
+  
+  .logo {
+    transition: transform 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.1) rotate(5deg);
+    }
+  }
+  
+  .text {
+    font-weight: 600;
+    font-size: $font-size-xl;
+    color: $viridial-primary;
+    letter-spacing: 0.1em;
+    font-family: $font-family-sans;
+    
+    @include mobile {
+      font-size: $font-size-lg;
+    }
+  }
+}
+
+.badge {
+  position: relative;
+  display: inline-block;
+  
+  .badgeLabel {
+    position: absolute;
+    top: -$spacing-xs;
+    right: -$spacing-xs;
+    padding: $spacing-xs $spacing-sm;
+    font-size: $font-size-sm;
+    font-weight: 700;
+    border-radius: $radius-xl;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: $shadow-md;
+    
+    &.default {
+      background-color: #f3f4f6;
+      color: #4b5563;
+    }
+    
+    &.active {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+    
+    &.cloud {
+      background-color: #e0f2fe;
+      color: #0369a1;
+    }
+  }
+}
+
+// Animation pour le logo
+@keyframes saas-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.animated {
+  animation: saas-pulse 2s ease-in-out infinite;
+}
+
+// Variante avec gradient text
+.gradientText {
+  background: linear-gradient(135deg, $viridial-primary 0%, $viridial-secondary 50%, $viridial-dark 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+

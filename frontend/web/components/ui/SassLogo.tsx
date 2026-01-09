@@ -29,7 +29,7 @@ export function SassLogo({
   if (simple) {
     return (
       <div className={`inline-flex items-center justify-center ${className}`}>
-        <div className={`transition-transform ${animated ? styles.animated : ''} ${className}`}>
+        <div className={`transition-transform ${animated ? styles.animated : ''}`}>
           <Image
             src="/sass-logo.svg"
             alt="SASS Logo"

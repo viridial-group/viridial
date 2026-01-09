@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { join } from 'path';
 import { PropertyController } from './controllers/property.controller';
 import { CustomFieldController } from './controllers/custom-field.controller';
 import { PropertyService } from './services/property.service';
@@ -54,13 +55,25 @@ function parseDatabaseUrl(url?: string) {
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: [
+        join(__dirname, '..', '.env.local'), // .env.local pour développement local
+        join(__dirname, '..', '.env'), // .env dans le répertoire du service
+        join(__dirname, '..', '..', '..', '.env'), // .env à la racine du projet
+        join(__dirname, '..', '..', '..', 'infrastructure', 'docker-compose', '.env'), // .env docker-compose
+      ],
+      expandVariables: true,
     }),
     HttpModule.register({
       timeout: 5000,
       maxRedirects: 5,
     }),
     TypeOrmModule.forRootAsync({
-      useFactory: () => parseDatabaseUrl(process.env.DATABASE_URL),
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => {
+        const databaseUrl = configService.get<string>('DATABASE_URL') || process.env.DATABASE_URL;
+        return parseDatabaseUrl(databaseUrl);
+      },
+      inject: [ConfigService],
     }),
     TypeOrmModule.forFeature([Property, PropertyTranslation, PropertyFlag, ImportJob, PropertyDetails, CustomFieldDefinition, CustomFieldValue, Neighborhood, PropertyFavorite]),
     AuthModule, // Import AuthModule for JWT authentication

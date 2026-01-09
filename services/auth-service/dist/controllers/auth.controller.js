@@ -19,6 +19,10 @@ const auth_service_1 = require("../services/auth.service");
 const oidc_service_1 = require("../services/oidc.service");
 const login_dto_1 = require("../dto/login.dto");
 const refresh_token_dto_1 = require("../dto/refresh-token.dto");
+const signup_dto_1 = require("../dto/signup.dto");
+const forgot_password_dto_1 = require("../dto/forgot-password.dto");
+const reset_password_dto_1 = require("../dto/reset-password.dto");
+const verify_email_dto_1 = require("../dto/verify-email.dto");
 let AuthController = class AuthController {
     constructor(authService, oidcService) {
         this.authService = authService;
@@ -31,8 +35,28 @@ let AuthController = class AuthController {
         const { email, password } = body;
         return this.authService.login(email, password);
     }
+    async signup(body) {
+        const { email, password, confirmPassword } = body;
+        return this.authService.signup(email, password, confirmPassword);
+    }
     async refresh(body) {
         return this.authService.refresh(body.refreshToken);
+    }
+    async forgotPassword(body) {
+        const { email } = body;
+        return this.authService.requestPasswordReset(email);
+    }
+    async resetPassword(body) {
+        const { token, newPassword, confirmPassword } = body;
+        return this.authService.resetPassword(token, newPassword, confirmPassword);
+    }
+    async verifyEmail(body) {
+        const { token } = body;
+        return this.authService.verifyEmail(token);
+    }
+    async resendVerification(body) {
+        const { email } = body;
+        return this.authService.resendVerificationEmail(email);
     }
     async googleAuth() {
     }
@@ -67,12 +91,47 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 __decorate([
+    (0, common_1.Post)('signup'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [signup_dto_1.SignupDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "signup", null);
+__decorate([
     (0, common_1.Post)('refresh'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [refresh_token_dto_1.RefreshTokenDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "refresh", null);
+__decorate([
+    (0, common_1.Post)('forgot-password'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [forgot_password_dto_1.ForgotPasswordDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "forgotPassword", null);
+__decorate([
+    (0, common_1.Post)('reset-password'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [reset_password_dto_1.ResetPasswordDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "resetPassword", null);
+__decorate([
+    (0, common_1.Post)('verify-email'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [verify_email_dto_1.VerifyEmailDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "verifyEmail", null);
+__decorate([
+    (0, common_1.Post)('resend-verification'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [forgot_password_dto_1.ForgotPasswordDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "resendVerification", null);
 __decorate([
     (0, common_1.Get)('oidc/google'),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('google')),

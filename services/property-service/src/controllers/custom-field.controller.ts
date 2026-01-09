@@ -48,8 +48,8 @@ export class CustomFieldController {
   @Get('definitions')
   async listDefinitions(
     @Query('entity_type') entityType: string,
-    @Query('include_global') includeGlobal?: string,
     @User() user: AuthenticatedUser,
+    @Query('include_global') includeGlobal?: string,
   ) {
     if (!entityType) {
       throw new Error('entity_type query parameter is required');

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
 import { CacheModule } from '@nestjs/cache-manager';
+import { join } from 'path';
 import type { RedisStore } from 'cache-manager-redis-store';
 import redisStore from 'cache-manager-redis-store';
 import { GeolocationController } from './controllers/geolocation.controller';
@@ -34,6 +35,13 @@ function parseRedisUrl(url?: string) {
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: [
+        join(__dirname, '..', '.env.local'), // .env.local pour développement local
+        join(__dirname, '..', '.env'), // .env dans le répertoire du service
+        join(__dirname, '..', '..', '..', '.env'), // .env à la racine du projet
+        join(__dirname, '..', '..', '..', 'infrastructure', 'docker-compose', '.env'), // .env docker-compose
+      ],
+      expandVariables: true,
     }),
     HttpModule.register({
       timeout: 5000,

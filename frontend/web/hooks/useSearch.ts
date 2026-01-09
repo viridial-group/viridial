@@ -81,7 +81,7 @@ export function useSearch(options: UseSearchOptions = {}) {
       setError(null);
 
       try {
-        // Get fresh service instance with current mock mode
+        // Get service instance
         const service = getSearchService();
         const result = await service.search(searchQuery, searchFilters, searchOpts);
         setResults(result);
@@ -105,7 +105,7 @@ export function useSearch(options: UseSearchOptions = {}) {
       }
 
       try {
-        // Get fresh service instance with current mock mode
+        // Get service instance
         const service = getSearchService();
         const suggs = await service.getSuggestions(
           searchQuery,

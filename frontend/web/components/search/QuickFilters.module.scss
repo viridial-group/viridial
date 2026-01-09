@@ -1,0 +1,456 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+// Filtres rapides avec styles modernes
+.quickFilters {
+  @include flex-between;
+  gap: 12px;
+  overflow-x: auto;
+  padding: $spacing-md;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 1) 0%, 
+    rgba(249, 250, 251, 0.6) 50%, 
+    rgba(255, 255, 255, 1) 100%);
+  border-bottom: 1px solid rgba(229, 231, 235, 0.6);
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  
+  // Custom scrollbar moderne
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: rgba(243, 244, 246, 0.5);
+    border-radius: 3px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, $saas-primary 0%, $saas-secondary 100%);
+    border-radius: 3px;
+    transition: background 0.3s ease;
+    
+    &:hover {
+      background: linear-gradient(135deg, darken($saas-primary, 5%) 0%, darken($saas-secondary, 5%) 100%);
+    }
+  }
+  
+  .quickFiltersLabel {
+    @include flex-center;
+    gap: 8px;
+    flex-shrink: 0;
+    padding: 8px 14px;
+    border-radius: $radius-xl;
+    background: linear-gradient(135deg, 
+      rgba($saas-primary, 0.1) 0%, 
+      rgba($saas-secondary, 0.05) 100%);
+    border: 2px solid rgba($saas-primary, 0.3);
+    box-shadow: 0 2px 8px rgba($saas-primary, 0.1);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+    
+    &:hover {
+      background: linear-gradient(135deg, 
+        rgba($saas-primary, 0.15) 0%, 
+        rgba($saas-secondary, 0.1) 100%);
+      border-color: rgba($saas-primary, 0.5);
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba($saas-primary, 0.2);
+    }
+    
+    .labelIcon {
+      width: 18px;
+      height: 18px;
+      color: $saas-primary;
+      transition: transform 0.3s ease;
+    }
+    
+    &:hover .labelIcon {
+      transform: rotate(15deg) scale(1.1);
+    }
+    
+    .labelText {
+      font-size: $font-size-xs;
+      font-weight: 800;
+      color: rgba(17, 24, 39, 1);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      background: linear-gradient(135deg, $saas-primary 0%, $saas-secondary 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+}
+
+// Bouton de filtre rapide
+.quickFilterButton {
+  @include flex-center;
+  gap: 8px;
+  border-radius: $radius-2xl;
+  border: 2px solid;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 8px 16px;
+  font-size: $font-size-sm;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+  flex-shrink: 0;
+  
+  // Gradient overlay pour effet moderne
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 0;
+  }
+  
+  // Contenu au-dessus du gradient
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+  
+  // Styles par couleur de filtre
+  &.emerald {
+    &.active {
+      background: linear-gradient(135deg, 
+        rgba(16, 185, 129, 0.15) 0%, 
+        rgba(5, 150, 105, 0.1) 100%);
+      border-color: rgba(16, 185, 129, 0.5);
+      color: rgba(5, 150, 105, 1);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25),
+                  0 2px 4px rgba(0, 0, 0, 0.1);
+      
+      &::before {
+        background: linear-gradient(135deg, 
+          rgba(16, 185, 129, 0.2) 0%, 
+          rgba(5, 150, 105, 0.15) 100%);
+        opacity: 1;
+      }
+      
+      &:hover {
+        background: linear-gradient(135deg, 
+          rgba(16, 185, 129, 0.2) 0%, 
+          rgba(5, 150, 105, 0.15) 100%);
+        border-color: rgba(16, 185, 129, 0.7);
+        box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35),
+                    0 4px 8px rgba(0, 0, 0, 0.12);
+        transform: translateY(-2px) scale(1.05);
+      }
+    }
+    
+    &:not(.active) {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(209, 213, 219, 1);
+      color: rgba(107, 114, 128, 1);
+      
+      &:hover {
+        background: rgba(16, 185, 129, 0.05);
+        border-color: rgba(16, 185, 129, 0.3);
+        color: rgba(5, 150, 105, 1);
+        transform: translateY(-1px) scale(1.02);
+      }
+    }
+  }
+  
+  &.blue {
+    &.active {
+      background: linear-gradient(135deg, 
+        rgba(59, 130, 246, 0.15) 0%, 
+        rgba(37, 99, 235, 0.1) 100%);
+      border-color: rgba(59, 130, 246, 0.5);
+      color: rgba(37, 99, 235, 1);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+      
+      &:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35);
+      }
+    }
+    
+    &:not(.active) {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(209, 213, 219, 1);
+      color: rgba(107, 114, 128, 1);
+      
+      &:hover {
+        background: rgba(59, 130, 246, 0.05);
+        border-color: rgba(59, 130, 246, 0.3);
+        color: rgba(37, 99, 235, 1);
+      }
+    }
+  }
+  
+  &.red {
+    &.active {
+      background: linear-gradient(135deg, 
+        rgba(239, 68, 68, 0.15) 0%, 
+        rgba(220, 38, 38, 0.1) 100%);
+      border-color: rgba(239, 68, 68, 0.5);
+      color: rgba(220, 38, 38, 1);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+      
+      &:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35);
+      }
+    }
+    
+    &:not(.active) {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(209, 213, 219, 1);
+      color: rgba(107, 114, 128, 1);
+      
+      &:hover {
+        background: rgba(239, 68, 68, 0.05);
+        border-color: rgba(239, 68, 68, 0.3);
+        color: rgba(220, 38, 38, 1);
+      }
+    }
+  }
+  
+  &.purple {
+    &.active {
+      background: linear-gradient(135deg, 
+        rgba(168, 85, 247, 0.15) 0%, 
+        rgba(147, 51, 234, 0.1) 100%);
+      border-color: rgba(168, 85, 247, 0.5);
+      color: rgba(147, 51, 234, 1);
+      box-shadow: 0 4px 12px rgba(168, 85, 247, 0.25);
+      
+      &:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 6px 16px rgba(168, 85, 247, 0.35);
+      }
+    }
+    
+    &:not(.active) {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(209, 213, 219, 1);
+      color: rgba(107, 114, 128, 1);
+      
+      &:hover {
+        background: rgba(168, 85, 247, 0.05);
+        border-color: rgba(168, 85, 247, 0.3);
+        color: rgba(147, 51, 234, 1);
+      }
+    }
+  }
+  
+  &.yellow {
+    &.active {
+      background: linear-gradient(135deg, 
+        rgba(234, 179, 8, 0.15) 0%, 
+        rgba(202, 138, 4, 0.1) 100%);
+      border-color: rgba(234, 179, 8, 0.5);
+      color: rgba(202, 138, 4, 1);
+      box-shadow: 0 4px 12px rgba(234, 179, 8, 0.25);
+      
+      &:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 6px 16px rgba(234, 179, 8, 0.35);
+      }
+    }
+    
+    &:not(.active) {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(209, 213, 219, 1);
+      color: rgba(107, 114, 128, 1);
+      
+      &:hover {
+        background: rgba(234, 179, 8, 0.05);
+        border-color: rgba(234, 179, 8, 0.3);
+        color: rgba(202, 138, 4, 1);
+      }
+    }
+  }
+  
+  &.primary {
+    &.active {
+      background: linear-gradient(135deg, 
+        rgba($saas-primary, 0.15) 0%, 
+        rgba($saas-secondary, 0.1) 100%);
+      border-color: rgba($saas-primary, 0.5);
+      color: $saas-dark;
+      box-shadow: 0 4px 12px rgba($saas-primary, 0.25);
+      
+      &:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 6px 16px rgba($saas-primary, 0.35);
+      }
+    }
+    
+    &:not(.active) {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(209, 213, 219, 1);
+      color: rgba(107, 114, 128, 1);
+      
+      &:hover {
+        background: rgba($saas-primary, 0.05);
+        border-color: rgba($saas-primary, 0.3);
+        color: $saas-dark;
+      }
+    }
+  }
+  
+  // Icône dans le bouton
+  .filterIcon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+  }
+  
+  &:hover .filterIcon {
+    transform: scale(1.15) rotate(5deg);
+  }
+  
+  &.active .filterIcon {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  }
+  
+  // Label du filtre
+  .filterLabel {
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+  
+  // Badge de compteur
+  .filterCount {
+    @include flex-center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: $radius-xl;
+    font-size: $font-size-xs;
+    font-weight: 800;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 1.5px solid;
+    
+    .quickFilterButton.active & {
+      transform: scale(1.1);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    }
+    
+    // Styles par couleur
+    &.emerald {
+      background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+      border-color: #059669;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+    
+    &.blue {
+      background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+      border-color: #2563eb;
+      color: white;
+    }
+    
+    &.red {
+      background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+      border-color: #dc2626;
+      color: white;
+    }
+    
+    &.purple {
+      background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+      border-color: #7c3aed;
+      color: white;
+    }
+    
+    &.yellow {
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      border-color: #d97706;
+      color: white;
+    }
+    
+    &.primary {
+      background: linear-gradient(135deg, $saas-light 0%, $saas-primary 100%);
+      border-color: $saas-secondary;
+      color: white;
+    }
+    
+    &:not(.emerald):not(.blue):not(.red):not(.purple):not(.yellow):not(.primary) {
+      background: rgba(156, 163, 175, 1);
+      border-color: rgba(107, 114, 128, 1);
+      color: white;
+    }
+  }
+  
+  // Animation d'activation
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// Animation pour l'apparition des filtres
+@keyframes quick-filter-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.quickFilterButton {
+  animation: quick-filter-slide-in 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  // Stagger animation
+  @for $i from 1 through 10 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.05}s;
+    }
+  }
+}
+
+// Responsive
+@include mobile {
+  .quickFilters {
+    padding: $spacing-sm;
+    gap: 8px;
+  }
+  
+  .quickFilterButton {
+    padding: 6px 12px;
+    font-size: $font-size-xs;
+    
+    .filterIcon {
+      width: 16px;
+      height: 16px;
+    }
+    
+    .filterCount {
+      min-width: 20px;
+      height: 20px;
+      font-size: 10px;
+    }
+  }
+  
+  .quickFiltersLabel {
+    padding: 6px 10px;
+    
+    .labelIcon {
+      width: 16px;
+      height: 16px;
+    }
+    
+    .labelText {
+      font-size: 10px;
+    }
+  }
+}
+

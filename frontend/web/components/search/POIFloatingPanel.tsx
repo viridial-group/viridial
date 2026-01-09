@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { PropertySearchResult } from '@/lib/api/search';
 import { getNeighborhoodService } from '@/lib/api/neighborhood';
 import type { Neighborhood } from '@/lib/api/neighborhood';
-import { X, MapPin, School, Hospital, Train, ShoppingBag, UtensilsCrossed, Trees, Waves, ChevronDown, ChevronUp, Map } from 'lucide-react';
+import { X, MapPin, School, Building2, Train, ShoppingBag, UtensilsCrossed, Trees, Waves, ChevronDown, ChevronUp, Map } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -79,7 +79,7 @@ export default function POIFloatingPanel({ property, onClose }: POIFloatingPanel
     if (neighborhood.features.amenities?.hospitals) {
       poiList.push({
         type: 'hospital',
-        icon: <Hospital className="h-4 w-4" />,
+        icon: <Building2 className="h-4 w-4" />,
         label: 'Hôpitaux',
         count: neighborhood.features.amenities.hospitals,
         color: '#EF4444',

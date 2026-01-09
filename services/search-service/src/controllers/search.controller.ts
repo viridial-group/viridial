@@ -98,6 +98,10 @@ export class SearchController {
         latitude?: number;
         longitude?: number;
         radiusKm?: number;
+        minLat?: number;
+        minLon?: number;
+        maxLat?: number;
+        maxLon?: number;
       };
       options?: {
         limit?: number;

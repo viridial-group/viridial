@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreatePropertyDto } from './create-property.dto';
-import { IsEnum, IsOptional, ValidateNested } from 'class-validator';
+import { IsArray, IsEnum, IsOptional, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { PropertyStatus } from '../entities/property.entity';
 import { PropertyDetailsDto } from './property-details.dto';

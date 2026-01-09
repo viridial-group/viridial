@@ -15,7 +15,7 @@ export class LandingPageService {
 
   async create(createDto: any): Promise<LandingPage> {
     const landingPage = this.landingPageRepository.create(createDto);
-    return await this.landingPageRepository.save(landingPage);
+    return await this.landingPageRepository.save(landingPage) as unknown as LandingPage;
   }
 
   async findAll(organizationId: string): Promise<LandingPage[]> {

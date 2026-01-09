@@ -88,60 +88,89 @@ else
 fi
 
 # Configurer les variables d'environnement pour docker-compose
-if [ "$MODE" == "local" ] && [ -f ".env" ]; then
+if [ "$MODE" == "local" ]; then
   mkdir -p infrastructure/docker-compose
-  if [ ! -f "infrastructure/docker-compose/.env" ]; then
-    echo -e "${YELLOW}📝 Configuration docker-compose/.env...${NC}"
-    # Charger les variables depuis .env principal
+  
+  # Charger les variables depuis .env principal si existe
+  if [ -f ".env" ]; then
     set -a
     source .env 2>/dev/null || true
     set +a
+  fi
+  
+  # Générer ou corriger le fichier .env pour docker-compose
+  DOCKER_COMPOSE_ENV="infrastructure/docker-compose/.env"
+  NEEDS_UPDATE=false
+  
+  if [ ! -f "$DOCKER_COMPOSE_ENV" ]; then
+    echo -e "${YELLOW}📝 Création du fichier docker-compose/.env...${NC}"
+    NEEDS_UPDATE=true
+  else
+    # Vérifier si MINIO_ROOT_PASSWORD manque ou est vide
+    if ! grep -q "^MINIO_ROOT_PASSWORD=" "$DOCKER_COMPOSE_ENV" || grep -q "^MINIO_ROOT_PASSWORD=$" "$DOCKER_COMPOSE_ENV"; then
+      echo -e "${YELLOW}⚠️  MINIO_ROOT_PASSWORD manquant dans docker-compose/.env. Correction...${NC}"
+      NEEDS_UPDATE=true
+    fi
+  fi
+  
+  if [ "$NEEDS_UPDATE" = true ]; then
+    # Générer un mot de passe sécurisé pour MinIO si non défini
+    if [ -z "${MINIO_ROOT_PASSWORD}" ]; then
+      if command -v openssl &> /dev/null; then
+        MINIO_PASSWORD=$(openssl rand -base64 32 2>/dev/null | tr -d "=+/" | cut -c1-24 || echo "minioadmin123")
+      else
+        MINIO_PASSWORD="minioadmin123"
+      fi
+      MINIO_ROOT_PASSWORD="${MINIO_PASSWORD}"
+    fi
     
-    # Générer le fichier .env pour docker-compose
-    cat > infrastructure/docker-compose/.env <<EOF
+    # Générer le fichier .env pour docker-compose avec valeurs réelles
+    cat > "$DOCKER_COMPOSE_ENV" <<EOF
 # Généré automatiquement par install.sh
 # Date: $(date)
 
-POSTGRES_USER=\${POSTGRES_USER:-viridial}
-POSTGRES_PASSWORD=\${POSTGRES_PASSWORD:-viridial_dev_password_2024}
-POSTGRES_DB=\${POSTGRES_DB:-viridial}
-DATABASE_URL=\${DATABASE_URL:-postgres://viridial:viridial_dev_password_2024@viridial-postgres:5432/viridial}
+POSTGRES_USER=${POSTGRES_USER:-viridial}
+POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-viridial_dev_password_2024}
+POSTGRES_DB=${POSTGRES_DB:-viridial}
+DATABASE_URL=${DATABASE_URL:-postgres://viridial:viridial_dev_password_2024@viridial-postgres:5432/viridial}
 
-REDIS_URL=\${REDIS_URL:-redis://viridial-redis:6379}
+REDIS_URL=${REDIS_URL:-redis://viridial-redis:6379}
 
-MEILISEARCH_URL=\${MEILISEARCH_URL:-http://meilisearch:7700}
-MEILI_MASTER_KEY=\${MEILI_MASTER_KEY:-masterKey_dev_local_12345678901234567890}
+MEILISEARCH_URL=${MEILISEARCH_URL:-http://meilisearch:7700}
+MEILI_MASTER_KEY=${MEILI_MASTER_KEY:-masterKey_dev_local_12345678901234567890}
 
-MINIO_ROOT_USER=\${MINIO_ROOT_USER:-minioadmin}
-MINIO_ROOT_PASSWORD=\${MINIO_ROOT_PASSWORD:-minioadmin123}
+MINIO_ROOT_USER=${MINIO_ROOT_USER:-minioadmin}
+MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
 
-FRONTEND_URL=\${FRONTEND_URL:-http://localhost:3000}
+FRONTEND_URL=${FRONTEND_URL:-http://localhost:3000}
 
-JWT_SECRET=\${JWT_SECRET:-jwt_secret_dev_local_minimum_32_characters_long}
-JWT_REFRESH_SECRET=\${JWT_REFRESH_SECRET:-jwt_refresh_secret_dev_local_minimum_32_characters}
-JWT_ACCESS_SECRET=\${JWT_ACCESS_SECRET:-jwt_access_secret_dev_local_minimum_32_characters_long}
+JWT_SECRET=${JWT_SECRET:-jwt_secret_dev_local_minimum_32_characters_long}
+JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:-jwt_refresh_secret_dev_local_minimum_32_characters}
+JWT_ACCESS_SECRET=${JWT_ACCESS_SECRET:-jwt_access_secret_dev_local_minimum_32_characters_long}
 
-SMTP_HOST=\${SMTP_HOST:-}
-SMTP_PORT=\${SMTP_PORT:-}
-SMTP_SECURE=\${SMTP_SECURE:-}
-SMTP_USER=\${SMTP_USER:-}
-SMTP_PASS=\${SMTP_PASS:-}
-EMAIL_FROM=\${EMAIL_FROM:-}
-FROM_NAME=\${FROM_NAME:-}
+SMTP_HOST=${SMTP_HOST:-}
+SMTP_PORT=${SMTP_PORT:-}
+SMTP_SECURE=${SMTP_SECURE:-}
+SMTP_USER=${SMTP_USER:-}
+SMTP_PASS=${SMTP_PASS:-}
+EMAIL_FROM=${EMAIL_FROM:-}
+FROM_NAME=${FROM_NAME:-}
 
-GOOGLE_CLIENT_ID=\${GOOGLE_CLIENT_ID:-}
-GOOGLE_CLIENT_SECRET=\${GOOGLE_CLIENT_SECRET:-}
-GOOGLE_CALLBACK_URL=\${GOOGLE_CALLBACK_URL:-}
+GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+GOOGLE_CALLBACK_URL=${GOOGLE_CALLBACK_URL:-}
 
-GEOCODING_PROVIDER=\${GEOCODING_PROVIDER:-stub}
-GOOGLE_MAPS_API_KEY=\${GOOGLE_MAPS_API_KEY:-}
-NOMINATIM_BASE_URL=\${NOMINATIM_BASE_URL:-https://nominatim.openstreetmap.org}
-GEOCODING_CACHE_TTL=\${GEOCODING_CACHE_TTL:-86400}
-GEOLOCATION_SERVICE_URL=\${GEOLOCATION_SERVICE_URL:-http://geolocation-service:3002}
-PROPERTY_SERVICE_URL=\${PROPERTY_SERVICE_URL:-http://property-service:3001}
-SEARCH_SERVICE_URL=\${SEARCH_SERVICE_URL:-http://search-service:3003}
+GEOCODING_PROVIDER=${GEOCODING_PROVIDER:-stub}
+GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY:-}
+NOMINATIM_BASE_URL=${NOMINATIM_BASE_URL:-https://nominatim.openstreetmap.org}
+GEOCODING_CACHE_TTL=${GEOCODING_CACHE_TTL:-86400}
+GEOLOCATION_SERVICE_URL=${GEOLOCATION_SERVICE_URL:-http://geolocation-service:3002}
+PROPERTY_SERVICE_URL=${PROPERTY_SERVICE_URL:-http://property-service:3001}
+SEARCH_SERVICE_URL=${SEARCH_SERVICE_URL:-http://search-service:3003}
 EOF
-    echo -e "${GREEN}✅ Configuration docker-compose créée${NC}"
+    echo -e "${GREEN}✅ Configuration docker-compose créée/mise à jour${NC}"
+  else
+    echo -e "${GREEN}✅ Fichier docker-compose/.env existe déjà et est correct${NC}"
   fi
 fi
 

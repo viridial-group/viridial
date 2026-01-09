@@ -4,6 +4,7 @@ import { memo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Leaf, Sparkles, TrendingDown, Home, Filter, Star, Phone } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import styles from './QuickFilters.module.scss';
 
 interface QuickFilter {
   id: string;
@@ -124,36 +125,26 @@ const QuickFilters = memo(function QuickFilters({
   };
 
   return (
-    <div className="flex items-center gap-3 overflow-x-auto pb-3 custom-scrollbar scrollbar-hide px-4 pt-4 bg-gradient-to-r from-white via-gray-50/50 to-white">
-      <div className="flex items-center gap-2 flex-shrink-0 px-3 py-1.5 rounded-xl bg-gray-100 border border-gray-200">
-        <Filter className="h-4 w-4 text-primary" />
-        <span className="text-xs font-bold text-gray-700 uppercase tracking-wide">Filtres rapides</span>
+    <div className={styles.quickFilters}>
+      <div className={styles.quickFiltersLabel}>
+        <Filter className={styles.labelIcon} />
+        <span className={styles.labelText}>Filtres rapides</span>
       </div>
       {quickFilters.map((filter) => (
-        <Button
+        <button
           key={filter.id}
-          variant="outline"
+          type="button"
           onClick={filter.onClick}
-          className={`${getButtonStyles(filter)} hover:scale-105 active:scale-95 transition-transform duration-200`}
+          className={`${styles.quickFilterButton} ${styles[filter.color]} ${filter.active ? styles.active : ''}`}
         >
-          {filter.icon}
-          <span className="font-medium">{filter.label}</span>
+          <span className={styles.filterIcon}>{filter.icon}</span>
+          <span className={styles.filterLabel}>{filter.label}</span>
           {filter.count !== undefined && filter.count > 0 && (
-            <Badge className={`ml-1 h-5 px-1.5 text-xs font-bold shadow-sm ${
-              filter.active 
-                ? filter.color === 'emerald' 
-                  ? 'bg-viridial-300 text-viridial-900 border border-viridial-400'
-                  : filter.color === 'primary'
-                  ? 'bg-primary/30 text-primary border border-primary/50'
-                  : filter.color === 'yellow'
-                  ? 'bg-yellow-300 text-yellow-900 border border-yellow-400'
-                  : 'bg-gray-300 text-gray-800 border border-gray-400'
-                : 'bg-gray-200 text-gray-700 border border-gray-300'
-            }`}>
+            <Badge className={`${styles.filterCount} ${styles[filter.color]}`}>
               {filter.count}
             </Badge>
           )}
-        </Button>
+        </button>
       ))}
     </div>
   );

@@ -12,7 +12,7 @@ export class EmailTemplateService {
 
   async create(createDto: any): Promise<EmailTemplate> {
     const template = this.emailTemplateRepository.create(createDto);
-    return await this.emailTemplateRepository.save(template);
+    return await this.emailTemplateRepository.save(template) as unknown as EmailTemplate;
   }
 
   async findAll(organizationId: string): Promise<EmailTemplate[]> {
