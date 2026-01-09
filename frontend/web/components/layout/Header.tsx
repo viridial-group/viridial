@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ChevronDown, Menu } from 'lucide-react';
 import { LanguageSelector } from '@/components/layout/LanguageSelector';
 import { useTranslation } from '@/contexts/I18nContext';
+import { SassLogo } from '@/components/ui/SassLogo';
 import {
   Popover,
   PopoverContent,
@@ -143,7 +144,15 @@ export function Header() {
         </ul>
 
         {/* Actions - Desktop */}
-        <div className="hidden lg:flex gap-2 ml-auto flex-shrink-0 items-center">
+        <div className="hidden lg:flex gap-3 ml-auto flex-shrink-0 items-center">
+          {/* Logo SASS - Badge technologique (visible uniquement sur grands écrans) */}
+          <div 
+            className="hidden xl:flex opacity-60 hover:opacity-100 transition-opacity cursor-pointer group"
+            title="Construit avec SASS"
+            aria-label="Technologie SASS"
+          >
+            <SassLogo size={32} simple className="group-hover:scale-110" />
+          </div>
           <LanguageSelector />
           <Link
             href="/dashboard"
@@ -154,7 +163,15 @@ export function Header() {
         </div>
 
         {/* Mobile menu button */}
-        <div className="lg:hidden ml-auto flex items-center flex-shrink-0">
+        <div className="lg:hidden ml-auto flex items-center gap-2 flex-shrink-0">
+          {/* Logo SASS - Mobile (version compacte, visible uniquement sur tablettes) */}
+          <div 
+            className="hidden md:flex opacity-60" 
+            title="SASS"
+            aria-label="Technologie SASS"
+          >
+            <SassLogo size={24} simple />
+          </div>
           <button 
             className="p-2 hover:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-viridial-500 focus:ring-offset-2 focus:rounded-md"
             aria-label="Ouvrir le menu de navigation"

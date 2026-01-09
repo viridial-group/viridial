@@ -2,6 +2,45 @@
 
 Ce guide montre comment utiliser SASS dans le projet Viridial avec Next.js.
 
+![SASS Logo](/sass-logo.svg)
+
+## 🎨 Logo SASS
+
+Un logo SVG personnalisé pour SASS est disponible dans le projet :
+
+- **SVG Logo** : `/public/sass-logo.svg`
+- **Composant React** : `components/ui/SassLogo.tsx`
+- **Styles SASS** : `components/ui/SassLogo.module.scss`
+
+### Utilisation du logo
+
+```tsx
+import { SassLogo, SassLogoBadge } from '@/components/ui/SassLogo'
+
+// Logo simple
+<SassLogo size={48} />
+
+// Logo avec texte
+<SassLogo size={48} showText />
+
+// Logo animé
+<SassLogo size={48} animated />
+
+// Logo avec badge
+<SassLogoBadge variant="installed" />
+```
+
+### Couleurs SASS disponibles
+
+Les couleurs officielles SASS sont disponibles dans `styles/_variables.scss` :
+
+```scss
+$sass-primary: #CF649A;    // Rose principal
+$sass-secondary: #C6538C;  // Rose secondaire
+$sass-dark: #BF4080;       // Rose foncé
+$sass-light: #E91E63;      // Rose clair
+```
+
 ## 📁 Structure des fichiers SASS
 
 ```

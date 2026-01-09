@@ -75,6 +75,10 @@ Script d'arrêt simplifié qui :
 
 ## 🎨 Utilisation de SASS
 
+![SASS Logo](/sass-logo.svg)
+
+**Logo SASS personnalisé disponible** : Consultez `/public/SASS-LOGO-README.md` pour plus de détails.
+
 ### Configuration
 
 SASS est déjà configuré dans le projet. Vous pouvez l'utiliser directement :
@@ -249,6 +253,7 @@ Créez des mixins réutilisables :
 2. **Modules SASS** : Utilisez `.module.scss` pour le style local aux composants
 3. **Fichiers globaux** : Importez `.scss` directement dans `layout.tsx`
 4. **Variables CSS** : Compatible avec les variables CSS de Tailwind
+5. **Logo SASS** : Un logo SVG personnalisé est disponible (`/public/sass-logo.svg`) avec un composant React réutilisable (`components/ui/SassLogo.tsx`)
 
 ## 🐛 Dépannage
 
@@ -275,4 +280,5 @@ Assurez-vous que Docker Desktop est démarré avant d'exécuter `start.sh`.
 - [Next.js - SASS Support](https://nextjs.org/docs/app/building-your-application/styling/sass)
 - [SASS Documentation](https://sass-lang.com/documentation)
 - [PM2 Documentation](https://pm2.keymetrics.io/docs/usage/quick-start/)
+- [Logo SASS Documentation](/public/SASS-LOGO-README.md) - Guide d'utilisation du logo SASS personnalisé
 

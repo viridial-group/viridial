@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="sassGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#CF649A;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#C6538C;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#BF4080;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="url(#sassGradient)" opacity="0.95"/>
+  
+  <!-- Main SASS geometric shape (inspired by official logo) -->
+  <g transform="translate(100, 100)">
+    <!-- Top-left shape -->
+    <path d="M -50,-35 L -30,-35 L -40,-50 Z" fill="#FFFFFF" opacity="0.9"/>
+    <path d="M -45,-30 L -35,-30 L -40,-40 Z" fill="#FFFFFF" opacity="0.7"/>
+    
+    <!-- Top-right shape -->
+    <path d="M 50,-35 L 30,-35 L 40,-50 Z" fill="#FFFFFF" opacity="0.9"/>
+    <path d="M 45,-30 L 35,-30 L 40,-40 Z" fill="#FFFFFF" opacity="0.7"/>
+    
+    <!-- Bottom shape (main triangle) -->
+    <path d="M 0,45 L -35,-25 L 35,-25 Z" fill="#FFFFFF" opacity="0.95"/>
+    <path d="M 0,35 L -25,-15 L 25,-15 Z" fill="#FFFFFF" opacity="0.75"/>
+    
+    <!-- Left side accent -->
+    <path d="M -40,20 L -55,10 L -45,0 Z" fill="#FFFFFF" opacity="0.6"/>
+    <path d="M -35,15 L -45,10 L -40,5 Z" fill="#FFFFFF" opacity="0.5"/>
+    
+    <!-- Right side accent -->
+    <path d="M 40,20 L 55,10 L 45,0 Z" fill="#FFFFFF" opacity="0.6"/>
+    <path d="M 35,15 L 45,10 L 40,5 Z" fill="#FFFFFF" opacity="0.5"/>
+    
+    <!-- Center decorative elements -->
+    <circle cx="0" cy="-10" r="8" fill="#FFFFFF" opacity="0.4"/>
+    <circle cx="-20" cy="5" r="5" fill="#FFFFFF" opacity="0.3"/>
+    <circle cx="20" cy="5" r="5" fill="#FFFFFF" opacity="0.3"/>
+  </g>
+  
+  <!-- Subtle border -->
+  <circle cx="100" cy="100" r="95" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.3"/>
+</svg>
+

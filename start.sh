@@ -50,11 +50,47 @@ if [ "$MODE" == "local" ]; then
   
   cd infrastructure/docker-compose
   
-  # Charger les variables d'environnement
+  # Vérifier et corriger MINIO_ROOT_PASSWORD si nécessaire
   if [ -f ".env" ]; then
+    # Charger les variables d'environnement
     set -a
     source .env
     set +a
+    
+    # Vérifier que MINIO_ROOT_PASSWORD est défini et non vide
+    if [ -z "${MINIO_ROOT_PASSWORD}" ] || [ "${MINIO_ROOT_PASSWORD}" = "" ]; then
+      echo -e "${YELLOW}⚠️  MINIO_ROOT_PASSWORD manquant ou vide. Correction...${NC}"
+      if [ -f "fix-minio-env.sh" ]; then
+        ./fix-minio-env.sh
+        # Recharger les variables
+        set -a
+        source .env
+        set +a
+      else
+        # Générer un mot de passe sécurisé
+        MINIO_PASSWORD=$(openssl rand -base64 32 2>/dev/null | tr -d "=+/" | cut -c1-24 || echo "minioadmin123")
+        # Ajouter ou remplacer dans .env
+        if grep -q "^MINIO_ROOT_PASSWORD=" .env; then
+          if [[ "$OSTYPE" == "darwin"* ]]; then
+            sed -i '' "s/^MINIO_ROOT_PASSWORD=.*/MINIO_ROOT_PASSWORD=${MINIO_PASSWORD}/" .env
+          else
+            sed -i "s/^MINIO_ROOT_PASSWORD=.*/MINIO_ROOT_PASSWORD=${MINIO_PASSWORD}/" .env
+          fi
+        else
+          echo "MINIO_ROOT_PASSWORD=${MINIO_PASSWORD}" >> .env
+        fi
+        export MINIO_ROOT_PASSWORD="${MINIO_PASSWORD}"
+        echo -e "${GREEN}✅ MINIO_ROOT_PASSWORD défini${NC}"
+      fi
+    fi
+    
+    # S'assurer que MINIO_ROOT_USER existe aussi
+    if [ -z "${MINIO_ROOT_USER}" ]; then
+      if ! grep -q "^MINIO_ROOT_USER=" .env; then
+        echo "MINIO_ROOT_USER=minioadmin" >> .env
+      fi
+      export MINIO_ROOT_USER="minioadmin"
+    fi
   fi
   
   # Créer le réseau Docker
