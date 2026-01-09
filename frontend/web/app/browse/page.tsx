@@ -50,7 +50,7 @@ export default function BrowsePropertiesPage() {
         <Header />
         <main className="flex flex-1 items-center justify-center px-4">
           <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-green-600 mb-4"></div>
+            <div className="inline-block animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-primary mb-4"></div>
             <div className="text-sm font-medium text-gray-700">Chargement...</div>
           </div>
         </main>
@@ -62,7 +62,7 @@ export default function BrowsePropertiesPage() {
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
       <Header />
-      <main className="flex flex-1 flex-col px-4 py-8 sm:px-6 lg:px-8">
+      <main id="main-content" className="flex flex-1 flex-col px-4 py-8 sm:px-6 lg:px-8">
         <div className="container mx-auto max-w-7xl">
           <div className="mb-8 flex items-center justify-between gap-4">
             <div>
@@ -105,7 +105,7 @@ export default function BrowsePropertiesPage() {
                 return (
                   <Card key={property.id} className="border border-gray-200 hover:shadow-lg transition-shadow cursor-pointer group">
                     <CardHeader className="pb-4">
-                      <CardTitle className="text-lg font-semibold text-gray-900 group-hover:text-green-600 transition-colors">
+                      <CardTitle className="text-lg font-semibold text-gray-900 group-hover:text-primary transition-colors">
                         {mainTranslation?.title || 'Sans titre'}
                       </CardTitle>
                       <CardDescription className="text-sm text-gray-500 mt-1">

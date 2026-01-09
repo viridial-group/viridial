@@ -3,12 +3,29 @@ import { ConfigModule } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PropertyController } from './controllers/property.controller';
+import { CustomFieldController } from './controllers/custom-field.controller';
 import { PropertyService } from './services/property.service';
 import { GeolocationClientService } from './services/geolocation-client.service';
 import { SearchIndexService } from './services/search-index.service';
 import { AuthModule } from './auth/auth.module';
 import { Property } from './entities/property.entity';
 import { PropertyTranslation } from './entities/property-translation.entity';
+import { PropertyFlag } from './entities/property-flag.entity';
+import { ImportJob } from './entities/import-job.entity';
+import { PropertyDetails } from './entities/property-details.entity';
+import { CustomFieldDefinition } from './entities/custom-field-definition.entity';
+import { CustomFieldValue } from './entities/custom-field-value.entity';
+import { Neighborhood } from './entities/neighborhood.entity';
+import { NeighborhoodController } from './controllers/neighborhood.controller';
+import { NeighborhoodService } from './services/neighborhood.service';
+import { ImportService } from './services/import.service';
+import { SchemaOrgService } from './services/schema-org.service';
+import { PropertyValidationService } from './services/property-validation.service';
+import { CustomFieldService } from './services/custom-field.service';
+import { PropertyStatisticsService } from './services/property-statistics.service';
+import { PropertyFavoriteService } from './services/property-favorite.service';
+import { PropertyFavoriteController } from './controllers/property-favorite.controller';
+import { PropertyFavorite } from './entities/property-favorite.entity';
 
 // Helper pour parser DATABASE_URL
 function parseDatabaseUrl(url?: string) {
@@ -45,11 +62,11 @@ function parseDatabaseUrl(url?: string) {
     TypeOrmModule.forRootAsync({
       useFactory: () => parseDatabaseUrl(process.env.DATABASE_URL),
     }),
-    TypeOrmModule.forFeature([Property, PropertyTranslation]),
+    TypeOrmModule.forFeature([Property, PropertyTranslation, PropertyFlag, ImportJob, PropertyDetails, CustomFieldDefinition, CustomFieldValue, Neighborhood, PropertyFavorite]),
     AuthModule, // Import AuthModule for JWT authentication
   ],
-  controllers: [PropertyController],
-  providers: [PropertyService, GeolocationClientService, SearchIndexService],
+  controllers: [PropertyController, NeighborhoodController, CustomFieldController, PropertyFavoriteController],
+  providers: [PropertyService, GeolocationClientService, SearchIndexService, NeighborhoodService, ImportService, SchemaOrgService, PropertyValidationService, CustomFieldService, PropertyStatisticsService, PropertyFavoriteService],
 })
 export class AppModule {}
 

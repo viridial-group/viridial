@@ -1,0 +1,278 @@
+{
+  "hero": {
+    "badge": "Simple and transparent pricing",
+    "title": "Choose your plan",
+    "subtitle": "no commitment",
+    "description": "Start free and upgrade to a paid plan when you're ready. Save up to 17% with annual billing.",
+    "monthly": "Monthly",
+    "yearly": "Annual",
+    "save": "Save 17%",
+    "free": "Free",
+    "foreverNoCard": "Forever, no credit card required",
+    "perMonth": "month",
+    "perYear": "year",
+    "or": "Or",
+    "billingToggle": "Toggle billing period"
+  },
+  "savingsCalculator": {
+    "title": "Calculate your savings",
+    "monthlyPrice": "Monthly price (x12):",
+    "annualSavings": "Annual savings:",
+    "annualPrice": "Annual price:",
+    "note": "That's 2 months free each year",
+    "youSave": "You save with annual subscription",
+    "saveUpTo": "Annual subscription saves you up to 2 months of billing per year.",
+    "discount": "-17%",
+    "or2Months": "or 2 months free",
+    "savePercent": "Save 17%"
+  },
+  "featuresShowcase": {
+    "title": "A modern and intuitive interface",
+    "description": "Discover the features that make Viridial the most complete SaaS solution for real estate management",
+    "dashboard": {
+      "title": "Dashboard Analytics",
+      "description": "Visualize your performance in real-time with detailed charts and metrics"
+    },
+    "propertyManagement": {
+      "title": "Property Management",
+      "description": "Efficiently manage your portfolio with a clear overview and advanced filters"
+    },
+    "analytics": {
+      "title": "Advanced Analytics",
+      "description": "Analyze market trends and optimize your strategies with accurate data"
+    },
+    "leadManagement": {
+      "title": "Lead Management",
+      "description": "Track your prospects, automate scoring and maximize your conversions"
+    },
+    "mobileApp": {
+      "title": "Mobile Application",
+      "description": "Access your backoffice from anywhere with our responsive mobile app. Manage your properties, check your analytics and respond to leads on the go.",
+      "mobileOptimized": "Mobile optimized interface",
+      "realTimeNotifications": "Real-time notifications",
+      "autoSync": "Automatic synchronization"
+    }
+  },
+  "plans": {
+    "free": {
+      "name": "Free",
+      "description": "Perfect for discovering and testing the platform",
+      "badge": "Free forever",
+      "cta": "Start free",
+      "popular": "Most popular"
+    },
+    "starter": {
+      "name": "Starter",
+      "description": "Ideal for individuals and small agencies",
+      "cta": "Try Starter",
+      "popular": "Popular"
+    },
+    "pro": {
+      "name": "Pro",
+      "description": "For agencies that want to maximize their performance",
+      "badge": "Most popular",
+      "cta": "Try Pro"
+    },
+    "enterprise": {
+      "name": "Enterprise",
+      "description": "Custom solution for large organizations",
+      "badge": "Custom",
+      "cta": "Contact sales"
+    }
+  },
+  "features": {
+    "upTo": "Up to",
+    "properties": "properties",
+    "unlimited": "unlimited",
+    "basicSearch": "Basic search",
+    "intelligentSearch": "Intelligent search",
+    "advancedSearch": "Advanced intelligent search",
+    "autoGeolocation": "Automatic geolocation",
+    "geolocationPOI": "Geolocation + Points of interest",
+    "mediaUpload": "Media upload",
+    "mediaPerProperty": "per property",
+    "unlimitedMedia": "unlimited",
+    "unlimitedMediaTours": "Unlimited media + Virtual tours",
+    "emailSupport": "Email support",
+    "basicDashboard": "Basic dashboard",
+    "improvedDashboard": "Improved dashboard",
+    "basicAnalytics": "Basic analytics",
+    "advancedAnalytics": "Complete advanced analytics",
+    "basicNeighborhood": "Basic neighborhood insights",
+    "detailedNeighborhood": "Detailed neighborhood insights",
+    "ecoFilters": "Ecological filters",
+    "advancedEcoFilters": "Advanced ecological filters",
+    "basicLeads": "Basic lead management",
+    "completeLeads": "Complete lead management",
+    "autoLeadScoring": "Automatic lead scoring",
+    "users": "users",
+    "limitedAPI": "Limited API",
+    "completeAPI": "Complete API",
+    "crmSync": "CRM synchronization (HubSpot)",
+    "prioritySupport": "Priority support",
+    "customization": "Customization",
+    "basicCustomization": "Basic customization",
+    "completeCustomization": "Complete customization",
+    "allInPro": "Everything in Pro",
+    "unlimitedUsers": "Unlimited users",
+    "multiOrg": "Multi-organizations",
+    "advancedRBAC": "Advanced RBAC",
+    "customAnalytics": "Custom analytics",
+    "customIntegrations": "Custom integrations",
+    "dedicatedDev": "Dedicated development",
+    "support24": "Dedicated 24/7 support",
+    "accountManager": "Dedicated Account Manager",
+    "training": "Training and onboarding",
+    "sla": "Guaranteed SLA",
+    "dedicatedHosting": "Dedicated hosting (optional)",
+    "securityAudit": "Security audit",
+    "tooltips": {
+      "upTo10Properties": "Create and manage up to 10 real estate listings simultaneously",
+      "upTo50Properties": "Create and manage up to 50 real estate listings simultaneously",
+      "unlimitedProperties": "No limit on the number of listings you can create and manage",
+      "basicSearch": "Search by keywords, location and property type",
+      "intelligentSearch": "Advanced search with multiple filters and intelligent suggestions",
+      "advancedSearch": "AI-powered search, advanced filters, saved searches and alerts",
+      "basicAnalytics": "View basic statistics on your properties (views, clicks, contacts)",
+      "advancedAnalytics": "Complete dashboard with detailed analytics, conversion tracking, and customizable reports",
+      "basicNeighborhood": "Basic neighborhood information (average price, transport, schools)",
+      "detailedNeighborhood": "In-depth neighborhood analysis with detailed data, market trends and projections",
+      "basicLeads": "Basic system to track and manage contacts interested in your properties",
+      "completeLeads": "Integrated CRM with pipeline, automatic scoring, and complete sales cycle management",
+      "autoLeadScoring": "AI system that automatically evaluates and prioritizes your leads based on their potential",
+      "crmSync": "Native integration with HubSpot to automatically synchronize your leads and contacts",
+      "limitedAPI": "API access limited to 1000 requests per day",
+      "completeAPI": "Unlimited API access with complete documentation and technical support",
+      "prioritySupport": "Guaranteed response time under 24h with dedicated communication channel",
+      "basicCustomization": "Limited customization of interface and workflows",
+      "completeCustomization": "Complete customization of interface, workflows, and custom integrations",
+      "multiOrg": "Manage multiple organizations from a single account with centralized billing",
+      "advancedRBAC": "Granular role and permission system for precise access control",
+      "customAnalytics": "Create custom dashboards and reports according to your specific needs",
+      "customIntegrations": "Development of custom integrations with your existing tools",
+      "dedicatedDev": "Dedicated development team to create exclusive features",
+      "accountManager": "Dedicated account manager to help you optimize your use of the platform",
+      "sla": "Contractual guarantees on availability time (99.9% uptime) and response times",
+      "securityAudit": "Regular security audit of your instance to ensure protection of your data"
+    }
+  },
+  "comparison": {
+    "title": "Plan comparison",
+    "description": "Compare all features to find the plan that fits your needs",
+    "feature": "Feature",
+    "properties": "Properties",
+    "users": "Users",
+    "support": "Support",
+    "api": "API",
+    "analytics": "Analytics",
+    "crmIntegration": "CRM Integration",
+    "customization": "Customization",
+    "monthlyPrice": "Monthly price",
+    "annualPrice": "Annual price",
+    "email": "Email",
+    "priority": "Priority",
+    "dedicated24": "24/7 Dedicated",
+    "basic": "Basic",
+    "custom": "Custom",
+    "limited": "Limited",
+    "included": "Included",
+    "notIncluded": "Not included"
+  },
+  "trust": {
+    "title": "Guarantees and included benefits",
+    "description": "We are committed to your satisfaction with clear guarantees",
+    "cancellation": {
+      "title": "Cancel anytime",
+      "description": "Cancel your subscription anytime without penalty. You keep access until the end of the paid period."
+    },
+    "noHiddenFees": {
+      "title": "No hidden fees",
+      "description": "The displayed price is what you pay. No transaction fees, no hidden fees. Total transparency."
+    },
+    "supportIncluded": {
+      "title": "Support included",
+      "description": "Email support for all plans. Priority and dedicated support for Pro and Enterprise plans."
+    },
+    "trustTitle": "They trust us",
+    "trustDescription": "Join thousands of real estate agencies using Viridial",
+    "testimonials": {
+      "jean": {
+        "name": "John Doe",
+        "role": "Real Estate Agency Paris",
+        "text": "Viridial has transformed how we manage our properties. The interface is intuitive and the analytics help us make better decisions. Impressive ROI in just 3 months."
+      },
+      "marie": {
+        "name": "Mary Smith",
+        "role": "Pro Agency, Lyon",
+        "text": "Lead management has become so much simpler. Automatic scoring saves us hours every week. Excellent and responsive support."
+      },
+      "pierre": {
+        "name": "Peter Martin",
+        "role": "Premium Real Estate, Marseille",
+        "text": "Custom Enterprise plan that perfectly meets our needs. The dedicated team is always there to help. Investment that's really worth it."
+      }
+    },
+    "stats": {
+      "agencies": "Active agencies",
+      "properties": "Managed properties",
+      "uptime": "Guaranteed uptime",
+      "enterpriseSupport": "Enterprise support"
+    }
+  },
+  "faq": {
+    "title": "Frequently asked questions",
+    "description": "Everything you need to know about our pricing and plans",
+    "changePlan": {
+      "question": "Can I change plans at any time?",
+      "answer": "Yes, you can upgrade or downgrade your plan at any time. Changes are applied immediately with prorated billing adjustment. If you upgrade to a higher plan, you only pay the difference for the remaining period. If you downgrade, the credit is applied to your next invoice."
+    },
+    "hiddenFees": {
+      "question": "Are there any hidden fees?",
+      "answer": "No, our pricing is completely transparent. The displayed price is what you pay. There are no transaction fees, no hidden fees, no setup fees. Annual subscription saves you 2 months (17% discount) compared to monthly subscription."
+    },
+    "cancel": {
+      "question": "What happens if I cancel my subscription?",
+      "answer": "You can cancel your subscription at any time from your dashboard. Your access remains active until the end of the paid period (month or year). No refund is made for already paid periods, but you retain full access until your subscription expires. You can reactivate your subscription at any time."
+    },
+    "freeLimit": {
+      "question": "Does the free plan have a time limit?",
+      "answer": "No, the free plan is available indefinitely with no time limit. You can use it for as long as you want, no credit card required. Upgrade to a paid plan only when you need additional features or higher limits."
+    },
+    "vat": {
+      "question": "Do prices include VAT?",
+      "answer": "Displayed prices are excluding tax (HT). VAT will be added at checkout according to your geographic location. For European businesses with a valid EU VAT number, VAT is reverse-charge (you self-assess the VAT). Contact us for more information on billing for your country."
+    },
+    "discounts": {
+      "question": "Do you offer discounts for startups or NGOs?",
+      "answer": "Yes, we offer preferential rates for eligible startups (less than 3 years old, less than 10 employees) and recognized non-profit organizations. Discounts can go up to 50% depending on your situation. Contact our sales team with your organization details to discuss your eligibility and get a personalized quote."
+    },
+    "trial": {
+      "question": "Can I try a paid plan before committing?",
+      "answer": "Yes, all our paid plans include a 14-day free trial. You can test all plan features without a credit card. At the end of the trial period, you can choose to continue with the plan or return to the free plan with no commitment."
+    },
+    "payment": {
+      "question": "How can I pay for my subscription?",
+      "answer": "We accept credit card payments (Visa, Mastercard, American Express) and bank transfers for annual and Enterprise subscriptions. Payments are secured via Stripe (PCI-DSS certified). For Enterprise plans, we also offer custom billing options with negotiable payment terms."
+    }
+  },
+  "enterprise": {
+    "title": "Need a custom solution?",
+    "description": "Our team can create an Enterprise plan tailored to your specific needs, with custom features, dedicated 24/7 support and guaranteed SLAs.",
+    "cta": "Contact sales",
+    "ctaSecondary": "See all features",
+    "benefits": {
+      "exclusiveFeatures": {
+        "title": "Exclusive features",
+        "description": "Dedicated development to meet your specific needs"
+      },
+      "dedicatedSupport": {
+        "title": "Dedicated 24/7 support",
+        "description": "Dedicated support team always available to help you"
+      },
+      "slaGuaranteed": {
+        "title": "Guaranteed SLA",
+        "description": "99.9% uptime guaranteed with compensation if not met"
+      }
+    }
+  }
+}

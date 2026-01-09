@@ -7,6 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { usePropertyService } from '@/hooks/usePropertyService';
 import { Property, PropertyStatus } from '@/lib/api/property';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
   Card,
   CardContent,
@@ -16,6 +17,21 @@ import {
 } from '@/components/ui/card';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import { useToast } from '@/components/ui/simple-toast';
+import { useConfirm } from '@/components/ui/simple-alert-dialog';
+import PropertyDetailSidebar from '@/components/property/PropertyDetailSidebar';
+import dynamic from 'next/dynamic';
+
+// Dynamically import Map component (client-side only)
+const PropertyMapWithPOI = dynamic(() => import('@/components/property/PropertyMapWithPOI'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[500px] bg-gray-100 rounded-lg flex items-center justify-center text-gray-500">
+      Chargement de la carte...
+    </div>
+  ),
+});
+import { MapPin, TrendingUp, Shield, Star, School, Train, ShoppingBag, UtensilsCrossed, Waves, Activity, TreePine } from 'lucide-react';
 
 export default function PropertyDetailPage() {
   const router = useRouter();
@@ -23,6 +39,8 @@ export default function PropertyDetailPage() {
   const propertyId = params.id as string;
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const propertyService = usePropertyService();
+  const { toast } = useToast();
+  const confirm = useConfirm();
   const [property, setProperty] = useState<Property | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -54,31 +72,43 @@ export default function PropertyDetailPage() {
   };
 
   const handlePublish = async () => {
-    if (!confirm('Publier cette propriété ? Elle sera visible publiquement.')) {
-      return;
-    }
-
     try {
       setIsPublishing(true);
       await propertyService.publish(propertyId);
       await loadProperty();
+      toast({
+        variant: 'success',
+        title: 'Propriété publiée',
+        description: 'La propriété est maintenant visible publiquement.',
+      });
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Erreur lors de la publication');
+      const errorMessage = err instanceof Error ? err.message : 'Erreur lors de la publication';
+      toast({
+        variant: 'error',
+        title: 'Erreur',
+        description: errorMessage,
+      });
     } finally {
       setIsPublishing(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer cette propriété ? Cette action est irréversible.')) {
-      return;
-    }
-
     try {
       await propertyService.delete(propertyId);
+      toast({
+        variant: 'success',
+        title: 'Propriété supprimée',
+        description: 'La propriété a été supprimée avec succès.',
+      });
       router.push('/properties');
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Erreur lors de la suppression');
+      const errorMessage = err instanceof Error ? err.message : 'Erreur lors de la suppression';
+      toast({
+        variant: 'error',
+        title: 'Erreur',
+        description: errorMessage,
+      });
     }
   };
 
@@ -97,7 +127,7 @@ export default function PropertyDetailPage() {
     const colors: Record<PropertyStatus, string> = {
       [PropertyStatus.DRAFT]: 'bg-gray-500',
       [PropertyStatus.REVIEW]: 'bg-yellow-500',
-      [PropertyStatus.LISTED]: 'bg-green-500',
+      [PropertyStatus.LISTED]: 'bg-primary',
       [PropertyStatus.FLAGGED]: 'bg-red-500',
       [PropertyStatus.ARCHIVED]: 'bg-gray-400',
     };
@@ -108,7 +138,7 @@ export default function PropertyDetailPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-green-600 mb-4"></div>
+          <div className="inline-block animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-primary mb-4"></div>
           <div className="text-sm font-medium text-gray-700">Chargement...</div>
         </div>
       </div>
@@ -128,7 +158,7 @@ export default function PropertyDetailPage() {
             <CardContent className="pt-6">
               <p className="text-sm font-medium text-red-700 mb-5">{error}</p>
               <Link href="/properties">
-                <Button className="bg-green-600 hover:bg-green-700 text-white border-0">
+                <Button className="bg-primary hover:bg-viridial-700 text-white border-0">
                   Retour à la liste
                 </Button>
               </Link>
@@ -149,7 +179,7 @@ export default function PropertyDetailPage() {
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
       <Header />
-      <main className="flex flex-1 flex-col px-4 py-8 sm:px-6 lg:px-8">
+      <main id="main-content" className="flex flex-1 flex-col px-4 py-8 sm:px-6 lg:px-8">
         <div className="container mx-auto max-w-5xl">
           <div className="mb-6">
             <Link href="/properties" className="text-sm text-gray-500 hover:text-gray-700 font-medium inline-flex items-center gap-1">
@@ -185,18 +215,58 @@ export default function PropertyDetailPage() {
               {property.status !== PropertyStatus.LISTED && (
                 <Button
                   variant="success"
-                  onClick={handlePublish}
                   disabled={isPublishing}
-                  className="bg-green-600 hover:bg-green-700 text-white border-0"
+                  onClick={() => {
+                    confirm({
+                      title: 'Publier la propriété',
+                      description: 'Êtes-vous sûr de vouloir publier cette propriété ? Elle sera visible publiquement et apparaîtra dans les résultats de recherche.',
+                      onConfirm: handlePublish,
+                      confirmLabel: isPublishing ? 'Publication...' : 'Publier',
+                    });
+                  }}
+                  className="bg-primary hover:bg-viridial-700 text-white border-0"
                 >
-                  {isPublishing ? 'Publication...' : 'Publier'}
+                  Publier
                 </Button>
               )}
-              <Button variant="danger" onClick={handleDelete} className="bg-red-600 hover:bg-red-700 text-white border-0">
+              <Button
+                variant="danger"
+                onClick={() => {
+                  confirm({
+                    title: 'Supprimer la propriété',
+                    description: 'Êtes-vous sûr de vouloir supprimer cette propriété ? Cette action est irréversible et toutes les données associées seront perdues.',
+                    onConfirm: handleDelete,
+                    variant: 'danger',
+                    confirmLabel: 'Supprimer',
+                  });
+                }}
+                className="bg-red-600 hover:bg-red-700 text-white border-0"
+              >
                 Supprimer
               </Button>
             </div>
           </div>
+
+          {/* Map Section - Full Width with POIs */}
+          {property.latitude && property.longitude && (
+            <Card className="border border-gray-200 bg-white mb-6 shadow-sm">
+              <CardHeader className="pb-4">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg font-semibold text-gray-900">Localisation et Points d'intérêt</CardTitle>
+                  {property.neighborhood && (
+                    <Badge variant="outline" className="border-viridial-300 text-viridial-700">
+                      {property.neighborhood.name}
+                    </Badge>
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0 p-0">
+                <div className="h-[500px] w-full rounded-lg overflow-hidden border-t border-gray-200">
+                  <PropertyMapWithPOI property={property} showNeighborhood={true} />
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           <div className="grid gap-5 md:grid-cols-3">
             {/* Main Content */}
@@ -267,77 +337,9 @@ export default function PropertyDetailPage() {
               )}
             </div>
 
-            {/* Sidebar */}
-            <div className="space-y-5">
-              {/* Prix */}
-              <Card className="border border-gray-200 bg-white">
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-lg font-semibold text-gray-900">Prix</CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <p className="text-2xl font-bold text-gray-900">
-                    {property.price.toLocaleString()} {property.currency}
-                  </p>
-                </CardContent>
-              </Card>
-
-              {/* Adresse */}
-              <Card className="border border-gray-200 bg-white">
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-lg font-semibold text-gray-900">Adresse</CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <div className="space-y-1.5 text-sm text-gray-700">
-                    {property.street && <p className="font-medium">{property.street}</p>}
-                    {(property.postalCode || property.city) && (
-                      <p>
-                        {property.postalCode} {property.city}
-                      </p>
-                    )}
-                    {(property.region || property.country) && (
-                      <p>
-                        {property.region}
-                        {property.region && property.country ? ', ' : ''}
-                        {property.country}
-                      </p>
-                    )}
-                    {property.latitude && property.longitude && (
-                      <p className="text-xs text-gray-500 mt-3 pt-3 border-t border-gray-200">
-                        📍 {property.latitude.toFixed(6)}, {property.longitude.toFixed(6)}
-                      </p>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Informations */}
-              <Card className="border border-gray-200 bg-white">
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-lg font-semibold text-gray-900">Informations</CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <div className="space-y-3 text-sm">
-                    <div className="flex justify-between items-center py-1.5 border-b border-gray-100 last:border-0">
-                      <span className="text-gray-500">Type:</span>
-                      <span className="font-medium text-gray-900 capitalize">{property.type}</span>
-                    </div>
-                    <div className="flex justify-between items-center py-1.5 border-b border-gray-100 last:border-0">
-                      <span className="text-gray-500">Créé le:</span>
-                      <span className="font-medium text-gray-900">
-                        {new Date(property.createdAt).toLocaleDateString('fr-FR')}
-                      </span>
-                    </div>
-                    {property.publishedAt && (
-                      <div className="flex justify-between items-center py-1.5 border-b border-gray-100 last:border-0">
-                        <span className="text-gray-500">Publié le:</span>
-                        <span className="font-medium text-gray-900">
-                          {new Date(property.publishedAt).toLocaleDateString('fr-FR')}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+            {/* Sidebar - Enhanced with tabs */}
+            <div>
+              <PropertyDetailSidebar property={property} />
             </div>
           </div>
         </div>

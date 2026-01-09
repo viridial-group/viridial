@@ -1,0 +1,182 @@
+{
+  "hero": {
+    "badge": "Fonctionnalités complètes",
+    "title": "Toutes les fonctionnalités",
+    "subtitle": "dont vous avez besoin",
+    "description": "Découvrez toutes les fonctionnalités puissantes conçues pour simplifier et optimiser votre gestion immobilière. Recherche intelligente, gestion de propriétés, analytics et bien plus encore.",
+    "ctaPrimary": "Rechercher des propriétés",
+    "ctaSecondary": "Commencer gratuitement"
+  },
+  "mainFeatures": {
+    "title": "Fonctionnalités principales",
+    "description": "Toutes les outils dont vous avez besoin pour gérer et promouvoir vos propriétés",
+    "search": {
+      "title": "Recherche Intelligente",
+      "description": "Moteur de recherche ultra-rapide avec Meilisearch, filtres avancés, géolocalisation en temps réel et carte interactive.",
+      "highlights": {
+        "0": "Recherche full-text avec suggestions intelligentes",
+        "1": "Filtres géographiques (rayon, zone dessinée)",
+        "2": "Carte interactive avec clustering",
+        "3": "Recherche vocale et autocomplétion",
+        "4": "Sauvegarde de recherches"
+      }
+    },
+    "propertyManagement": {
+      "title": "Gestion Complète des Propriétés",
+      "description": "Créez, modifiez et gérez vos annonces avec géolocalisation automatique, médias multiples et workflow de publication.",
+      "highlights": {
+        "0": "CRUD complet avec validation automatique",
+        "1": "Géolocalisation automatique des adresses",
+        "2": "Upload de médias multiples (photos, vidéos)",
+        "3": "Workflow de publication (draft, review, listed)",
+        "4": "Statistiques et analytics par propriété"
+      }
+    },
+    "intelligence": {
+      "title": "Intelligence Immobilière",
+      "description": "Estimations de prix, insights sur les quartiers, scoring et recommandations basées sur l'IA.",
+      "highlights": {
+        "0": "Estimateur de prix automatique",
+        "1": "Insights détaillés sur les quartiers",
+        "2": "Points d'intérêt et commodités",
+        "3": "Scoring et recommandations personnalisées",
+        "4": "Analytics et tendances du marché"
+      }
+    },
+    "leadManagement": {
+      "title": "Gestion des Leads",
+      "description": "Système complet de gestion des leads avec scoring automatique et synchronisation CRM.",
+      "highlights": {
+        "0": "Gestion centralisée des contacts",
+        "1": "Scoring automatique des leads",
+        "2": "Synchronisation avec CRM (HubSpot)",
+        "3": "Suivi des interactions",
+        "4": "Rapports et analytics"
+      }
+    },
+    "multiTenant": {
+      "title": "Multi-tenant & Agences",
+      "description": "Gestion complète des organisations, utilisateurs, rôles et abonnements pour les agences immobilières.",
+      "highlights": {
+        "0": "Inscription et onboarding des agences",
+        "1": "Gestion des utilisateurs et rôles (RBAC)",
+        "2": "Système d'abonnements et facturation",
+        "3": "Dashboard personnalisé par agence",
+        "4": "Configuration multi-langue (i18n)"
+      }
+    },
+    "ecology": {
+      "title": "Immobilier Écologique",
+      "description": "Fonctionnalités dédiées à l'immobilier durable avec éco-quartiers certifiés et énergies renouvelables.",
+      "highlights": {
+        "0": "Éco-quartiers certifiés et documentés",
+        "1": "Propriétés avec énergies renouvelables",
+        "2": "Score écologique des quartiers",
+        "3": "Filtres de recherche écologiques",
+        "4": "Badges et certifications visibles"
+      }
+    }
+  },
+  "useCases": {
+    "title": "Parfait pour tous vos besoins",
+    "description": "Que vous soyez une agence, un propriétaire ou un chercheur de biens",
+    "agencies": {
+      "title": "Pour les Agences Immobilières",
+      "description": "Gérez efficacement votre portefeuille de propriétés, vos leads et vos équipes.",
+      "features": {
+        "0": "Gestion multi-utilisateurs",
+        "1": "Dashboard analytique",
+        "2": "Workflow de publication",
+        "3": "Gestion des abonnements"
+      }
+    },
+    "owners": {
+      "title": "Pour les Propriétaires",
+      "description": "Mettez en avant votre propriété avec des outils professionnels accessibles.",
+      "features": {
+        "0": "Publication simplifiée",
+        "1": "Suivi des vues",
+        "2": "Gestion des contacts",
+        "3": "Estimations de prix"
+      }
+    },
+    "searchers": {
+      "title": "Pour les Chercheurs",
+      "description": "Trouvez la propriété idéale avec une recherche intelligente et intuitive.",
+      "features": {
+        "0": "Recherche avancée",
+        "1": "Carte interactive",
+        "2": "Filtres personnalisés",
+        "3": "Favoris et alertes"
+      }
+    }
+  },
+  "technicalFeatures": {
+    "title": "Infrastructure robuste",
+    "description": "Construite avec les meilleures technologies pour la performance et la fiabilité",
+    "security": {
+      "title": "Sécurité Avancée",
+      "description": "Authentification JWT, RBAC, chiffrement des données, conformité RGPD."
+    },
+    "cloud": {
+      "title": "Cloud & Scalabilité",
+      "description": "Architecture microservices, Kubernetes, auto-scaling, haute disponibilité."
+    },
+    "observability": {
+      "title": "Observabilité",
+      "description": "Monitoring en temps réel, logs centralisés, alertes, métriques de performance."
+    },
+    "reliability": {
+      "title": "Fiabilité",
+      "description": "Backups automatiques, disaster recovery, réplication de données."
+    },
+    "responsive": {
+      "title": "Responsive Design",
+      "description": "Interface optimisée pour tous les appareils, mobile-first, PWA-ready."
+    },
+    "performance": {
+      "title": "Performance",
+      "description": "Optimisation des images, lazy loading, caching intelligent, CDN-ready."
+    }
+  },
+  "highlights": {
+    "interactiveMap": {
+      "title": "Carte Interactive",
+      "description": "Visualisez les propriétés sur une carte avec clustering et filtres"
+    },
+    "advancedFilters": {
+      "title": "Filtres Avancés",
+      "description": "Filtrez par prix, type, localisation, éco-certification"
+    },
+    "analytics": {
+      "title": "Analytics",
+      "description": "Statistiques détaillées et insights sur vos propriétés"
+    },
+    "detailedViews": {
+      "title": "Vues Détaillées",
+      "description": "Informations complètes avec photos HD et descriptions"
+    },
+    "favorites": {
+      "title": "Favoris",
+      "description": "Sauvegardez vos propriétés favorites pour plus tard"
+    },
+    "directContact": {
+      "title": "Contact Direct",
+      "description": "Contactez les propriétaires directement depuis la plateforme"
+    },
+    "richMedia": {
+      "title": "Médias Riches",
+      "description": "Photos, vidéos, visites virtuelles pour vos annonces"
+    },
+    "multilangue": {
+      "title": "Multi-langue",
+      "description": "Interface disponible en plusieurs langues (i18n)"
+    }
+  },
+  "cta": {
+    "title": "Prêt à commencer ?",
+    "description": "Rejoignez des milliers d'utilisateurs qui font confiance à Viridial pour leur immobilier",
+    "ctaPrimary": "Créer un compte gratuit",
+    "ctaSecondary": "Explorer les propriétés"
+  }
+}

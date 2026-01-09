@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
-import { usePropertyService } from '@/hooks/usePropertyService';
-import { Property, PropertyStatus } from '@/lib/api/property';
+import { Property, PropertyStatus, PropertyService } from '@/lib/api/property';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
   Card,
   CardContent,
@@ -16,13 +16,28 @@ import {
 } from '@/components/ui/card';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import PropertyDetailSidebar from '@/components/property/PropertyDetailSidebar';
+import dynamic from 'next/dynamic';
+
+// Dynamically import Map component (client-side only)
+const PropertyMapWithPOI = dynamic(() => import('@/components/property/PropertyMapWithPOI'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[500px] bg-gray-100 rounded-lg flex items-center justify-center text-gray-500">
+      Chargement de la carte...
+    </div>
+  ),
+});
+
+// Create a public property service instance (no authentication)
+const PROPERTY_API_URL = process.env.NEXT_PUBLIC_PROPERTY_API_URL || 'http://localhost:3001';
+const publicPropertyService = new PropertyService(PROPERTY_API_URL, () => null);
 
 export default function PublicPropertyDetailPage() {
   const router = useRouter();
   const params = useParams();
   const propertyId = params.id as string;
   const { isAuthenticated } = useAuth();
-  const propertyService = usePropertyService();
   const [property, setProperty] = useState<Property | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -38,7 +53,7 @@ export default function PublicPropertyDetailPage() {
       setIsLoading(true);
       setError(null);
       // Public access - no authentication required
-      const data = await propertyService.findOne(propertyId);
+      const data = await publicPropertyService.findOne(propertyId);
       setProperty(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Propriété non trouvée ou non disponible');
@@ -53,7 +68,7 @@ export default function PublicPropertyDetailPage() {
         <Header />
         <main className="flex flex-1 items-center justify-center px-4">
           <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-green-600 mb-4"></div>
+            <div className="inline-block animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-primary mb-4"></div>
             <div className="text-sm font-medium text-gray-700">Chargement...</div>
           </div>
         </main>
@@ -76,7 +91,7 @@ export default function PublicPropertyDetailPage() {
                 </Link>
                 {isAuthenticated && (
                   <Link href="/properties">
-                    <Button className="bg-green-600 hover:bg-green-700 text-white border-0">Mes Propriétés</Button>
+                    <Button className="bg-primary hover:bg-viridial-700 text-white border-0">Mes Propriétés</Button>
                   </Link>
                 )}
               </div>
@@ -112,7 +127,7 @@ export default function PublicPropertyDetailPage() {
                 {mainTranslation?.title || 'Sans titre'}
               </h1>
               <div className="flex items-center gap-3 flex-wrap">
-                <span className="px-2.5 py-1 text-xs font-semibold text-white rounded-md bg-green-500 border border-gray-300">
+                <span className="px-2.5 py-1 text-xs font-semibold text-white rounded-md bg-primary border border-gray-300">
                   Disponible
                 </span>
                 <span className="text-sm text-gray-500">
@@ -132,6 +147,27 @@ export default function PublicPropertyDetailPage() {
               </div>
             )}
           </div>
+
+          {/* Map Section - Full Width with POIs */}
+          {property.latitude && property.longitude && (
+            <Card className="border border-gray-200 bg-white mb-6 shadow-sm">
+              <CardHeader className="pb-4">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg font-semibold text-gray-900">Localisation et Points d'intérêt</CardTitle>
+                  {property.neighborhood && (
+                    <Badge variant="outline" className="border-viridial-300 text-viridial-700">
+                      {property.neighborhood.name}
+                    </Badge>
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0 p-0">
+                <div className="h-[500px] w-full rounded-lg overflow-hidden border-t border-gray-200">
+                  <PropertyMapWithPOI property={property} showNeighborhood={true} />
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           <div className="grid gap-5 md:grid-cols-3">
             {/* Main Content */}
@@ -202,85 +238,9 @@ export default function PublicPropertyDetailPage() {
               )}
             </div>
 
-            {/* Sidebar */}
-            <div className="space-y-5">
-              {/* Prix */}
-              <Card className="border border-gray-200 bg-white">
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-lg font-semibold text-gray-900">Prix</CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <p className="text-2xl font-bold text-gray-900">
-                    {property.price.toLocaleString()} {property.currency}
-                  </p>
-                </CardContent>
-              </Card>
-
-              {/* Adresse */}
-              <Card className="border border-gray-200 bg-white">
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-lg font-semibold text-gray-900">Adresse</CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <div className="space-y-1.5 text-sm text-gray-700">
-                    {property.street && <p className="font-medium">{property.street}</p>}
-                    {(property.postalCode || property.city) && (
-                      <p>
-                        {property.postalCode} {property.city}
-                      </p>
-                    )}
-                    {(property.region || property.country) && (
-                      <p>
-                        {property.region}
-                        {property.region && property.country ? ', ' : ''}
-                        {property.country}
-                      </p>
-                    )}
-                    {property.latitude && property.longitude && (
-                      <p className="text-xs text-gray-500 mt-3 pt-3 border-t border-gray-200">
-                        📍 {property.latitude.toFixed(6)}, {property.longitude.toFixed(6)}
-                      </p>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Informations */}
-              <Card className="border border-gray-200 bg-white">
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-lg font-semibold text-gray-900">Informations</CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <div className="space-y-3 text-sm">
-                    <div className="flex justify-between items-center py-1.5 border-b border-gray-100 last:border-0">
-                      <span className="text-gray-500">Type:</span>
-                      <span className="font-medium text-gray-900 capitalize">{property.type}</span>
-                    </div>
-                    {property.publishedAt && (
-                      <div className="flex justify-between items-center py-1.5 border-b border-gray-100 last:border-0">
-                        <span className="text-gray-500">Publié le:</span>
-                        <span className="font-medium text-gray-900">
-                          {new Date(property.publishedAt).toLocaleDateString('fr-FR')}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Contact Button */}
-              {isAuthenticated && (
-                <Card className="border border-gray-200 bg-white">
-                  <CardContent className="pt-6">
-                    <Button className="w-full bg-green-600 hover:bg-green-700 text-white border-0">
-                      Contacter le propriétaire
-                    </Button>
-                    <p className="text-xs text-center text-gray-500 mt-3">
-                      Connectez-vous pour contacter
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
+            {/* Sidebar - Enhanced with tabs */}
+            <div>
+              <PropertyDetailSidebar property={property} />
             </div>
           </div>
         </div>

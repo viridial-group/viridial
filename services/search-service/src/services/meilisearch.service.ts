@@ -198,6 +198,7 @@ export class MeilisearchService implements OnModuleInit {
       latitude?: number;
       longitude?: number;
       radiusKm?: number;
+      bbox?: { minLat: number; minLon: number; maxLat: number; maxLon: number };
     },
     options?: {
       limit?: number;
@@ -257,6 +258,14 @@ export class MeilisearchService implements OnModuleInit {
         const radiusMeters = filters.radiusKm * 1000;
         filterParts.push(
           `_geoRadius(${filters.latitude}, ${filters.longitude}, ${radiusMeters})`,
+        );
+      }
+
+      // Bounding box filter (alternative to radius search)
+      if (filters?.bbox) {
+        // Meilisearch bounding box format: _geoBoundingBox([minLat, minLon], [maxLat, maxLon])
+        filterParts.push(
+          `_geoBoundingBox([${filters.bbox.minLat}, ${filters.bbox.minLon}], [${filters.bbox.maxLat}, ${filters.bbox.maxLon}])`,
         );
       }
 

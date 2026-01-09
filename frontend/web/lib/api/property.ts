@@ -31,6 +31,69 @@ export interface PropertyTranslation {
   metaDescription?: string;
 }
 
+export interface Neighborhood {
+  id: string;
+  slug: string;
+  name: string;
+  description: {
+    fr?: string;
+    en?: string;
+    [key: string]: string | undefined;
+  };
+  city: string;
+  region?: string | null;
+  country?: string | null;
+  postalCode?: string | null;
+  centerLatitude?: number | null;
+  centerLongitude?: number | null;
+  stats?: {
+    propertyCount?: number;
+    averagePriceOverall?: number;
+    medianPrice?: number;
+    minPrice?: number;
+    maxPrice?: number;
+    averagePrice?: {
+      apartment?: number;
+      house?: number;
+      villa?: number;
+      commercial?: number;
+      land?: number;
+    };
+  } | null;
+  features?: {
+    publicTransport?: {
+      metro?: boolean;
+      tram?: boolean;
+      bus?: boolean;
+      train?: boolean;
+      stations?: string[];
+    };
+    amenities?: {
+      schools?: number;
+      hospitals?: number;
+      parks?: number;
+      shopping?: boolean;
+      restaurants?: boolean;
+      nightlife?: boolean;
+      beaches?: boolean;
+      sports?: boolean;
+    };
+    type?: 'residential' | 'commercial' | 'mixed' | 'tourist' | 'industrial';
+    safetyScore?: number;
+    qualityOfLife?: number;
+    demographics?: {
+      averageAge?: number;
+      population?: number;
+      familyFriendly?: boolean;
+      studentArea?: boolean;
+      seniorFriendly?: boolean;
+    };
+  } | null;
+  mediaUrls?: string[] | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface Property {
   id: string;
   userId: string;
@@ -45,6 +108,8 @@ export interface Property {
   city: string | null;
   region: string | null;
   country: string | null;
+  neighborhood?: Neighborhood | null;
+  neighborhoodId?: string | null;
   mediaUrls: string[] | null;
   createdAt: string;
   updatedAt: string;

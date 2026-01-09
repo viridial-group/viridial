@@ -235,7 +235,7 @@ export default function MapComponent({
                     <h3 className="font-semibold text-base mb-2 line-clamp-2 text-gray-900">
                       {property.title_fr || property.title_en || 'Sans titre'}
                     </h3>
-                    <div className="flex items-center gap-2 text-green-600 font-bold text-lg mb-3">
+                    <div className="flex items-center gap-2 text-primary font-bold text-lg mb-3">
                       <DollarSign className="h-5 w-5" />
                       {formatPrice(property.price, property.currency)}
                     </div>
@@ -253,8 +253,8 @@ export default function MapComponent({
                       </div>
                     </div>
                     <Link
-                      href={`/properties/${property.id}`}
-                      className="inline-flex items-center justify-center w-full mt-2 px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-md transition-colors"
+                      href={`/property/${property.id}`}
+                      className="inline-flex items-center justify-center w-full mt-2 px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-viridial-700 rounded-md transition-colors"
                       onClick={(e) => e.stopPropagation()}
                     >
                       Voir les détails

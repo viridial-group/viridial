@@ -148,7 +148,7 @@ export default function SavedSearches({ onLoadSearch }: SavedSearchesProps) {
                 {savedSearches.map((search) => (
                   <div
                     key={search.id}
-                    className="p-3 rounded-lg border border-gray-200 hover:border-green-300 hover:bg-green-50 transition-colors cursor-pointer group"
+                    className="p-3 rounded-lg border border-gray-200 hover:border-viridial-300 hover:bg-viridial-50 transition-colors cursor-pointer group"
                     onClick={() => loadSearch(search)}
                   >
                     <div className="flex items-start justify-between gap-2">

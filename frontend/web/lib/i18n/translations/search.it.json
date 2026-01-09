@@ -1,0 +1,32 @@
+{
+  "title": "Rechercher une propriété",
+  "placeholder": "Rechercher une propriété, un lieu, une adresse...",
+  "noResults": "Aucun résultat trouvé",
+  "resultsCount": "{{count}} résultat(s) trouvé(s)",
+  "filters": "Filtres",
+  "priceRange": "Fourchette de prix",
+  "propertyType": "Type de propriété",
+  "status": "Statut",
+  "sortBy": "Trier par",
+  "sortRelevance": "Pertinence",
+  "sortPriceAsc": "Prix croissant",
+  "sortPriceDesc": "Prix décroissant",
+  "sortDistance": "Distance",
+  "viewMode": "Mode d'affichage",
+  "list": "Liste",
+  "grid": "Grille",
+  "map": "Carte",
+  "quickFilters": {
+    "ecoCertified": "Éco-certifié",
+    "newListings": "Nouveautés",
+    "priceReduced": "Prix réduits",
+    "featured": "À la une"
+  },
+  "property": {
+    "viewDetails": "Voir détails",
+    "bedrooms": "chambres",
+    "bathrooms": "salles de bain",
+    "surface": "m²"
+  }
+}
+

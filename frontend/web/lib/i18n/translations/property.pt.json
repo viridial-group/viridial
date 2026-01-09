@@ -1,0 +1,31 @@
+{
+  "title": "Titre",
+  "description": "Description",
+  "price": "Prix",
+  "location": "Localisation",
+  "type": "Type",
+  "status": "Statut",
+  "bedrooms": "Chambres",
+  "bathrooms": "Salles de bain",
+  "surface": "Surface",
+  "created": "Créé le",
+  "updated": "Mis à jour le",
+  "viewDetails": "Voir les détails",
+  "edit": "Modifier la propriété",
+  "delete": "Supprimer la propriété",
+  "statuses": {
+    "draft": "Brouillon",
+    "pending": "En attente",
+    "listed": "Publié",
+    "sold": "Vendu",
+    "rented": "Loué",
+    "archived": "Archivé"
+  },
+  "types": {
+    "house": "Maison",
+    "apartment": "Appartement",
+    "land": "Terrain",
+    "commercial": "Commercial"
+  }
+}
+

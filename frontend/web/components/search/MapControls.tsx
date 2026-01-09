@@ -82,7 +82,7 @@ export default function MapControls({ onLocateMe }: MapControlsProps) {
         onClick={handleLocateMe}
         variant="default"
         size="icon"
-        className="h-10 w-10 rounded-full shadow-lg bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 hover:text-green-600 transition-all"
+        className="h-10 w-10 rounded-full shadow-lg bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 hover:text-primary transition-all"
         title="Localiser ma position"
       >
         <Navigation className="h-5 w-5" />
@@ -115,7 +115,7 @@ export default function MapControls({ onLocateMe }: MapControlsProps) {
         onClick={toggleFullscreen}
         variant="default"
         size="icon"
-        className="h-10 w-10 rounded-full shadow-lg bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 hover:text-green-600 transition-all"
+        className="h-10 w-10 rounded-full shadow-lg bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 hover:text-primary transition-all"
         title={isFullscreen ? 'Quitter le plein écran' : 'Plein écran'}
       >
         {isFullscreen ? <Minimize2 className="h-5 w-5" /> : <Maximize2 className="h-5 w-5" />}

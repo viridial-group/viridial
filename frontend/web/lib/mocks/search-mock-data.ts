@@ -24,6 +24,9 @@ export const mockProperties: Array<PropertySearchHit> = [
     city: 'Paris',
     region: 'Île-de-France',
     country: 'France',
+    neighborhoodSlug: 'le-marais-paris',
+    neighborhoodName_fr: 'Le Marais',
+    neighborhoodName_en: 'Le Marais',
     mediaUrls: [
       'https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800',
       'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800',
@@ -49,6 +52,9 @@ export const mockProperties: Array<PropertySearchHit> = [
     city: 'Paris',
     region: 'Île-de-France',
     country: 'France',
+    neighborhoodSlug: 'le-marais-paris',
+    neighborhoodName_fr: 'Le Marais',
+    neighborhoodName_en: 'Le Marais',
     mediaUrls: [
       'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800',
       'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800',
@@ -74,6 +80,9 @@ export const mockProperties: Array<PropertySearchHit> = [
     city: 'Paris',
     region: 'Île-de-France',
     country: 'France',
+    neighborhoodSlug: 'saint-germain-des-pres-paris',
+    neighborhoodName_fr: 'Saint-Germain-des-Prés',
+    neighborhoodName_en: 'Saint-Germain-des-Prés',
     mediaUrls: [
       'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
       'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800',
@@ -99,6 +108,9 @@ export const mockProperties: Array<PropertySearchHit> = [
     city: 'Nice',
     region: "Provence-Alpes-Côte d'Azur",
     country: 'France',
+    neighborhoodSlug: 'promenade-angles-nice',
+    neighborhoodName_fr: 'Promenade des Anglais',
+    neighborhoodName_en: 'Promenade des Anglais',
     mediaUrls: [
       'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=800',
     ],
@@ -123,6 +135,9 @@ export const mockProperties: Array<PropertySearchHit> = [
     city: 'Paris',
     region: 'Île-de-France',
     country: 'France',
+    neighborhoodSlug: 'le-marais-paris',
+    neighborhoodName_fr: 'Le Marais',
+    neighborhoodName_en: 'Le Marais',
     mediaUrls: [
       'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800',
       'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800',
@@ -148,6 +163,9 @@ export const mockProperties: Array<PropertySearchHit> = [
     city: 'Cannes',
     region: "Provence-Alpes-Côte d'Azur",
     country: 'France',
+    neighborhoodSlug: 'promenade-angles-nice',
+    neighborhoodName_fr: 'La Croisette',
+    neighborhoodName_en: 'La Croisette',
     mediaUrls: [
       'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800',
       'https://images.unsplash.com/photo-1600585152915-d208bec867a1?w=800',
@@ -173,6 +191,9 @@ export const mockProperties: Array<PropertySearchHit> = [
     city: 'Paris',
     region: 'Île-de-France',
     country: 'France',
+    neighborhoodSlug: 'saint-germain-des-pres-paris',
+    neighborhoodName_fr: 'Saint-Germain-des-Prés',
+    neighborhoodName_en: 'Saint-Germain-des-Prés',
     mediaUrls: [
       'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800',
     ],

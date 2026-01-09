@@ -10,6 +10,8 @@ import { Label } from '@/components/ui/label';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { authService } from '@/lib/api/auth';
+import { useToast } from '@/components/ui/simple-toast';
+import { useTranslation } from '@/contexts/I18nContext';
 
 // Disable static generation for this page
 export const dynamic = 'force-dynamic';
@@ -18,10 +20,12 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { login } = useAuth();
+  const { toast } = useToast();
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -29,22 +33,69 @@ function LoginForm() {
     const resetParam = searchParams.get('reset');
     
     if (signupParam === 'success') {
-      setSuccess('Inscription réussie ! Vous pouvez maintenant vous connecter.');
+      toast({
+        variant: 'success',
+        title: t('auth.login.toasts.signupSuccess.title'),
+        description: t('auth.login.toasts.signupSuccess.description'),
+      });
     } else if (resetParam === 'success') {
-      setSuccess('Mot de passe réinitialisé avec succès ! Vous pouvez maintenant vous connecter.');
+      toast({
+        variant: 'success',
+        title: t('auth.login.toasts.resetSuccess.title'),
+        description: t('auth.login.toasts.resetSuccess.description'),
+      });
     }
-  }, [searchParams]);
+  }, [searchParams, toast]);
+
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setEmailError(t('auth.login.validation.emailRequired'));
+      return false;
+    }
+    setEmailError(null);
+    return true;
+  };
+
+  const validatePassword = (password: string): boolean => {
+    if (password.length < 1) {
+      setPasswordError(t('auth.login.validation.passwordRequired'));
+      return false;
+    }
+    setPasswordError(null);
+    return true;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
+    setEmailError(null);
+    setPasswordError(null);
+
+    // Validation
+    const isEmailValid = validateEmail(email);
+    const isPasswordValid = validatePassword(password);
+
+    if (!isEmailValid || !isPasswordValid) {
+      return;
+    }
+
     setIsLoading(true);
 
     try {
       await login({ email, password });
+      toast({
+        variant: 'success',
+        title: t('auth.login.toasts.loginSuccess.title'),
+        description: t('auth.login.toasts.loginSuccess.description'),
+      });
       router.push('/dashboard');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Une erreur est survenue');
+      const errorMessage = err instanceof Error ? err.message : t('auth.login.toasts.loginError.description');
+      toast({
+        variant: 'error',
+        title: t('auth.login.toasts.loginError.title'),
+        description: errorMessage,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -57,89 +108,90 @@ function LoginForm() {
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
       <Header />
-      <main className="flex flex-1 items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+      <main id="main-content" className="flex flex-1 items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
         <div className="w-full max-w-md">
           {/* Welcome message */}
           <div className="mb-8 text-center">
             <h1 className="text-2xl font-semibold text-gray-900 mb-2">
-              Bienvenue !
+              {t('auth.login.title')}
             </h1>
             <p className="text-sm text-gray-600">
-              Pas encore de compte ?{' '}
+              {t('auth.login.subtitle')}{' '}
               <Link
                 href="/signup"
-                className="text-green-600 hover:text-green-700 hover:underline font-medium"
+                className="text-primary hover:text-viridial-700 hover:underline font-medium"
               >
-                S'inscrire
+                {t('auth.login.signup')}
               </Link>
             </p>
           </div>
 
           {/* Login form */}
           <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
-            {success && (
-              <div className="mb-5 rounded-md bg-green-50 p-3.5 text-sm text-green-700 border border-green-200">
-                {success}
-              </div>
-            )}
-            {error && (
-              <div className="mb-5 rounded-md bg-red-50 p-3.5 text-sm text-red-700 border border-red-200">
-                {error}
-              </div>
-            )}
-
-            
-
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Email field */}
               <div className="space-y-1.5">
                 <Label htmlFor="email" className="text-gray-700">
-                  Email
+                  {t('auth.login.email')}
                 </Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="votre@email.com"
+                  placeholder={t('auth.login.emailPlaceholder')}
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (emailError) setEmailError(null);
+                  }}
+                  onBlur={() => validateEmail(email)}
                   required
                   disabled={isLoading}
-                  className="h-11"
+                  className={`h-11 ${emailError ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
                 />
+                {emailError && (
+                  <p className="text-xs text-red-600 mt-1">{emailError}</p>
+                )}
               </div>
 
               {/* Password field */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="password" className="text-gray-700">
-                    Mot de passe
+                    {t('auth.login.password')}
                   </Label>
                   <Link
                     href="/forgot-password"
-                    className="text-xs text-green-600 hover:text-green-700 hover:underline font-medium"
+                    className="text-xs text-primary hover:text-viridial-700 hover:underline font-medium"
                   >
-                    Mot de passe oublié ?
+                    {t('auth.login.forgotPassword')}
                   </Link>
                 </div>
                 <Input
                   id="password"
                   type="password"
-                  placeholder="••••••••"
+                  placeholder={t('auth.login.passwordPlaceholder')}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (passwordError) setPasswordError(null);
+                  }}
+                  onBlur={() => validatePassword(password)}
                   required
                   disabled={isLoading}
-                  className="h-11"
+                  className={`h-11 ${passwordError ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
                 />
+                {passwordError && (
+                  <p className="text-xs text-red-600 mt-1">{passwordError}</p>
+                )}
               </div>
 
               {/* Submit button */}
               <Button
                 type="submit"
-                className="w-full h-11 bg-green-600 hover:bg-green-700 text-white border-0"
+                className="w-full h-11 bg-primary hover:bg-viridial-700 text-white border-0"
                 disabled={isLoading}
               >
-                {isLoading ? 'Connexion...' : 'Continuer'}
+                {isLoading ? t('auth.login.submitLoading') : t('auth.login.submit')}
               </Button>
             </form>
 
@@ -150,7 +202,7 @@ function LoginForm() {
               </div>
               <div className="relative flex justify-center text-xs">
                 <span className="bg-white px-3 text-gray-500 font-medium">
-                  ou
+                  {t('auth.login.or')}
                 </span>
               </div>
             </div>
@@ -181,15 +233,15 @@ function LoginForm() {
                   fill="#EA4335"
                 />
               </svg>
-              Continuer avec Google
+              {t('auth.login.googleLogin')}
             </Button>
 
             
             {/* Legal text */}
             <p className="mt-6 text-xs text-center text-gray-500">
-              En vous connectant, vous acceptez nos{' '}
-              <Link href="/terms" className="text-green-600 hover:text-green-700 hover:underline font-medium">
-                Conditions d'utilisation
+              {t('auth.login.terms')}{' '}
+              <Link href="/terms" className="text-primary hover:text-viridial-700 hover:underline font-medium">
+                {t('auth.login.termsLink')}
               </Link>
               .
             </p>
@@ -203,14 +255,15 @@ function LoginForm() {
 }
 
 export default function LoginPage() {
+  const { t } = useTranslation();
   return (
     <Suspense fallback={
       <div className="flex min-h-screen flex-col bg-gray-50">
         <Header />
         <main className="flex flex-1 items-center justify-center">
           <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-2 border-gray-200 border-t-green-600 mb-3"></div>
-            <div className="text-sm text-gray-600">Chargement...</div>
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-2 border-gray-200 border-t-primary mb-3"></div>
+            <div className="text-sm text-gray-600">{t('auth.login.loading')}</div>
           </div>
         </main>
         <Footer />

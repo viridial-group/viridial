@@ -1,17 +1,17 @@
 'use client';
 
-import { Suspense, useEffect, useState, useCallback, useRef } from 'react';
+import { Suspense, useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { useSearch } from '@/hooks/useSearch';
+import { useTranslation } from '@/contexts/I18nContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent } from '@/components/ui/card';
 import { PropertyType, PropertyStatus } from '@/lib/api/property';
 import { PropertySearchResult } from '@/lib/api/search';
 import { 
   Search, X, MapPin, DollarSign, Home, Building, LandPlot, Store, 
   ChevronRight, SlidersHorizontal, List, Map, ChevronLeft, 
-  Navigation, Star, Clock, Layers, Crosshair, TrendingUp, Filter, Square, CheckSquare
+  Navigation, Star, Clock, Layers, Crosshair, TrendingUp, Filter, Square, CheckSquare, Leaf
 } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
@@ -21,6 +21,17 @@ import SearchStats from '@/components/search/SearchStats';
 import PriceRangeSlider from '@/components/search/PriceRangeSlider';
 import KeyboardShortcuts from '@/components/search/KeyboardShortcuts';
 import SavedSearches, { useSaveSearch } from '@/components/search/SavedSearches';
+import NeighborhoodFilter from '@/components/search/NeighborhoodFilter';
+import { useToast } from '@/components/ui/simple-toast';
+import { SearchResultsSkeleton } from '@/components/ui/loading-skeleton';
+import { MockIndicator } from '@/components/ui/mock-indicator';
+import { EmptyState } from '@/components/ui/empty-state';
+import PropertyQuickDetailPanel from '@/components/search/PropertyQuickDetailPanel';
+import POIFloatingPanel from '@/components/search/POIFloatingPanel';
+import QuickFilters from '@/components/search/QuickFilters';
+import PropertyCard from '@/components/search/PropertyCard';
+import { SmartSearchSuggestions } from '@/components/search/SmartSearchSuggestions';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 // Dynamically import Map component (client-side only)
 const MapComponent = dynamic(() => import('@/components/search/MapComponent'), {
@@ -33,6 +44,7 @@ const MapComponent = dynamic(() => import('@/components/search/MapComponent'), {
 });
 
 function SearchPageContent() {
+  const { t } = useTranslation();
   const {
     query,
     setQuery,
@@ -50,34 +62,150 @@ function SearchPageContent() {
 
   const [showFilters, setShowFilters] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<PropertySearchResult | null>(null);
+  const handleSelectProperty = useCallback((property: PropertySearchResult) => {
+    setSelectedProperty(property);
+  }, []);
   const [showResultsPanel, setShowResultsPanel] = useState(true);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const [activeFiltersCount, setActiveFiltersCount] = useState(0);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [sortBy, setSortBy] = useState<'relevance' | 'price_asc' | 'price_desc' | 'distance'>('relevance');
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
   const [mapBounds, setMapBounds] = useState<{ north: number; south: number; east: number; west: number } | null>(null);
   const [drawBoundsEnabled, setDrawBoundsEnabled] = useState(false);
   const { saveSearch } = useSaveSearch();
+  const { toast } = useToast();
+  const [quickFilters, setQuickFilters] = useState({
+    ecoCertified: false,
+    newListings: false,
+    priceReduced: false,
+    featured: false,
+    withReviews: false,
+    withContact: false,
+  });
+
+  // Recent and popular searches from localStorage
+  const [recentSearches, setRecentSearches] = useState<string[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('recentSearches');
+      return saved ? JSON.parse(saved) : [];
+    }
+    return [];
+  });
+
+  const [popularSearches] = useState<string[]>([
+    'Appartement Paris',
+    'Maison Lyon',
+    'Villa Nice',
+    'Studio Marseille',
+    'Loft Bordeaux',
+  ]);
+
+  // Save search to recent searches
+  const saveToRecentSearches = useCallback((searchQuery: string) => {
+    if (!searchQuery.trim()) return;
+    
+    setRecentSearches((prev) => {
+      const updated = [searchQuery, ...prev.filter((s) => s !== searchQuery)].slice(0, 5);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('recentSearches', JSON.stringify(updated));
+      }
+      return updated;
+    });
+  }, []);
+
+  // Memoize eco properties count for QuickFilters
+  const ecoPropertiesCount = useMemo(() => {
+    if (!results?.hits) return 0;
+    return results.hits.filter((p: PropertySearchResult) => 
+      p.neighborhoodName_fr?.toLowerCase().includes('éco') || 
+      p.neighborhoodName_en?.toLowerCase().includes('eco') ||
+      p.neighborhoodSlug?.includes('eco')
+    ).length;
+  }, [results?.hits]);
+
+  // Memoize properties with reviews count
+  const propertiesWithReviewsCount = useMemo(() => {
+    if (!results?.hits) return 0;
+    // Assuming properties with reviews have a rating or reviewCount field
+    // For now, we'll simulate this - in real implementation, this would come from the API
+    return results.hits.filter((p: PropertySearchResult) => 
+      (p as any).rating || (p as any).reviewCount || false
+    ).length;
+  }, [results?.hits]);
+
+  // Memoize properties with contact count
+  const propertiesWithContactCount = useMemo(() => {
+    if (!results?.hits) return 0;
+    // Assuming properties with contact have phone or email
+    // For now, we'll simulate this - in real implementation, this would come from the API
+    return results.hits.filter((p: PropertySearchResult) => 
+      (p as any).contactPhone || (p as any).contactEmail || false
+    ).length;
+  }, [results?.hits]);
+
+  // Memoized handler for quick filter changes
+  const handleQuickFilterChange = useCallback((filterId: string, value: boolean) => {
+    const newQuickFilters = { ...quickFilters, [filterId]: value };
+    setQuickFilters(newQuickFilters);
+    // Apply filter logic
+    if (filterId === 'ecoCertified' && value) {
+      toast({
+        variant: 'info',
+        title: 'Filtre appliqué',
+        description: 'Affichage des propriétés éco-certifiées uniquement.',
+      });
+    } else if (filterId === 'withReviews' && value) {
+      toast({
+        variant: 'info',
+        title: 'Filtre appliqué',
+        description: 'Affichage des propriétés avec avis uniquement.',
+      });
+    } else if (filterId === 'withContact' && value) {
+      toast({
+        variant: 'info',
+        title: 'Filtre appliqué',
+        description: 'Affichage des propriétés avec contact disponible uniquement.',
+      });
+    }
+    // Trigger search with updated filters
+    search();
+  }, [quickFilters, toast, search]);
   
-  // Mock mode state - initialized from env, then synced with localStorage on client
-  const [isMockMode, setIsMockMode] = useState(() => 
-    process.env.NEXT_PUBLIC_USE_MOCK_SEARCH === 'true'
-  );
+  // Mock mode state - default to true in development for local testing
+  const [isMockMode, setIsMockMode] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('useMockSearch');
+      if (saved !== null) return saved === 'true';
+    }
+    // Default to true in development, false in production
+    return process.env.NODE_ENV === 'development';
+  });
   
-  // Sync mock mode with localStorage on client mount to avoid hydration mismatch
+  // Sync mock mode with localStorage on client mount
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedMockMode = localStorage.getItem('useMockSearch') === 'true';
       const envMockMode = process.env.NEXT_PUBLIC_USE_MOCK_SEARCH === 'true';
-      setIsMockMode(envMockMode || savedMockMode);
+      const devDefault = process.env.NODE_ENV === 'development';
+      setIsMockMode(envMockMode || savedMockMode || devDefault);
     }
   }, []);
-
-  // Count active filters (excluding bounds coordinates when using radius)
+  
+  // Update localStorage when mock mode changes
   useEffect(() => {
-    const count = Object.entries(filters).filter(([key, v]) => {
+    if (typeof window !== 'undefined') {
+      if (isMockMode) {
+        localStorage.setItem('useMockSearch', 'true');
+      } else {
+        localStorage.removeItem('useMockSearch');
+      }
+    }
+  }, [isMockMode]);
+
+  // Count active filters (excluding bounds coordinates when using radius) - Memoized
+  const activeFiltersCount = useMemo(() => {
+    return Object.entries(filters).filter(([key, v]) => {
       if (v === undefined || v === null || v === '') return false;
       // Don't count individual bound coordinates if radius is set (they're redundant)
       if (filters.radiusKm && (key === 'northEastLat' || key === 'northEastLng' || key === 'southWestLat' || key === 'southWestLng')) {
@@ -85,31 +213,47 @@ function SearchPageContent() {
       }
       return true;
     }).length;
-    setActiveFiltersCount(count);
   }, [filters]);
 
-  // Perform initial search if query exists
+  // Perform initial search if query exists, or show mock data by default in mock mode
   useEffect(() => {
     if (query || Object.keys(filters).length > 0) {
       search();
+    } else if (isMockMode && !results) {
+      // Auto-search with empty query to show mock data immediately in mock mode
+      search('', {}, { limit: 20, offset: 0, language: 'fr' });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Only run on mount
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Re-search when mock mode changes to update results immediately
+  useEffect(() => {
+    if (isMockMode) {
+      // When switching to mock mode, trigger search to show mock data
+      search();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMockMode]);
+
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
-    search();
-    setIsSearchFocused(false);
-    searchInputRef.current?.blur();
-  };
+    if (query.trim()) {
+      saveToRecentSearches(query);
+      search();
+      setIsSearchFocused(false);
+      searchInputRef.current?.blur();
+    }
+  }, [query, search, saveToRecentSearches]);
 
-  const handleSuggestionClick = (suggestion: any) => {
+  const handleSuggestionClick = useCallback((suggestion: { title: string; city?: string | null; type?: string; propertyId?: string }) => {
     setQuery(suggestion.title || '');
+    saveToRecentSearches(suggestion.title);
     setIsSearchFocused(false);
     search();
     searchInputRef.current?.blur();
-  };
+  }, [search, saveToRecentSearches]);
 
-  const propertyTypeIcon = (type: PropertyType) => {
+  const propertyTypeIcon = useCallback((type: PropertyType) => {
     switch (type) {
       case PropertyType.HOUSE:
         return <Home className="h-4 w-4" />;
@@ -124,18 +268,18 @@ function SearchPageContent() {
       default:
         return <Home className="h-4 w-4" />;
     }
-  };
+  }, []);
 
-  const formatPrice = (price: number, currency: string) => {
+  const formatPrice = useCallback((price: number, currency: string) => {
     return new Intl.NumberFormat('fr-FR', {
       style: 'currency',
       currency: currency || 'EUR',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(price);
-  };
+  }, []);
 
-  const getStatusBadgeVariant = (status: PropertyStatus) => {
+  const getStatusBadgeVariant = useCallback((status: PropertyStatus) => {
     switch (status) {
       case PropertyStatus.LISTED:
         return 'default';
@@ -146,7 +290,7 @@ function SearchPageContent() {
       default:
         return 'outline';
     }
-  };
+  }, []);
 
   // Close suggestions when clicking outside
   useEffect(() => {
@@ -163,34 +307,46 @@ function SearchPageContent() {
   }, [isSearchFocused]);
 
   return (
-    <div className="h-screen flex flex-col bg-white overflow-hidden">
-      {/* Top Search Bar - Enhanced Google Maps style */}
-      <div className="relative z-50 bg-white shadow-md flex-shrink-0">
-        <div className="max-w-[1800px] mx-auto px-4 py-3 relative">
+    <div className="h-screen flex flex-col bg-white overflow-hidden relative">
+      {/* Main content area for skip link */}
+      <div id="main-content" className="sr-only" aria-label="Contenu principal"></div>
+      
+      {/* Mock Mode Indicator - Fixed position */}
+      {isMockMode && <MockIndicator />}
+      {/* Top Search Bar - Enhanced Google Maps style with modern design */}
+      <div className="relative z-50 bg-white/95 backdrop-blur-sm shadow-lg border-b border-gray-200/50 flex-shrink-0">
+        <div className="max-w-[1800px] mx-auto px-4 py-4 relative">
           <div className="flex items-center gap-3">
-            {/* Logo/Brand */}
-            <Link href="/" className="flex-shrink-0 hidden sm:block">
-              <div className="text-xl font-bold text-green-600 hover:text-green-700 transition-colors">
+            {/* Logo/Brand - Enhanced */}
+            <Link href="/" className="flex-shrink-0 hidden sm:block group/logo">
+              <div className="text-xl font-bold bg-gradient-to-r from-primary to-viridial-600 bg-clip-text text-transparent hover:from-viridial-700 hover:to-viridial-800 transition-all duration-300">
                 Viridial
               </div>
             </Link>
 
-            {/* Enhanced Search Input - Modern clean style */}
+            {/* Enhanced Search Input - Modern clean style with smooth animations */}
             <form onSubmit={handleSubmit} className="flex-1 relative max-w-2xl" ref={searchInputRef as any}>
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
+              <div className="relative group/search">
+                <Search className={`absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 z-10 transition-colors duration-200 ${
+                  isSearchFocused ? 'text-primary' : 'text-gray-400 group-hover/search:text-gray-600'
+                }`} />
                 <Input
                   ref={searchInputRef}
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onFocus={() => setIsSearchFocused(true)}
-                  placeholder="Rechercher une propriété, un lieu, une adresse..."
-                  className={`pl-12 pr-12 h-12 text-base border rounded-full shadow-sm transition-all ${
+                  placeholder={t('search.placeholder')}
+                  className={`pl-12 pr-12 h-14 text-base border-2 rounded-2xl shadow-sm transition-all duration-300 ${
                     isSearchFocused
-                      ? 'border-green-500 ring-2 ring-green-500 shadow-md'
-                      : 'border-gray-300 hover:border-gray-400'
+                      ? 'border-primary ring-4 ring-primary/10 shadow-xl bg-white scale-[1.01]'
+                      : 'border-gray-300 hover:border-viridial-300 hover:shadow-lg hover:bg-gray-50/50'
                   }`}
+                  aria-label="Recherche de propriété"
+                  aria-autocomplete="list"
+                  aria-expanded={isSearchFocused}
+                  aria-controls="search-suggestions"
+                  role="combobox"
                 />
                 {query && (
                   <button
@@ -200,7 +356,8 @@ function SearchPageContent() {
                       search();
                       setIsSearchFocused(false);
                     }}
-                    className="absolute right-12 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100"
+                    className="absolute right-14 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-all duration-200 p-1.5 rounded-full hover:bg-gray-100 active:scale-95"
+                    aria-label="Effacer la recherche"
                   >
                     <X className="h-5 w-5" />
                   </button>
@@ -208,56 +365,31 @@ function SearchPageContent() {
                 {query && (
                   <button
                     type="submit"
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white bg-green-600 hover:bg-green-700 rounded-full p-2 transition-colors shadow-md hover:shadow-lg"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white bg-gradient-to-r from-primary to-viridial-600 hover:from-viridial-700 hover:to-viridial-700 rounded-xl p-2.5 transition-all duration-200 shadow-md hover:shadow-xl hover:scale-105 active:scale-95"
+                    aria-label="Rechercher"
                   >
                     <Search className="h-4 w-4" />
                   </button>
                 )}
               </div>
 
-              {/* Enhanced Suggestions dropdown */}
-              {isSearchFocused && suggestions && suggestions.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-300 z-50 max-h-[400px] overflow-y-auto">
-                  <div className="p-1">
-                    <div className="text-xs font-semibold text-gray-500 px-3 py-2 uppercase tracking-wide">
-                      Suggestions
-                    </div>
-                    {suggestions.map((suggestion, index) => (
-                      <button
-                        key={index}
-                        type="button"
-                        onClick={() => handleSuggestionClick(suggestion)}
-                        className="w-full px-3 py-2.5 text-left hover:bg-gray-50 flex items-center gap-3 rounded-md transition-colors group border-b border-gray-100 last:border-b-0"
-                      >
-                        <div className="flex-shrink-0 w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-green-100 transition-colors">
-                          <Search className="h-4 w-4 text-gray-500 group-hover:text-green-600" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="font-medium text-gray-900 truncate text-sm">{suggestion.title || 'Suggestion'}</div>
-                          {suggestion.city && (
-                            <div className="text-xs text-gray-500 mt-0.5">{suggestion.city}</div>
-                          )}
-                        </div>
-                        <ChevronRight className="h-4 w-4 text-gray-400 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* No suggestions message */}
-              {isSearchFocused && query.length >= 2 && !isLoading && suggestions && suggestions.length === 0 && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-300 z-50 p-6 text-center text-gray-500">
-                  <Search className="h-8 w-8 mx-auto mb-3 text-gray-300" />
-                  <p className="text-sm font-medium text-gray-700 mb-1">Aucune suggestion trouvée</p>
-                  <p className="text-xs text-gray-500">Appuyez sur Entrée pour rechercher</p>
-                </div>
+              {/* Smart Search Suggestions */}
+              {isSearchFocused && (
+                <SmartSearchSuggestions
+                  query={query}
+                  suggestions={suggestions || []}
+                  recentSearches={recentSearches}
+                  popularSearches={popularSearches}
+                  isLoading={isLoading}
+                  onSelect={handleSuggestionClick}
+                  onClose={() => setIsSearchFocused(false)}
+                />
               )}
             </form>
 
-            {/* Action Buttons Group */}
-            <div className="flex items-center gap-2">
-              {/* Save Search Button */}
+            {/* Action Buttons Group - Enhanced with better spacing and animations */}
+            <div className="flex items-center gap-2.5">
+              {/* Save Search Button - Enhanced */}
               {(query || activeFiltersCount > 0) && (
                 <Button
                   type="button"
@@ -267,14 +399,18 @@ function SearchPageContent() {
                     const name = prompt('Nom de la recherche à sauvegarder:', query || 'Recherche sans nom');
                     if (name !== null) {
                       saveSearch(name, query, filters, searchOptions);
-                      alert('Recherche sauvegardée !');
+                      toast({
+                        variant: 'success',
+                        title: 'Recherche sauvegardée',
+                        description: 'Votre recherche a été sauvegardée avec succès.',
+                      });
                     }
                   }}
-                  className="flex items-center gap-2 rounded-full"
+                  className="flex items-center gap-2 rounded-xl border-2 hover:border-primary hover:bg-primary/5 transition-all duration-200 hover:scale-105 active:scale-95"
                   title="Sauvegarder cette recherche"
                 >
                   <Star className="h-4 w-4" />
-                  <span className="hidden sm:inline">Enregistrer</span>
+                  <span className="hidden sm:inline font-medium">Enregistrer</span>
                 </Button>
               )}
 
@@ -296,26 +432,42 @@ function SearchPageContent() {
                 />
               </div>
 
-              {/* Toggle Mock Mode Button (Development) */}
-              {process.env.NODE_ENV === 'development' && (
+              {/* Toggle Mock Mode Button - Always visible in dev, configurable in prod */}
+              {(process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_SHOW_MOCK_TOGGLE === 'true') && (
               <Button
                 type="button"
                 variant={isMockMode ? 'default' : 'outline'}
                 onClick={() => {
-                  const newValue = !isMockMode;
-                  if (typeof window !== 'undefined') {
-                    if (newValue) {
-                      localStorage.setItem('useMockSearch', 'true');
-                    } else {
-                      localStorage.removeItem('useMockSearch');
+                  const newMockMode = !isMockMode;
+                  setIsMockMode(newMockMode);
+                  // Trigger a new search to use updated mock mode
+                  setTimeout(() => {
+                    if (query || Object.keys(filters).length > 0) {
+                      search();
+                    } else if (newMockMode) {
+                      // If switching to mock mode with no query, show mock data immediately
+                      search('', {}, { limit: 20, offset: 0, language: 'fr' });
                     }
-                    window.location.reload();
-                  }
+                  }, 100);
                 }}
-                className="flex items-center gap-2 rounded-full text-xs"
-                title={isMockMode ? 'Désactiver le mode test' : 'Activer le mode test'}
+                className={`flex items-center gap-2 rounded-full text-xs transition-all ${
+                  isMockMode 
+                    ? 'bg-primary hover:bg-viridial-700 text-white shadow-md pulse-glow' 
+                    : 'border-gray-300 hover:bg-gray-50'
+                }`}
+                title={isMockMode ? 'Mode test actif - Données mockées | Cliquez pour désactiver' : 'Activer le mode test - Utiliser les données mockées'}
               >
-                🧪 {isMockMode ? 'Mock ON' : 'Mock OFF'}
+                {isMockMode ? (
+                  <>
+                    <span className="animate-pulse">🧪</span>
+                    <span className="font-semibold">MOCK ACTIF</span>
+                  </>
+                ) : (
+                  <>
+                    <span>🧪</span>
+                    <span>Mode réel</span>
+                  </>
+                )}
               </Button>
             )}
 
@@ -354,7 +506,11 @@ function SearchPageContent() {
               variant="outline"
               onClick={() => {
                 if (!navigator.geolocation) {
-                  alert('La géolocalisation n\'est pas disponible');
+                  toast({
+                    variant: 'error',
+                    title: 'Géolocalisation indisponible',
+                    description: 'Votre navigateur ne supporte pas la géolocalisation.',
+                  });
                   return;
                 }
                 navigator.geolocation.getCurrentPosition(
@@ -368,10 +524,19 @@ function SearchPageContent() {
                       radiusKm: 10 
                     });
                     search();
+                    toast({
+                      variant: 'success',
+                      title: 'Position détectée',
+                      description: 'Recherche des propriétés à proximité...',
+                    });
                   },
                   (error) => {
                     console.error('Geolocation error:', error);
-                    alert('Impossible d\'obtenir votre position');
+                    toast({
+                      variant: 'error',
+                      title: 'Erreur de géolocalisation',
+                      description: 'Impossible d\'obtenir votre position. Veuillez vérifier les permissions.',
+                    });
                   }
                 );
               }}
@@ -382,17 +547,25 @@ function SearchPageContent() {
               <span className="hidden sm:inline">Moi</span>
             </Button>
 
-            {/* Filter Toggle Button - Enhanced */}
+            {/* Filter Toggle Button - Enhanced with smooth animations */}
             <Button
               type="button"
               variant={showFilters ? 'default' : 'outline'}
               onClick={() => setShowFilters(!showFilters)}
-              className={`flex items-center gap-2 relative ${showFilters ? 'bg-green-600 hover:bg-green-700 text-white border-green-600' : 'border-gray-300 hover:bg-gray-50'}`}
+              className={`flex items-center gap-2 relative rounded-xl border-2 transition-all duration-200 hover:scale-105 active:scale-95 ${
+                showFilters 
+                  ? 'bg-gradient-to-r from-primary to-viridial-600 hover:from-viridial-700 hover:to-viridial-700 text-white border-primary shadow-lg' 
+                  : 'border-gray-300 hover:border-primary hover:bg-primary/5'
+              }`}
             >
-              <Filter className="h-4 w-4" />
-              <span className="hidden sm:inline">Filtres</span>
+              <Filter className={`h-4 w-4 transition-transform duration-200 ${showFilters ? 'rotate-180' : ''}`} />
+              <span className="hidden sm:inline font-medium">Filtres</span>
               {activeFiltersCount > 0 && (
-                <Badge className={`ml-1 h-5 w-5 p-0 flex items-center justify-center text-xs ${showFilters ? 'bg-white text-green-600' : 'bg-green-600 text-white'}`}>
+                <Badge className={`ml-1 h-5 w-5 p-0 flex items-center justify-center text-xs font-bold transition-all duration-200 ${
+                  showFilters 
+                    ? 'bg-white text-primary shadow-md animate-pulse' 
+                    : 'bg-primary text-white shadow-sm'
+                }`}>
                   {activeFiltersCount}
                 </Badge>
               )}
@@ -405,7 +578,7 @@ function SearchPageContent() {
                 variant={showResultsPanel ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => setShowResultsPanel(true)}
-                className={`h-9 ${showResultsPanel ? 'bg-green-600 hover:bg-green-700 text-white' : 'hover:bg-gray-50'}`}
+                className={`h-9 ${showResultsPanel ? 'bg-primary hover:bg-viridial-700 text-white' : 'hover:bg-gray-50'}`}
               >
                 <List className="h-4 w-4 mr-1.5" />
                 Liste
@@ -415,7 +588,7 @@ function SearchPageContent() {
                 variant={!showResultsPanel ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => setShowResultsPanel(false)}
-                className={`h-9 ${!showResultsPanel ? 'bg-green-600 hover:bg-green-700 text-white' : 'hover:bg-gray-50'}`}
+                className={`h-9 ${!showResultsPanel ? 'bg-primary hover:bg-viridial-700 text-white' : 'hover:bg-gray-50'}`}
               >
                 <Map className="h-4 w-4 mr-1.5" />
                 Carte
@@ -433,9 +606,23 @@ function SearchPageContent() {
             </Button>
           </div>
 
-          {/* Enhanced Filters Panel */}
+          {/* Enhanced Filters Panel - Modern design with smooth animations */}
           {showFilters && (
-            <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-50 p-5 animate-in slide-in-from-top-2 duration-200 max-h-[calc(100vh-200px)] overflow-y-auto">
+            <div className="absolute top-full left-0 right-0 mt-3 bg-white/98 backdrop-blur-md border-2 border-gray-200 rounded-2xl shadow-2xl z-50 p-6 animate-in slide-in-from-top-2 duration-300 max-h-[calc(100vh-200px)] overflow-y-auto custom-scrollbar">
+              <div className="mb-4 flex items-center justify-between border-b border-gray-200 pb-3">
+                <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                  <Filter className="h-5 w-5 text-primary" />
+                  Filtres de recherche
+                </h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowFilters(false)}
+                  className="h-8 w-8 p-0 rounded-lg hover:bg-gray-100"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
                 <div className="space-y-1.5">
                   <Label htmlFor="type">Type</Label>
@@ -479,6 +666,12 @@ function SearchPageContent() {
                   />
                 </div>
 
+                <NeighborhoodFilter
+                  value={filters.neighborhood}
+                  onChange={(slug) => updateFilters({ neighborhood: slug })}
+                  city={filters.city}
+                />
+
                 <PriceRangeSlider
                   minPrice={filters.minPrice}
                   maxPrice={filters.maxPrice}
@@ -492,10 +685,20 @@ function SearchPageContent() {
                   <Button 
                     onClick={clearFilters} 
                     variant="outline" 
-                    className="w-full"
+                    className="w-full rounded-xl border-2 hover:border-red-300 hover:bg-red-50 hover:text-red-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={activeFiltersCount === 0}
                   >
+                    <X className="h-4 w-4 mr-2" />
                     Réinitialiser
+                  </Button>
+                  <Button 
+                    onClick={() => {
+                      setShowFilters(false);
+                      search();
+                    }} 
+                    className="w-full rounded-xl bg-gradient-to-r from-primary to-viridial-600 hover:from-viridial-700 hover:to-viridial-700 text-white shadow-md hover:shadow-lg transition-all duration-200"
+                  >
+                    Appliquer
                   </Button>
                 </div>
               </div>
@@ -531,6 +734,18 @@ function SearchPageContent() {
                       Ville: {filters.city}
                       <button
                         onClick={() => updateFilters({ city: undefined })}
+                        className="ml-1 hover:text-red-500"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </Badge>
+                  )}
+                  {filters.neighborhood && (
+                    <Badge variant="secondary" className="flex items-center gap-1">
+                      <MapPin className="h-3 w-3" />
+                      Quartier: {filters.neighborhood}
+                      <button
+                        onClick={() => updateFilters({ neighborhood: undefined })}
                         className="ml-1 hover:text-red-500"
                       >
                         <X className="h-3 w-3" />
@@ -586,32 +801,46 @@ function SearchPageContent() {
         </div>
       </div>
 
-      {/* Main Content Area - Map + Results */}
+      {/* Main Content Area - Map + Results + Quick Detail */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Results Panel - Left Side with smooth transitions */}
+        {/* Results Panel - Left Side with smooth transitions - Enlarged */}
         {showResultsPanel && (
           <div 
-            className={`w-full md:w-96 lg:w-[450px] bg-white border-r border-gray-200 flex flex-col overflow-hidden transition-all duration-300 ${
+            className={`w-full md:w-[500px] lg:w-[600px] xl:w-[700px] bg-white border-r border-gray-200 flex flex-col overflow-hidden transition-all duration-300 ${
               showResultsPanel ? 'translate-x-0' : '-translate-x-full'
             }`}
           >
-            {/* Enhanced Results Header */}
-            <div className="p-5 border-b border-gray-200 bg-white sticky top-0 z-10">
+            {/* Enhanced Results Header - Modern design */}
+            <div className="p-5 border-b border-gray-200 bg-gradient-to-r from-white to-gray-50/50 sticky top-0 z-10 backdrop-blur-sm">
               <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-3">
-                  <h2 className="text-base font-semibold text-gray-900">
+                <div className="flex items-center gap-3 flex-1">
+                  <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                     {isLoading ? (
                       <span className="flex items-center gap-2">
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600"></div>
-                        Recherche...
+                        <div className="animate-spin rounded-full h-5 w-5 border-2 border-primary border-t-transparent"></div>
+                        <span className="text-base">Recherche en cours...</span>
                       </span>
                     ) : (
-                      `Résultats`
+                      <>
+                        Résultats
+                        {results && results.totalHits > 0 && (
+                          <span className="text-sm font-normal text-gray-500">({results.totalHits})</span>
+                        )}
+                      </>
                     )}
                   </h2>
                   {results && results.totalHits > 0 && (
-                    <Badge variant="secondary" className="text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-300">
-                      {results.totalHits}
+                    <Badge variant="secondary" className="text-xs font-bold bg-viridial-100 text-viridial-700 border border-viridial-300 shadow-sm">
+                      {results.totalHits} {results.totalHits > 1 ? 'biens' : 'bien'}
+                    </Badge>
+                  )}
+                  {isMockMode && (
+                    <Badge 
+                      variant="outline" 
+                      className="text-xs font-semibold bg-yellow-50 text-yellow-700 border-yellow-300 animate-pulse shadow-sm"
+                      title="Mode test actif - Données mockées pour le développement"
+                    >
+                      🧪 MOCK
                     </Badge>
                   )}
                 </div>
@@ -620,7 +849,7 @@ function SearchPageContent() {
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowResultsPanel(false)}
-                  className="md:hidden hover:bg-gray-100"
+                  className="md:hidden hover:bg-gray-100 rounded-lg transition-all duration-200 hover:scale-110"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
@@ -635,14 +864,18 @@ function SearchPageContent() {
                   </p>
                 )}
                 <div className="flex items-center gap-2">
-                  {/* View Mode Toggle */}
+                  {/* View Mode Toggle - Enhanced with smooth transitions */}
                   {results && results.totalHits > 0 && (
-                    <div className="flex items-center border border-gray-300 rounded-md overflow-hidden bg-white">
+                    <div className="flex items-center border-2 border-gray-300 rounded-xl overflow-hidden bg-white shadow-sm">
                       <Button
                         variant={viewMode === 'list' ? 'default' : 'ghost'}
                         size="sm"
                         onClick={() => setViewMode('list')}
-                        className={`h-9 rounded-none border-0 ${viewMode === 'list' ? 'bg-green-600 hover:bg-green-700 text-white' : 'hover:bg-gray-50'}`}
+                        className={`h-9 rounded-none border-0 transition-all duration-200 ${
+                          viewMode === 'list' 
+                            ? 'bg-gradient-to-r from-primary to-viridial-600 hover:from-viridial-700 hover:to-viridial-700 text-white shadow-md' 
+                            : 'hover:bg-gray-50'
+                        }`}
                         title="Vue liste"
                       >
                         <List className="h-4 w-4" />
@@ -651,7 +884,11 @@ function SearchPageContent() {
                         variant={viewMode === 'grid' ? 'default' : 'ghost'}
                         size="sm"
                         onClick={() => setViewMode('grid')}
-                        className={`h-9 rounded-none border-0 ${viewMode === 'grid' ? 'bg-green-600 hover:bg-green-700 text-white' : 'hover:bg-gray-50'}`}
+                        className={`h-9 rounded-none border-0 transition-all duration-200 ${
+                          viewMode === 'grid' 
+                            ? 'bg-gradient-to-r from-primary to-viridial-600 hover:from-viridial-700 hover:to-viridial-700 text-white shadow-md' 
+                            : 'hover:bg-gray-50'
+                        }`}
                         title="Vue grille"
                       >
                         <Layers className="h-4 w-4" />
@@ -680,7 +917,7 @@ function SearchPageContent() {
                         search(query, filters, newOptions);
                       }}
                     >
-                      <SelectTrigger className="w-[160px] h-9 text-sm border-gray-300">
+                      <SelectTrigger className="w-[160px] h-9 text-sm border-2 border-gray-300 rounded-xl hover:border-primary transition-colors duration-200" aria-label="Trier les résultats">
                         <SelectValue placeholder="Trier par..." />
                       </SelectTrigger>
                       <SelectContent>
@@ -695,9 +932,22 @@ function SearchPageContent() {
               </div>
             </div>
 
+            {/* Quick Filters - Enhanced with Reviews and Contact */}
+            {results && results.totalHits > 0 && (
+              <div className="sticky top-[73px] z-10 bg-white border-b border-gray-200 shadow-sm">
+                <QuickFilters
+                  filters={quickFilters}
+                  onFilterChange={handleQuickFilterChange}
+                  totalEcoProperties={ecoPropertiesCount}
+                  totalWithReviews={propertiesWithReviewsCount}
+                  totalWithContact={propertiesWithContactCount}
+                />
+              </div>
+            )}
+
             {/* Search Stats */}
             {results && results.totalHits > 0 && (
-              <div className="sticky top-0 z-10 bg-white border-b border-gray-200">
+              <div className="sticky top-[133px] z-10 bg-white border-b border-gray-200">
                 <SearchStats 
                   totalHits={results.totalHits} 
                   processingTimeMs={results.processingTimeMs}
@@ -706,235 +956,172 @@ function SearchPageContent() {
               </div>
             )}
 
-            {/* Results List with enhanced scroll */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar">
-              {error && (
-                <div className="m-5 p-4 text-red-700 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-                  <X className="h-5 w-5 flex-shrink-0 mt-0.5" />
-                  <div className="flex-1">
-                    <p className="font-semibold text-sm mb-1">Erreur de recherche</p>
-                    <p className="text-xs text-red-600">{error}</p>
-                  </div>
-                </div>
-              )}
-
-              {!isLoading && results && results.hits.length === 0 && (
-                <div className="p-16 text-center">
-                  <div className="w-24 h-24 mx-auto mb-5 rounded-full bg-gray-100 flex items-center justify-center border border-gray-200">
-                    <Search className="h-12 w-12 text-gray-400" />
-                  </div>
-                  <p className="text-base font-semibold text-gray-900 mb-2">Aucun résultat trouvé</p>
-                  <p className="text-sm text-gray-500 mb-6">Essayez de modifier vos critères de recherche</p>
-                  <Button variant="outline" onClick={clearFilters} className="border-gray-300">
-                    Réinitialiser les filtres
-                  </Button>
-                </div>
-              )}
-
-              {isLoading && !results && (
-                <div className="p-12 text-center">
-                  <div className="inline-block animate-spin rounded-full h-12 w-12 border-2 border-gray-200 border-t-green-600 mb-4"></div>
-                  <p className="text-sm font-medium text-gray-700">Recherche en cours...</p>
-                </div>
-              )}
-
-              {!isLoading && results && results.hits.length > 0 && (
-                <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-3' : 'divide-y divide-gray-100'}>
-                  {results.hits.map((property, index) => (
-                    <Card
-                      key={property.id}
-                      className={`${viewMode === 'grid' ? '' : 'mx-3 mb-3'} cursor-pointer transition-all duration-200 hover:shadow-lg border border-gray-200 group bg-white ${
-                        selectedProperty?.id === property.id
-                          ? 'border-green-500 shadow-md ring-1 ring-green-500'
-                          : 'hover:border-gray-300'
-                      }`}
-                      onClick={() => setSelectedProperty(property)}
-                      style={{ 
-                        animationDelay: `${index * 30}ms`,
-                        animation: 'fadeInUp 0.3s ease-out forwards',
-                        opacity: 0,
-                      }}
-                    >
-                      <CardContent className="p-0">
-                        {/* Property Image with gradient overlay */}
-                        <div className={`relative w-full ${viewMode === 'grid' ? 'h-56' : 'h-48'} bg-gradient-to-br from-gray-200 to-gray-300 overflow-hidden`}>
-                          {property.mediaUrls && property.mediaUrls.length > 0 ? (
-                            <>
-                              <img
-                                src={property.mediaUrls[0]}
-                                alt={property.title_fr || 'Property'}
-                                className="property-card-image w-full h-full object-cover"
-                                loading="lazy"
-                              />
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
-                            </>
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-gray-400">
-                              <div className="text-center">
-                                {propertyTypeIcon(property.type)}
-                                <p className="text-xs mt-2 capitalize">{property.type}</p>
-                              </div>
-                            </div>
-                          )}
-                          {/* Status badge on image */}
-                          <div className="absolute top-3 right-3">
-                            <Badge 
-                              variant={getStatusBadgeVariant(property.status)}
-                              className="capitalize backdrop-blur-sm bg-white/95 border border-gray-200 shadow-sm text-xs font-semibold"
-                            >
-                              {property.status}
-                            </Badge>
-                          </div>
-                        </div>
-
-                        {/* Property Info */}
-                        <div className="p-5 space-y-3">
-                          <div>
-                            <h3 className="font-semibold text-base text-gray-900 line-clamp-2 mb-2 group-hover:text-green-600 transition-colors leading-tight">
-                              {property.title_fr || property.title_en || 'Sans titre'}
-                            </h3>
-                            <div className="flex items-center gap-4 text-xs text-gray-500">
-                              <div className="flex items-center gap-1.5">
-                                {propertyTypeIcon(property.type)}
-                                <span className="capitalize font-medium">{property.type}</span>
-                              </div>
-                              {property.city && (
-                                <div className="flex items-center gap-1.5">
-                                  <MapPin className="h-3.5 w-3.5" />
-                                  <span className="truncate font-medium">{property.city}</span>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-
-                          {property.description_fr && (
-                            <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed">
-                              {property.description_fr}
-                            </p>
-                          )}
-
-                          <div className="flex items-center justify-between pt-3 border-t border-gray-200">
-                            <div className="flex items-center gap-2">
-                              <DollarSign className="h-5 w-5 text-green-600" />
-                              <span className="text-xl font-bold text-gray-900">
-                                {formatPrice(property.price, property.currency)}
-                              </span>
-                            </div>
-                            <Link
-                              href={`/properties/${property.id}`}
-                              className="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-700 hover:text-green-600 transition-colors px-3 py-1.5 rounded-md hover:bg-gray-50"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              Voir détails
-                              <ChevronRight className="h-4 w-4" />
-                            </Link>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              )}
-
-              {/* Enhanced Pagination */}
-              {!isLoading && results && results.totalHits > (results.limit || 20) && (
-                <div className="p-5 border-t border-gray-200 bg-white sticky bottom-0">
-                  <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
-                    <span className="font-medium text-gray-700">
-                      Affichage de {results.offset + 1} à {Math.min(results.offset + results.limit, results.totalHits)} sur {results.totalHits} résultats
-                    </span>
-                    <span className="font-medium">
-                      Page {Math.floor(results.offset / results.limit) + 1} sur {Math.ceil(results.totalHits / results.limit)}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      disabled={results.offset === 0}
-                      onClick={() => {
-                        const newOffset = Math.max(0, results.offset - (results.limit || 20));
-                        setSearchOptions((prev) => ({ ...prev, offset: newOffset }));
-                        search();
-                      }}
-                      className="h-9 px-4 border-gray-300"
-                    >
-                      <ChevronLeft className="h-4 w-4 mr-1" />
-                      Précédent
-                    </Button>
-                    
-                    {/* Page Numbers */}
-                    <div className="flex items-center gap-1">
-                      {Array.from({ length: Math.min(5, Math.ceil(results.totalHits / results.limit)) }, (_, i) => {
-                        const currentPage = Math.floor(results.offset / results.limit) + 1;
-                        const totalPages = Math.ceil(results.totalHits / results.limit);
-                        let pageNum: number;
-                        
-                        if (totalPages <= 5) {
-                          pageNum = i + 1;
-                        } else if (currentPage <= 3) {
-                          pageNum = i + 1;
-                        } else if (currentPage >= totalPages - 2) {
-                          pageNum = totalPages - 4 + i;
-                        } else {
-                          pageNum = currentPage - 2 + i;
-                        }
-                        
-                        const isActive = pageNum === currentPage;
-                        
-                        return (
-                          <Button
-                            key={pageNum}
-                            variant={isActive ? "default" : "outline"}
-                            size="sm"
-                            onClick={() => {
-                              const newOffset = (pageNum - 1) * (results.limit || 20);
-                              setSearchOptions((prev) => ({ ...prev, offset: newOffset }));
-                              search();
-                            }}
-                            className={`h-9 w-9 p-0 ${isActive ? 'bg-green-600 hover:bg-green-700 text-white border-green-600' : 'border-gray-300'}`}
-                          >
-                            {pageNum}
-                          </Button>
-                        );
-                      })}
-                      {Math.ceil(results.totalHits / results.limit) > 5 && (
-                        <>
-                          <span className="px-2 text-gray-400">...</span>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              const newOffset = (Math.ceil(results.totalHits / results.limit) - 1) * (results.limit || 20);
-                              setSearchOptions((prev) => ({ ...prev, offset: newOffset }));
-                              search();
-                            }}
-                            className="h-9 w-9 p-0 border-gray-300"
-                          >
-                            {Math.ceil(results.totalHits / results.limit)}
-                          </Button>
-                        </>
-                      )}
+            {/* Results List with ScrollArea component */}
+            <ScrollArea className="flex-1 h-full">
+              <div>
+                {error && (
+                  <div className="m-5 p-5 text-red-700 bg-gradient-to-br from-red-50 to-red-100/50 border-2 border-red-300 rounded-2xl flex items-start gap-3 shadow-lg animate-in fade-in slide-in-from-top duration-300">
+                    <div className="p-2 rounded-xl bg-red-100 border border-red-300 flex-shrink-0">
+                      <X className="h-5 w-5 text-red-600" />
                     </div>
-                    
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      disabled={results.offset + results.limit >= results.totalHits}
-                      onClick={() => {
-                        const newOffset = results.offset + (results.limit || 20);
-                        setSearchOptions((prev) => ({ ...prev, offset: newOffset }));
-                        search();
-                      }}
-                      className="h-9 px-4 border-gray-300"
-                    >
-                      Suivant
-                      <ChevronRight className="h-4 w-4 ml-1" />
-                    </Button>
+                    <div className="flex-1">
+                      <p className="font-bold text-sm mb-1.5">Erreur de recherche</p>
+                      <p className="text-xs text-red-700 leading-relaxed">{error}</p>
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+
+                {!isLoading && results && results.hits.length === 0 && (
+                  <div className="p-8">
+                    <EmptyState
+                      icon={Search}
+                      title="Aucun résultat trouvé"
+                      description="Essayez de modifier vos critères de recherche ou d'élargir vos filtres pour trouver plus de propriétés."
+                      actionLabel="Réinitialiser les filtres"
+                      onAction={clearFilters}
+                      className="animate-in fade-in zoom-in-95 duration-500"
+                    />
+                  </div>
+                )}
+
+                {isLoading && !results && (
+                  <div className="p-5">
+                    <SearchResultsSkeleton />
+                  </div>
+                )}
+
+                {!isLoading && results && results.hits.length > 0 && (
+                  <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-3' : 'divide-y divide-gray-100'}>
+                    {results.hits.map((property) => (
+                      <PropertyCard
+                        key={property.id}
+                        property={property}
+                        viewMode={viewMode}
+                        isSelected={selectedProperty?.id === property.id}
+                        onSelect={handleSelectProperty}
+                        propertyTypeIcon={propertyTypeIcon}
+                        formatPrice={formatPrice}
+                        getStatusBadgeVariant={getStatusBadgeVariant}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                {/* Enhanced Pagination */}
+                {!isLoading && results && results.totalHits > (results.limit || 20) && (
+                  <div className="p-5 border-t border-gray-200 bg-white">
+                    <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
+                      <span className="font-medium text-gray-700">
+                        Affichage de {results.offset + 1} à {Math.min(results.offset + results.limit, results.totalHits)} sur {results.totalHits} résultats
+                      </span>
+                      <span className="font-medium">
+                        Page {Math.floor(results.offset / results.limit) + 1} sur {Math.ceil(results.totalHits / results.limit)}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={results.offset === 0}
+                        onClick={() => {
+                          const newOffset = Math.max(0, results.offset - (results.limit || 20));
+                          setSearchOptions((prev) => ({ ...prev, offset: newOffset }));
+                          search();
+                        }}
+                        className="h-9 px-4 border-gray-300"
+                      >
+                        <ChevronLeft className="h-4 w-4 mr-1" />
+                        Précédent
+                      </Button>
+                      
+                      {/* Page Numbers */}
+                      <div className="flex items-center gap-1">
+                        {Array.from({ length: Math.min(5, Math.ceil(results.totalHits / results.limit)) }, (_, i) => {
+                          const currentPage = Math.floor(results.offset / results.limit) + 1;
+                          const totalPages = Math.ceil(results.totalHits / results.limit);
+                          let pageNum: number;
+                          
+                          if (totalPages <= 5) {
+                            pageNum = i + 1;
+                          } else if (currentPage <= 3) {
+                            pageNum = i + 1;
+                          } else if (currentPage >= totalPages - 2) {
+                            pageNum = totalPages - 4 + i;
+                          } else {
+                            pageNum = currentPage - 2 + i;
+                          }
+                          
+                          const isActive = pageNum === currentPage;
+                          
+                          return (
+                            <Button
+                              key={pageNum}
+                              variant={isActive ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => {
+                                const newOffset = (pageNum - 1) * (results.limit || 20);
+                                setSearchOptions((prev) => ({ ...prev, offset: newOffset }));
+                                search();
+                              }}
+                              className={`h-10 w-10 p-0 rounded-xl border-2 font-bold transition-all duration-200 ${
+                                isActive 
+                                  ? 'bg-gradient-to-r from-primary to-viridial-600 hover:from-viridial-700 hover:to-viridial-700 text-white border-primary shadow-lg scale-105' 
+                                  : 'border-gray-300 hover:border-primary hover:bg-primary/5 hover:scale-110'
+                              }`}
+                            >
+                              {pageNum}
+                            </Button>
+                          );
+                        })}
+                        {Math.ceil(results.totalHits / results.limit) > 5 && (
+                          <>
+                            <span className="px-2 text-gray-400">...</span>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                const newOffset = (Math.ceil(results.totalHits / results.limit) - 1) * (results.limit || 20);
+                                setSearchOptions((prev) => ({ ...prev, offset: newOffset }));
+                                search();
+                              }}
+                              className="h-9 w-9 p-0 border-gray-300"
+                            >
+                              {Math.ceil(results.totalHits / results.limit)}
+                            </Button>
+                          </>
+                        )}
+                      </div>
+                      
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={results.offset + results.limit >= results.totalHits}
+                        onClick={() => {
+                          const newOffset = results.offset + (results.limit || 20);
+                          setSearchOptions((prev) => ({ ...prev, offset: newOffset }));
+                          search();
+                        }}
+                        className="h-10 px-4 border-2 border-gray-300 rounded-xl hover:border-primary hover:bg-primary/5 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        Suivant
+                        <ChevronRight className="h-4 w-4 ml-1" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </ScrollArea>
+          </div>
+        )}
+
+        {/* Quick Detail Panel - Middle (when property selected) - Enhanced with animations */}
+        {selectedProperty && (
+          <div className="hidden lg:block w-[480px] xl:w-[520px] border-r-2 border-gray-200 bg-gradient-to-br from-white to-gray-50/30 flex-shrink-0 animate-in slide-in-from-right duration-300 shadow-xl">
+            <PropertyQuickDetailPanel
+              property={selectedProperty}
+              onClose={() => setSelectedProperty(null)}
+              onViewFull={() => setSelectedProperty(null)}
+            />
           </div>
         )}
 
@@ -949,6 +1136,19 @@ function SearchPageContent() {
             >
               <List className="h-5 w-5 text-gray-700" />
             </button>
+          )}
+
+          {/* Quick Detail Panel Overlay - Mobile/Tablet - Enhanced */}
+          {selectedProperty && (
+            <div className="lg:hidden absolute inset-0 z-[900] bg-black/60 backdrop-blur-sm flex items-end justify-center p-4 animate-in fade-in duration-200">
+              <div className="w-full max-w-md bg-white rounded-t-2xl max-h-[80vh] flex flex-col shadow-2xl border-t-4 border-primary animate-in slide-in-from-bottom duration-300">
+                <PropertyQuickDetailPanel
+                  property={selectedProperty}
+                  onClose={() => setSelectedProperty(null)}
+                  onViewFull={() => setSelectedProperty(null)}
+                />
+              </div>
+            </div>
           )}
 
           <MapComponent
@@ -986,6 +1186,14 @@ function SearchPageContent() {
           />
         </div>
       </div>
+
+      {/* POI Floating Panel - Bottom Right (when property selected) */}
+      {selectedProperty && (
+        <POIFloatingPanel
+          property={selectedProperty}
+          onClose={() => setSelectedProperty(null)}
+        />
+      )}
 
       {/* Keyboard Shortcuts */}
       <KeyboardShortcuts

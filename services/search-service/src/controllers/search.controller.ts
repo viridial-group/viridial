@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { SearchService } from '../services/search.service';
 import { MeilisearchService, PropertyDocument } from '../services/meilisearch.service';
+import { ClusteringService } from '../services/clustering.service';
 import { SearchQueryDto, PropertyStatus } from '../dto/search-query.dto';
 
 @Controller('search')
@@ -20,6 +21,7 @@ export class SearchController {
   constructor(
     private readonly searchService: SearchService,
     private readonly meilisearchService: MeilisearchService,
+    private readonly clusteringService: ClusteringService,
   ) {}
 
   @Get('health')
@@ -54,6 +56,14 @@ export class SearchController {
         latitude: query.latitude,
         longitude: query.longitude,
         radiusKm: query.radiusKm,
+        bbox: query.minLat && query.minLon && query.maxLat && query.maxLon
+          ? {
+              minLat: query.minLat,
+              minLon: query.minLon,
+              maxLat: query.maxLat,
+              maxLon: query.maxLon,
+            }
+          : undefined,
       },
       {
         limit: query.limit || 20,
@@ -107,6 +117,14 @@ export class SearchController {
       {
         status,
         ...body.filters,
+        bbox: body.filters?.minLat && body.filters?.minLon && body.filters?.maxLat && body.filters?.maxLon
+          ? {
+              minLat: body.filters.minLat,
+              minLon: body.filters.minLon,
+              maxLat: body.filters.maxLat,
+              maxLon: body.filters.maxLon,
+            }
+          : undefined,
       },
       {
         ...body.options,
@@ -184,6 +202,67 @@ export class SearchController {
     if (maxPrice) filters.maxPrice = parseFloat(maxPrice);
 
     return this.searchService.getFacets(q, filters);
+  }
+
+  /**
+   * Get map clusters for properties in a bounding box
+   * GET /search/clusters?zoom=10&bbox=48.8,2.3,48.9,2.4&limit=100
+   */
+  @Get('clusters')
+  async getClusters(
+    @Query('zoom') zoom: string,
+    @Query('bbox') bbox: string, // "minLat,minLon,maxLat,maxLon"
+    @Query('limit') limit?: string,
+    @Query('q') q?: string,
+    @Query('status') status?: PropertyStatus,
+  ) {
+    if (!zoom || !bbox) {
+      throw new BadRequestException('zoom and bbox parameters are required');
+    }
+
+    const [minLat, minLon, maxLat, maxLon] = bbox.split(',').map(Number);
+    if (
+      isNaN(minLat) ||
+      isNaN(minLon) ||
+      isNaN(maxLat) ||
+      isNaN(maxLon) ||
+      minLat >= maxLat ||
+      minLon >= maxLon
+    ) {
+      throw new BadRequestException('Invalid bbox format. Expected: minLat,minLon,maxLat,maxLon');
+    }
+
+    const zoomLevel = parseInt(zoom, 10);
+    if (isNaN(zoomLevel) || zoomLevel < 1 || zoomLevel > 20) {
+      throw new BadRequestException('zoom must be between 1 and 20');
+    }
+
+    // Search properties in bounding box
+    const searchResult = await this.searchService.searchProperties(
+      q || '',
+      {
+        status: status || PropertyStatus.LISTED,
+        bbox: { minLat, minLon, maxLat, maxLon },
+      },
+      {
+        limit: 1000, // Get more properties for clustering
+        offset: 0,
+      },
+    );
+
+    // Cluster the results
+    const clusters = this.clusteringService.clusterProperties(
+      searchResult.properties,
+      zoomLevel,
+      limit ? parseInt(limit, 10) : 100,
+    );
+
+    return {
+      clusters,
+      totalProperties: searchResult.total,
+      zoom: zoomLevel,
+      bbox: { minLat, minLon, maxLat, maxLon },
+    };
   }
 
   /**

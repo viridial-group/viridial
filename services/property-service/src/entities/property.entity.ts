@@ -3,11 +3,16 @@ import {
   CreateDateColumn,
   Entity,
   Index,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { PropertyTranslation } from './property-translation.entity';
+import { Neighborhood } from './neighborhood.entity';
+import { PropertyDetails } from './property-details.entity';
 
 export enum PropertyStatus {
   DRAFT = 'draft',
@@ -84,6 +89,11 @@ export class Property {
   @Index()
   country!: string | null;
 
+  // Neighborhood reference
+  @Column({ name: 'neighborhood_id', type: 'uuid', nullable: true })
+  @Index()
+  neighborhoodId!: string | null;
+
   // Media URLs (JSON array of URLs - will be stored in separate table later)
   @Column({ type: 'jsonb', nullable: true })
   mediaUrls!: string[] | null;
@@ -100,11 +110,30 @@ export class Property {
   @Column({ name: 'published_at', type: 'timestamp', nullable: true })
   publishedAt!: Date | null;
 
+  // Soft delete
+  @Column({ name: 'deleted_at', type: 'timestamp', nullable: true })
+  @Index()
+  deletedAt!: Date | null;
+
   // Relations
   @OneToMany(() => PropertyTranslation, (translation) => translation.property, {
     cascade: true,
     eager: false,
   })
   translations!: PropertyTranslation[];
+
+  @ManyToOne(() => Neighborhood, (neighborhood) => neighborhood.properties, {
+    nullable: true,
+    eager: false,
+  })
+  @JoinColumn({ name: 'neighborhood_id' })
+  neighborhood!: Neighborhood | null;
+
+  // Property details (enriched fields by type)
+  @OneToOne(() => PropertyDetails, (details) => details.property, {
+    nullable: true,
+    eager: false,
+  })
+  details!: PropertyDetails | null;
 }
 

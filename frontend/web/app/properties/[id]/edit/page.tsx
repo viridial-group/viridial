@@ -20,6 +20,8 @@ import {
 } from '@/components/ui/card';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import MediaUpload from '@/components/property/MediaUpload';
+import { useToast } from '@/components/ui/simple-toast';
 
 export default function EditPropertyPage() {
   const router = useRouter();
@@ -27,26 +29,78 @@ export default function EditPropertyPage() {
   const propertyId = params.id as string;
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const propertyService = usePropertyService();
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   // Form state
   const [type, setType] = useState<PropertyType>(PropertyType.APARTMENT);
   const [price, setPrice] = useState<string>('');
+  const [priceError, setPriceError] = useState<string | null>(null);
   const [currency, setCurrency] = useState<string>('EUR');
   const [street, setStreet] = useState<string>('');
   const [postalCode, setPostalCode] = useState<string>('');
+  const [postalCodeError, setPostalCodeError] = useState<string | null>(null);
   const [city, setCity] = useState<string>('');
   const [region, setRegion] = useState<string>('');
   const [country, setCountry] = useState<string>('France');
   const [status, setStatus] = useState<PropertyStatus>(PropertyStatus.DRAFT);
-  const [mediaUrls, setMediaUrls] = useState<string[]>(['']);
+  const [mediaUrls, setMediaUrls] = useState<string[]>([]);
   
   // Translation (French by default, first translation)
   const [language, setLanguage] = useState<string>('fr');
   const [title, setTitle] = useState<string>('');
+  const [titleError, setTitleError] = useState<string | null>(null);
   const [description, setDescription] = useState<string>('');
+
+  // Validation functions
+  const validatePrice = (value: string): boolean => {
+    const numValue = parseFloat(value);
+    if (!value || value.trim() === '') {
+      setPriceError('Le prix est requis');
+      return false;
+    }
+    if (isNaN(numValue) || numValue <= 0) {
+      setPriceError('Le prix doit être un nombre positif');
+      return false;
+    }
+    if (numValue > 1000000000) {
+      setPriceError('Le prix est trop élevé (max 1 milliard)');
+      return false;
+    }
+    setPriceError(null);
+    return true;
+  };
+
+  const validatePostalCode = (value: string): boolean => {
+    if (value && value.trim() !== '') {
+      // French postal code: 5 digits
+      const frenchPostalCodeRegex = /^\d{5}$/;
+      if (!frenchPostalCodeRegex.test(value.trim())) {
+        setPostalCodeError('Le code postal français doit contenir 5 chiffres');
+        return false;
+      }
+    }
+    setPostalCodeError(null);
+    return true;
+  };
+
+  const validateTitle = (value: string): boolean => {
+    if (!value || value.trim() === '') {
+      setTitleError('Le titre est requis');
+      return false;
+    }
+    if (value.trim().length < 5) {
+      setTitleError('Le titre doit contenir au moins 5 caractères');
+      return false;
+    }
+    if (value.trim().length > 200) {
+      setTitleError('Le titre ne doit pas dépasser 200 caractères');
+      return false;
+    }
+    setTitleError(null);
+    return true;
+  };
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -63,7 +117,6 @@ export default function EditPropertyPage() {
   const loadProperty = async () => {
     try {
       setIsLoading(true);
-      setError(null);
       const property = await propertyService.findOne(propertyId);
       
       // Populate form
@@ -76,7 +129,7 @@ export default function EditPropertyPage() {
       setRegion(property.region || '');
       setCountry(property.country || 'France');
       setStatus(property.status);
-      setMediaUrls(property.mediaUrls && property.mediaUrls.length > 0 ? property.mediaUrls : ['']);
+      setMediaUrls(property.mediaUrls && property.mediaUrls.length > 0 ? property.mediaUrls : []);
       
       // First translation
       if (property.translations && property.translations.length > 0) {
@@ -86,31 +139,38 @@ export default function EditPropertyPage() {
         setDescription(mainTrans.description || '');
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erreur lors du chargement de la propriété');
+      const errorMessage = err instanceof Error ? err.message : 'Erreur lors du chargement de la propriété';
+      toast({
+        variant: 'error',
+        title: 'Erreur',
+        description: errorMessage,
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleAddMediaUrl = () => {
-    setMediaUrls([...mediaUrls, '']);
-  };
-
-  const handleMediaUrlChange = (index: number, value: string) => {
-    const newUrls = [...mediaUrls];
-    newUrls[index] = value;
-    setMediaUrls(newUrls);
-  };
-
-  const handleRemoveMediaUrl = (index: number) => {
-    if (mediaUrls.length > 1) {
-      setMediaUrls(mediaUrls.filter((_, i) => i !== index));
-    }
+  const handleMediaUrlsChange = (urls: string[]) => {
+    setMediaUrls(urls);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
+    
+    // Validate all required fields
+    const isPriceValid = validatePrice(price);
+    const isPostalCodeValid = validatePostalCode(postalCode);
+    const isTitleValid = validateTitle(title);
+
+    if (!isPriceValid || !isPostalCodeValid || !isTitleValid) {
+      toast({
+        variant: 'error',
+        title: 'Erreur de validation',
+        description: 'Veuillez corriger les erreurs dans le formulaire.',
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -127,17 +187,27 @@ export default function EditPropertyPage() {
         translations: [
           {
             language,
-            title,
-            description: description || undefined,
+            title: title.trim(),
+            description: description.trim() || undefined,
           },
         ],
         status,
       };
 
       await propertyService.update(propertyId, updateData);
+      toast({
+        variant: 'success',
+        title: 'Modifications enregistrées',
+        description: 'La propriété a été mise à jour avec succès.',
+      });
       router.push(`/properties/${propertyId}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erreur lors de la mise à jour de la propriété');
+      const errorMessage = err instanceof Error ? err.message : 'Erreur lors de la mise à jour de la propriété';
+      toast({
+        variant: 'error',
+        title: 'Erreur',
+        description: errorMessage,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -147,7 +217,7 @@ export default function EditPropertyPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-green-600 mb-4"></div>
+          <div className="inline-block animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-primary mb-4"></div>
           <div className="text-sm font-medium text-gray-700">Chargement...</div>
         </div>
       </div>
@@ -161,7 +231,7 @@ export default function EditPropertyPage() {
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
       <Header />
-      <main className="flex flex-1 flex-col px-4 py-8 sm:px-6 lg:px-8">
+      <main id="main-content" className="flex flex-1 flex-col px-4 py-8 sm:px-6 lg:px-8">
         <div className="container mx-auto max-w-4xl">
           <div className="mb-8">
             <Link href={`/properties/${propertyId}`} className="text-sm text-gray-500 hover:text-gray-700 font-medium inline-flex items-center gap-1 mb-4">
@@ -174,14 +244,6 @@ export default function EditPropertyPage() {
               Modifiez les informations de votre propriété
             </p>
           </div>
-
-          {error && (
-            <Card className="mb-6 border border-red-200 bg-red-50">
-              <CardContent className="pt-6">
-                <p className="text-sm font-medium text-red-700">{error}</p>
-              </CardContent>
-            </Card>
-          )}
 
           <form onSubmit={handleSubmit}>
             <div className="space-y-5">
@@ -218,9 +280,17 @@ export default function EditPropertyPage() {
                         step="0.01"
                         min="0"
                         value={price}
-                        onChange={(e) => setPrice(e.target.value)}
+                        onChange={(e) => {
+                          setPrice(e.target.value);
+                          if (priceError) setPriceError(null);
+                        }}
+                        onBlur={() => validatePrice(price)}
                         required
+                        className={priceError ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}
                       />
+                      {priceError && (
+                        <p className="text-xs text-red-600 mt-1">{priceError}</p>
+                      )}
                     </div>
                     <div>
                       <Label htmlFor="currency">Devise</Label>
@@ -277,9 +347,17 @@ export default function EditPropertyPage() {
                       <Input
                         id="postalCode"
                         value={postalCode}
-                        onChange={(e) => setPostalCode(e.target.value)}
+                        onChange={(e) => {
+                          setPostalCode(e.target.value);
+                          if (postalCodeError) setPostalCodeError(null);
+                        }}
+                        onBlur={() => validatePostalCode(postalCode)}
                         placeholder="75001"
+                        className={postalCodeError ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}
                       />
+                      {postalCodeError && (
+                        <p className="text-xs text-red-600 mt-1">{postalCodeError}</p>
+                      )}
                     </div>
                     <div>
                       <Label htmlFor="city">Ville</Label>
@@ -342,9 +420,21 @@ export default function EditPropertyPage() {
                     <Input
                       id="title"
                       value={title}
-                      onChange={(e) => setTitle(e.target.value)}
+                      onChange={(e) => {
+                        setTitle(e.target.value);
+                        if (titleError) setTitleError(null);
+                      }}
+                      onBlur={() => validateTitle(title)}
                       required
+                      className={titleError ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}
                     />
+                    {titleError ? (
+                      <p className="text-xs text-red-600 mt-1">{titleError}</p>
+                    ) : (
+                      <p className="text-xs text-gray-500 mt-1">
+                        {title.length}/200 caractères
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -363,39 +453,17 @@ export default function EditPropertyPage() {
               <Card className="border border-gray-200 bg-white">
                 <CardHeader className="pb-4">
                   <CardTitle className="text-lg font-semibold text-gray-900">Médias</CardTitle>
-                  <CardDescription className="text-sm text-gray-500 mt-1">URLs des images de la propriété</CardDescription>
+                  <CardDescription className="text-sm text-gray-500 mt-1">
+                    Téléversez des images ou ajoutez des URLs (max 10 fichiers)
+                  </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4 pt-0">
-                  {mediaUrls.map((url, index) => (
-                    <div key={index} className="flex gap-2">
-                      <Input
-                        type="url"
-                        value={url}
-                        onChange={(e) => handleMediaUrlChange(index, e.target.value)}
-                        placeholder="https://example.com/image.jpg"
-                        className="flex-1"
-                      />
-                      {mediaUrls.length > 1 && (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleRemoveMediaUrl(index)}
-                          className="border-gray-300 hover:bg-gray-50"
-                        >
-                          Supprimer
-                        </Button>
-                      )}
-                    </div>
-                  ))}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleAddMediaUrl}
-                    className="border-gray-300 hover:bg-gray-50"
-                  >
-                    + Ajouter une URL
-                  </Button>
+                <CardContent className="pt-0">
+                  <MediaUpload
+                    value={mediaUrls}
+                    onChange={handleMediaUrlsChange}
+                    maxFiles={10}
+                    disabled={isSubmitting}
+                  />
                 </CardContent>
               </Card>
 
@@ -405,7 +473,7 @@ export default function EditPropertyPage() {
                     Annuler
                   </Button>
                 </Link>
-                <Button type="submit" disabled={isSubmitting} className="bg-green-600 hover:bg-green-700 text-white border-0">
+                <Button type="submit" disabled={isSubmitting} className="bg-primary hover:bg-viridial-700 text-white border-0">
                   {isSubmitting ? 'Enregistrement...' : 'Enregistrer les modifications'}
                 </Button>
               </div>

@@ -4,7 +4,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { searchService, SearchFilters, SearchOptions, SearchResult, SearchSuggestion } from '@/lib/api/search';
+import { getSearchService, SearchFilters, SearchOptions, SearchResult, SearchSuggestion } from '@/lib/api/search';
 
 export interface UseSearchOptions {
   initialQuery?: string;
@@ -81,7 +81,9 @@ export function useSearch(options: UseSearchOptions = {}) {
       setError(null);
 
       try {
-        const result = await searchService.search(searchQuery, searchFilters, searchOpts);
+        // Get fresh service instance with current mock mode
+        const service = getSearchService();
+        const result = await service.search(searchQuery, searchFilters, searchOpts);
         setResults(result);
         updateURL(searchQuery, searchFilters, searchOpts);
       } catch (err) {
@@ -103,7 +105,9 @@ export function useSearch(options: UseSearchOptions = {}) {
       }
 
       try {
-        const suggs = await searchService.getSuggestions(
+        // Get fresh service instance with current mock mode
+        const service = getSearchService();
+        const suggs = await service.getSuggestions(
           searchQuery,
           5,
           searchOptions.language || 'fr',

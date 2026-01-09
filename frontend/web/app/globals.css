@@ -2,10 +2,396 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Accessibility: Screen reader only */
+@layer utilities {
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .focus\:not-sr-only:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: revert;
+    margin: revert;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+}
+
+/* Premium Animations & Micro-interactions */
+@layer utilities {
+  /* Smooth page transitions */
+  .page-transition {
+    animation: fadeInUp 0.4s ease-out;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Card hover effect */
+  .card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Button press effect */
+  .btn-press:active {
+    transform: scale(0.98);
+  }
+
+  /* Smooth focus transitions */
+  .focus-smooth {
+    transition: all 0.2s ease;
+  }
+
+  /* Loading shimmer effect */
+  @keyframes shimmer {
+    0% {
+      background-position: -1000px 0;
+    }
+    100% {
+      background-position: 1000px 0;
+    }
+  }
+
+  .shimmer {
+    animation: shimmer 2s infinite;
+    background: linear-gradient(
+      to right,
+      #f0f0f0 0%,
+      #e0e0e0 20%,
+      #f0f0f0 40%,
+      #f0f0f0 100%
+    );
+    background-size: 1000px 100%;
+  }
+
+/* Grid pattern background */
+.bg-grid-pattern {
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* RTL support */
+[dir="rtl"] {
+  direction: rtl;
+}
+
+[dir="rtl"] .text-left {
+  text-align: right;
+}
+
+[dir="rtl"] .text-right {
+  text-align: left;
+}
+
+[dir="rtl"] .ml-auto {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+[dir="rtl"] .mr-auto {
+  margin-right: 0;
+  margin-left: auto;
+}
+
+  /* Pulse glow for important elements - Modern teal */
+  @keyframes pulseGlow {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 0 8px rgba(13, 148, 136, 0);
+    }
+  }
+
+  .pulse-glow {
+    animation: pulseGlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* Smooth scale on interaction */
+  .scale-on-hover {
+    transition: transform 0.2s ease;
+  }
+
+  .scale-on-hover:hover {
+    transform: scale(1.05);
+  }
+
+  /* Fade in animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  /* Slide in from right */
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .slide-in-right {
+    animation: slideInRight 0.3s ease-out;
+  }
+
+  /* Stagger animation for lists */
+  .stagger-item {
+    animation: fadeInUp 0.4s ease-out;
+    animation-fill-mode: both;
+  }
+
+  .stagger-item:nth-child(1) { animation-delay: 0.05s; }
+  .stagger-item:nth-child(2) { animation-delay: 0.1s; }
+  .stagger-item:nth-child(3) { animation-delay: 0.15s; }
+  .stagger-item:nth-child(4) { animation-delay: 0.2s; }
+  .stagger-item:nth-child(5) { animation-delay: 0.25s; }
+  .stagger-item:nth-child(6) { animation-delay: 0.3s; }
+  .stagger-item:nth-child(7) { animation-delay: 0.35s; }
+  .stagger-item:nth-child(8) { animation-delay: 0.4s; }
+
+  /* Smooth backdrop blur transition */
+  .backdrop-blur-transition {
+    transition: backdrop-filter 0.3s ease, background-color 0.3s ease;
+  }
+
+  /* Premium glass morphism */
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  /* Modern Artistic Gradient Text - Updated to Viridial Palette */
+  .gradient-text {
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 50%, #0f766e 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Premium Viridial Gradient - For hero sections and CTAs */
+  .gradient-viridial {
+    background: linear-gradient(135deg, #2dd4bf 0%, #14b8a6 35%, #0d9488 70%, #0f766e 100%);
+  }
+  
+  /* Subtle Viridial Gradient - For backgrounds */
+  .gradient-viridial-subtle {
+    background: linear-gradient(135deg, #f0fdf9 0%, #ccfbf1 50%, #99f6e4 100%);
+  }
+  
+  /* Artistic Teal-to-Emerald Gradient */
+  .gradient-teal-emerald {
+    background: linear-gradient(135deg, #2dd4bf 0%, #14b8a6 40%, #0d9488 70%, #0f766e 100%);
+  }
+  
+  /* Modern Mint Gradient - Fresh and vibrant */
+  .gradient-mint {
+    background: linear-gradient(135deg, #5eead4 0%, #2dd4bf 50%, #14b8a6 100%);
+  }
+  
+  /* Deep Forest Gradient - Elegant and rich */
+  .gradient-forest {
+    background: linear-gradient(135deg, #0f766e 0%, #115e59 50%, #134e4a 100%);
+  }
+  
+  /* Artistic Viridial Gradient Background - For hero sections */
+  .bg-gradient-viridial-hero {
+    background: linear-gradient(135deg, 
+      rgba(240, 253, 249, 0.8) 0%,
+      rgba(204, 251, 241, 0.6) 25%,
+      rgba(153, 246, 228, 0.4) 50%,
+      rgba(255, 255, 255, 1) 75%,
+      rgba(240, 253, 249, 0.3) 100%
+    );
+  }
+  
+  /* Modern Button Gradient - Updated to Viridial */
+  .gradient-button-primary {
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 50%, #0f766e 100%);
+    box-shadow: 0 4px 14px 0 rgba(13, 148, 136, 0.25);
+  }
+  
+  .gradient-button-primary:hover {
+    background: linear-gradient(135deg, #0d9488 0%, #0f766e 50%, #115e59 100%);
+    box-shadow: 0 6px 20px 0 rgba(13, 148, 136, 0.35);
+  }
+  
+  /* Artistic Text Gradient with shimmer effect - Updated to Viridial */
+  .gradient-text-artistic {
+    background: linear-gradient(135deg, 
+      #2dd4bf 0%,
+      #14b8a6 25%,
+      #0d9488 50%,
+      #0f766e 75%,
+      #115e59 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradient-shift 3s ease infinite;
+  }
+  
+  @keyframes gradient-shift {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+  
+  /* Glow effect for viridial elements */
+  .glow-viridial {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3),
+                0 0 40px rgba(16, 185, 129, 0.2),
+                0 0 60px rgba(16, 185, 129, 0.1);
+  }
+  
+  .glow-viridial-hover:hover {
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.4),
+                0 0 60px rgba(16, 185, 129, 0.3),
+                0 0 90px rgba(16, 185, 129, 0.2);
+    transition: box-shadow 0.3s ease;
+  }
+  
+  /* Modern border gradient */
+  .border-gradient-viridial {
+    border: 2px solid transparent;
+    background-image: 
+      linear-gradient(white, white),
+      linear-gradient(135deg, #34d399, #10b981, #059669);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+  }
+  
+  /* Artistic shadow with viridial tint */
+  .shadow-viridial {
+    box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.15),
+                0 4px 6px -2px rgba(16, 185, 129, 0.1);
+  }
+  
+  /* Subtle viridial background pattern */
+  .bg-viridial-pattern {
+    background-image: 
+      radial-gradient(circle at 20% 50%, rgba(16, 185, 129, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(5, 150, 105, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 40% 20%, rgba(52, 211, 153, 0.03) 0%, transparent 50%);
+  }
+
+  /* Smooth scroll */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+    transition: background 0.2s;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+
+  /* Smooth input transitions */
+  input:focus,
+  textarea:focus,
+  select:focus {
+    transition: all 0.2s ease;
+  }
+
+  /* Ripple effect on button click */
+  @keyframes ripple {
+    0% {
+      transform: scale(0);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
+
+  .ripple-effect {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ripple-effect::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+
+  .ripple-effect:active::after {
+    width: 300px;
+    height: 300px;
+    animation: ripple 0.6s;
+  }
+}
+
 @layer base {
   :root {
     /* Core Colors - Viridial Theme */
-    --color-primary: #0B1220;
+    --color-primary: #059669; /* Viridial-600 - Main brand color - sophisticated deep emerald */
     --color-accent: #FF3B30;
     --color-neutral-100: #FFFFFF;
     --color-neutral-200: #F7F7F9;
@@ -18,13 +404,42 @@
 
     /* Semantic Colors */
     --color-secondary: #2563EB;
-    --color-success: #05C46B;
+    --color-success: #10B981; /* Modern emerald green */
     --color-danger: #EF4444;
     --color-warning: #F59E0B;
     --color-info: #0EA5E9;
     --color-purple: #7C3AED;
-    --color-teal: #14B8A6;
+    --color-teal: #14B8A6; /* Sophisticated teal */
     --color-orange: #FB923C;
+    
+    /* Modern Artistic Viridial Palette - Sophisticated & Elegant */
+    --color-viridial-50: #f0fdfa;   /* Softest mint - ultra light backgrounds */
+    --color-viridial-100: #d1fae5;  /* Light mint - subtle backgrounds */
+    --color-viridial-200: #a7f3d0;  /* Fresh mint - hover states light */
+    --color-viridial-300: #6ee7b7;  /* Bright mint - active states */
+    --color-viridial-400: #34d399;  /* Vibrant emerald - interactive elements */
+    --color-viridial-500: #10b981;  /* Primary emerald - main brand color */
+    --color-viridial-600: #059669;  /* Deep emerald - primary actions */
+    --color-viridial-700: #047857;  /* Rich forest - accents & hover dark */
+    --color-viridial-800: #065f46;  /* Deep forest - dark mode accents */
+    --color-viridial-900: #064e3b;  /* Darkest forest - deepest accents */
+    --color-viridial-950: #022c22;  /* Near black with green tint */
+    
+    /* Modern Teal Accents - Artistic & Contemporary */
+    --color-teal-400: #2dd4bf;      /* Bright teal - highlights */
+    --color-teal-500: #14b8a6;      /* Primary teal - modern accents */
+    --color-teal-600: #0d9488;      /* Deep teal - sophisticated */
+    --color-teal-700: #0f766e;      /* Dark teal - elegant depth */
+    
+    /* Emerald Accents - Rich & Luxurious */
+    --color-emerald-400: #34d399;   /* Bright emerald */
+    --color-emerald-500: #10b981;   /* Primary emerald */
+    --color-emerald-600: #059669;   /* Deep emerald */
+    
+    /* Mint Accents - Fresh & Modern */
+    --color-mint-300: #6ee7b7;      /* Light mint */
+    --color-mint-400: #34d399;      /* Medium mint */
+    --color-mint-500: #10b981;      /* Primary mint */
 
     /* Spacing */
     --space-xs: 8px;
@@ -200,8 +615,29 @@
   background: #555;
 }
 
-/* Smooth animations */
+/* Toast animations */
 @keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Smooth animations */
+@keyframes slideInRightOld {
   from {
     transform: translateX(100%);
     opacity: 0;
@@ -303,6 +739,69 @@
   background-color: #f4f4f4;
 }
 
+/* Stagger animation for list items */
+.stagger-item {
+  opacity: 0;
+  animation: fadeInUp 0.4s ease-out forwards;
+}
+
+.stagger-item:nth-child(1) { animation-delay: 0ms; }
+.stagger-item:nth-child(2) { animation-delay: 30ms; }
+.stagger-item:nth-child(3) { animation-delay: 60ms; }
+.stagger-item:nth-child(4) { animation-delay: 90ms; }
+.stagger-item:nth-child(5) { animation-delay: 120ms; }
+.stagger-item:nth-child(6) { animation-delay: 150ms; }
+.stagger-item:nth-child(7) { animation-delay: 180ms; }
+.stagger-item:nth-child(8) { animation-delay: 210ms; }
+.stagger-item:nth-child(n+9) { animation-delay: 240ms; }
+
+/* Property card image zoom on hover */
+.property-card-image {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced card hover with scale */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Button press effect */
+.btn-press:active {
+  transform: scale(0.98);
+}
+
+.scale-on-hover:hover {
+  transform: scale(1.02);
+}
+
+.scale-on-hover {
+  transition: transform 0.2s ease-out;
+}
+
+/* Pulse glow for important elements */
+.pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+  }
+}
+
+/* Fade in animation for empty states and new content */
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
 .leaflet-draw-toolbar a.leaflet-draw-draw-rectangle {
   background-color: #22c55e;
   color: white;
@@ -322,4 +821,135 @@
 .marker-cluster:hover {
   transform: scale(1.1);
   z-index: 1000 !important;
+}
+
+/* Float animation for hero badges */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Scrollbar hide utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Enhanced property card animations */
+.property-card-eco {
+  position: relative;
+  overflow: hidden;
+}
+
+.property-card-eco::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #10b981, #059669);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+  z-index: 1;
+}
+
+.property-card-eco:hover::before {
+  transform: scaleX(1);
+}
+
+/* Smooth filter transitions */
+.filter-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Quick filter active state */
+.quick-filter-active {
+  position: relative;
+}
+
+.quick-filter-active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+}
+
+/* Enhanced fade-in animation */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+/* Shimmer effect for loading states */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    to right,
+    #f0f0f0 0%,
+    #e0e0e0 20%,
+    #f0f0f0 40%,
+    #f0f0f0 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Stagger animation for property cards */
+.stagger-item {
+  animation: fadeInUp 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+.stagger-item:nth-child(1) { animation-delay: 0.05s; }
+.stagger-item:nth-child(2) { animation-delay: 0.1s; }
+.stagger-item:nth-child(3) { animation-delay: 0.15s; }
+.stagger-item:nth-child(4) { animation-delay: 0.2s; }
+.stagger-item:nth-child(5) { animation-delay: 0.25s; }
+.stagger-item:nth-child(6) { animation-delay: 0.3s; }
+.stagger-item:nth-child(n+7) { animation-delay: 0.35s; }
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

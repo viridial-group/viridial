@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import { Clock, TrendingUp } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
@@ -9,7 +10,7 @@ interface SearchStatsProps {
   query?: string;
 }
 
-export default function SearchStats({ totalHits, processingTimeMs, query }: SearchStatsProps) {
+const SearchStats = memo(function SearchStats({ totalHits, processingTimeMs, query }: SearchStatsProps) {
   if (totalHits === 0) return null;
 
   return (
@@ -31,5 +32,7 @@ export default function SearchStats({ totalHits, processingTimeMs, query }: Sear
       )}
     </div>
   );
-}
+});
+
+export default SearchStats;
 

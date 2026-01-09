@@ -13,6 +13,7 @@ export interface SearchFilters {
   latitude?: number;
   longitude?: number;
   radiusKm?: number;
+  bbox?: { minLat: number; minLon: number; maxLat: number; maxLon: number };
 }
 
 export interface SearchOptions {

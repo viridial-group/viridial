@@ -1,0 +1,64 @@
+{
+  "hero": {
+    "title": "L'immobilier",
+    "subtitle": "réinventé",
+    "description": "Plateforme SaaS complète pour la recherche, la gestion et l'intelligence immobilière. Géolocalisation automatique, recherche intelligente, analytics avancés.",
+    "ctaPrimary": "Commencer gratuitement",
+    "ctaSecondary": "Explorer les propriétés",
+    "badge": "100% engagée pour l'écologie"
+  },
+  "stats": {
+    "properties": "Propriétés",
+    "users": "Utilisateurs",
+    "cities": "Villes",
+    "ecoCertified": "Propriétés éco-certifiées",
+    "searchSpeed": "Recherche rapide",
+    "neighborhoods": "Quartiers"
+  },
+  "features": {
+    "title": "Tout ce dont vous avez besoin",
+    "subtitle": "Pour réussir dans l'immobilier",
+    "search": {
+      "title": "Recherche intelligente",
+      "description": "Moteur de recherche avancé avec Meilisearch, filtres géographiques en temps réel et carte interactive avec points d'intérêt."
+    },
+    "manage": {
+      "title": "Gestion complète",
+      "description": "Créez, modifiez et gérez vos propriétés avec géolocalisation automatique, médias multiples, workflow de publication et analytics."
+    },
+    "analytics": {
+      "title": "Intelligence immobilière",
+      "description": "Estimations de prix, insights sur les quartiers, scoring automatique et recommandations basées sur l'IA."
+    }
+  },
+  "howItWorks": {
+    "title": "Comment ça marche",
+    "subtitle": "En 3 étapes simples",
+    "step1": {
+      "title": "Créez votre compte",
+      "description": "Inscription gratuite en moins de 2 minutes"
+    },
+    "step2": {
+      "title": "Ajoutez vos propriétés",
+      "description": "Géolocalisation automatique et upload de médias"
+    },
+    "step3": {
+      "title": "Publiez et gérez",
+      "description": "Workflow de publication et analytics en temps réel"
+    }
+  },
+  "ecology": {
+    "title": "Immobilier durable",
+    "subtitle": "100% engagée pour l'écologie",
+    "description": "Nous mettons en avant les éco-quartiers certifiés, les propriétés avec énergies renouvelables et les matériaux durables.",
+    "certified": "Éco-quartiers certifiés",
+    "renewable": "Énergies renouvelables",
+    "materials": "Matériaux durables"
+  },
+  "cta": {
+    "title": "Prêt à transformer votre immobilier ?",
+    "description": "Rejoignez des milliers d'utilisateurs qui font confiance à Viridial",
+    "button": "Commencer maintenant"
+  }
+}
+

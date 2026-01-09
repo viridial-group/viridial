@@ -27,6 +27,7 @@ export interface SearchFilters {
   country?: string;
   city?: string;
   region?: string;
+  neighborhood?: string; // Neighborhood slug or ID
   minPrice?: number;
   maxPrice?: number;
   currency?: string;
@@ -93,6 +94,10 @@ export interface PropertySearchHit {
   }[];
   createdAt?: string;
   updatedAt?: string;
+  // Neighborhood fields (if property has neighborhood)
+  neighborhoodSlug?: string;
+  neighborhoodName_fr?: string;
+  neighborhoodName_en?: string;
   // Meilisearch specific fields
   _formatted?: {
     title_fr?: string;
@@ -125,7 +130,7 @@ export interface SearchFacets {
 
 export class SearchService {
   private baseUrl: string;
-  private useMock: boolean;
+  public useMock: boolean; // Made public for type checking
 
   constructor(baseUrl: string = SEARCH_API_URL, useMock: boolean = false) {
     this.baseUrl = baseUrl;
@@ -299,5 +304,36 @@ export class SearchService {
   }
 }
 
-export const searchService = new SearchService();
+// Export singleton instance - will be recreated based on mock mode
+let searchServiceInstance: SearchService | null = null;
+
+/**
+ * Get or create SearchService instance with current mock mode
+ */
+export function getSearchService(useMock?: boolean): SearchService {
+  // Check localStorage if useMock not explicitly provided
+  if (useMock === undefined && typeof window !== 'undefined') {
+    useMock = localStorage.getItem('useMockSearch') === 'true';
+  }
+  
+  // Check env variable if still undefined
+  if (useMock === undefined) {
+    useMock = process.env.NEXT_PUBLIC_USE_MOCK_SEARCH === 'true';
+  }
+
+  // In development, default to mock mode if not explicitly disabled
+  if (useMock === undefined && process.env.NODE_ENV === 'development') {
+    useMock = true; // Default to mock in local dev
+  }
+
+  // Recreate instance if mock mode changed
+  if (!searchServiceInstance || searchServiceInstance['useMock'] !== useMock) {
+    searchServiceInstance = new SearchService(SEARCH_API_URL, useMock || false);
+  }
+
+  return searchServiceInstance;
+}
+
+// Export default instance (legacy support, will use mock mode from env/localStorage)
+export const searchService = getSearchService();
 

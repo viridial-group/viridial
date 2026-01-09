@@ -1,0 +1,86 @@
+{
+  "hero": {
+    "badge1": "Recherche immobilière intelligente",
+    "badge2": "Immobilier durable et écologique",
+    "title1": "Trouvez votre",
+    "title2": "propriété idéale",
+    "description": "Plateforme complète de recherche et gestion immobilière. Découvrez des propriétés éco-responsables avec notre technologie de recherche avancée et géolocalisation intelligente.",
+    "ctaPrimary": "Commencer gratuitement",
+    "ctaSecondary": "Explorer les propriétés",
+    "searchSpeed": "Recherche ultra-rapide",
+    "neighborhoods": "Quartiers couverts",
+    "cities": "villes",
+    "ecoCertified": "Certifié écologique",
+    "ecoProperties": "propriétés éco"
+  },
+  "trustIndicators": {
+    "noCommitment": "Sans engagement",
+    "freeTrial": "Essai gratuit",
+    "support24": "Support 24/7",
+    "sustainableRealEstate": "Immobilier durable"
+  },
+  "features": {
+    "title": "Tout ce dont vous avez besoin",
+    "description": "Des fonctionnalités puissantes conçues pour simplifier et optimiser votre gestion immobilière",
+    "search": {
+      "title": "Recherche intelligente",
+      "description": "Trouvez rapidement des propriétés avec notre moteur de recherche avancé, filtres multiples et géolocalisation précise.",
+      "linkText": "Rechercher"
+    },
+    "manage": {
+      "title": "Gestion de propriétés",
+      "description": "Gérez efficacement votre portefeuille immobilier avec des outils intuitifs et une vue d'ensemble complète.",
+      "linkText": "Gérer mes propriétés"
+    },
+    "analytics": {
+      "title": "Analytics & Insights",
+      "description": "Analysez les tendances du marché, les prix par quartier et optimisez vos stratégies avec des données précises.",
+      "linkText": "Voir les analytics"
+    },
+    "secure": {
+      "title": "Sécurisé et fiable",
+      "description": "Architecture microservices robuste, authentification JWT, sécurité de niveau entreprise et sauvegarde automatique des données."
+    },
+    "global": {
+      "title": "Multilingue et international",
+      "description": "Support multi-langues pour vos annonces, interface localisée et support pour plusieurs devises et marchés internationaux."
+    },
+    "performance": {
+      "title": "Performances optimisées",
+      "description": "Recherche ultra-rapide, interface réactive, optimisations frontend avancées et expérience utilisateur fluide sur tous les appareils."
+    }
+  },
+  "testimonials": {
+    "title": "Ce que disent nos clients",
+    "description": "Rejoignez des milliers de professionnels qui font confiance à Viridial",
+    "sophie": {
+      "name": "Sophie Martin",
+      "role": "Agent immobilier",
+      "company": "Premium Properties",
+      "content": "Viridial a transformé ma façon de gérer mes propriétés. La recherche intelligente et l'analyse des quartiers sont incroyables."
+    },
+    "jean": {
+      "name": "Jean Dupont",
+      "role": "Gestionnaire de patrimoine",
+      "company": "Dupont & Associés",
+      "content": "Interface moderne, fonctionnalités complètes et support réactif. Exactement ce dont j'avais besoin pour mon activité."
+    },
+    "marie": {
+      "name": "Marie Laurent",
+      "role": "Directrice commerciale",
+      "company": "Immobilier Pro",
+      "content": "La plateforme est intuitive et les outils d'analyse nous aident à prendre de meilleures décisions pour nos clients."
+    }
+  },
+  "cta": {
+    "title": "Prêt à transformer votre gestion immobilière ?",
+    "description": "Rejoignez les professionnels qui utilisent Viridial pour gérer et promouvoir leurs propriétés efficacement, tout en contribuant à un avenir immobilier plus durable et respectueux de l'environnement.",
+    "ecoCommitment": "100% engagé pour l'immobilier durable",
+    "ctaPrimary": "Créer un compte gratuit",
+    "ctaSecondary": "Se connecter",
+    "features": "✓ Sans carte bancaire • ✓ Essai de 14 jours • ✓ Support inclus"
+  },
+  "common": {
+    "search": "Rechercher"
+  }
+}

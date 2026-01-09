@@ -88,6 +88,35 @@ export class SearchQueryDto {
   @Min(0)
   radiusKm?: number; // Radius in kilometers
 
+  // Bounding box filter (alternative to radius search)
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(-90)
+  @Max(90)
+  minLat?: number; // Minimum latitude
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(-180)
+  @Max(180)
+  minLon?: number; // Minimum longitude
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(-90)
+  @Max(90)
+  maxLat?: number; // Maximum latitude
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(-180)
+  @Max(180)
+  maxLon?: number; // Maximum longitude
+
   // Pagination
   @IsOptional()
   @Type(() => Number)

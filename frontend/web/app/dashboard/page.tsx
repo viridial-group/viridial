@@ -27,7 +27,7 @@ export default function DashboardPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-green-600 mb-4"></div>
+          <div className="inline-block animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-primary mb-4"></div>
           <div className="text-sm font-medium text-gray-700">Chargement...</div>
         </div>
       </div>
@@ -40,7 +40,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto max-w-7xl px-4 py-8">
+      <main id="main-content" className="container mx-auto max-w-7xl px-4 py-8">
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-semibold text-gray-900">
@@ -70,7 +70,7 @@ export default function DashboardPage() {
                 Gérez vos propriétés immobilières depuis votre tableau de bord.
               </p>
               <Link href="/properties">
-                <Button className="w-full bg-green-600 hover:bg-green-700 text-white border-0">
+                <Button className="w-full bg-primary hover:bg-viridial-700 text-white border-0">
                   Mes Propriétés
                 </Button>
               </Link>
@@ -105,7 +105,7 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { SearchController } from './controllers/search.controller';
 import { SearchService } from './services/search.service';
 import { MeilisearchService } from './services/meilisearch.service';
+import { ClusteringService } from './services/clustering.service';
 
 @Module({
   imports: [
@@ -11,7 +12,7 @@ import { MeilisearchService } from './services/meilisearch.service';
     }),
   ],
   controllers: [SearchController],
-  providers: [SearchService, MeilisearchService],
+  providers: [SearchService, MeilisearchService, ClusteringService],
   exports: [SearchService, MeilisearchService], // Export for use in other modules (e.g., Property Service for indexing)
 })
 export class AppModule {}

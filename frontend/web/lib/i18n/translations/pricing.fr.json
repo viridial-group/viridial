@@ -1,0 +1,279 @@
+{
+  "hero": {
+    "badge": "Tarifs simples et transparents",
+    "title": "Choisissez votre plan",
+    "subtitle": "sans engagement",
+    "description": "Commencez gratuitement et passez à un plan payant quand vous êtes prêt. Économisez jusqu'à 17% avec l'abonnement annuel.",
+    "monthly": "Mensuel",
+    "yearly": "Annuel",
+    "save": "Économisez 17%",
+    "free": "Gratuit",
+    "foreverNoCard": "Pour toujours, sans carte de crédit",
+    "perMonth": "mois",
+    "perYear": "an",
+    "or": "Soit",
+    "billingToggle": "Basculer entre mensuel et annuel"
+  },
+  "savingsCalculator": {
+    "title": "Calcul de vos économies",
+    "monthlyPrice": "Prix mensuel (x12):",
+    "annualSavings": "Économie annuelle:",
+    "annualPrice": "Prix annuel:",
+    "note": "Soit 2 mois offerts chaque année",
+    "youSave": "Vous économisez avec l'abonnement annuel",
+    "saveUpTo": "L'abonnement annuel vous fait économiser jusqu'à 2 mois de facturation par an.",
+    "discount": "-17%",
+    "or2Months": "soit 2 mois offerts",
+    "savePercent": "Économisez 17%"
+  },
+  "featuresShowcase": {
+    "title": "Une interface moderne et intuitive",
+    "description": "Découvrez les fonctionnalités qui font de Viridial la solution SaaS la plus complète pour la gestion immobilière",
+    "dashboard": {
+      "title": "Dashboard Analytics",
+      "description": "Visualisez vos performances en temps réel avec des graphiques et métriques détaillées"
+    },
+    "propertyManagement": {
+      "title": "Gestion de Propriétés",
+      "description": "Gérez efficacement votre portefeuille avec une vue d'ensemble claire et des filtres avancés"
+    },
+    "analytics": {
+      "title": "Analytics Avancés",
+      "description": "Analysez les tendances du marché et optimisez vos stratégies avec des données précises"
+    },
+    "leadManagement": {
+      "title": "Gestion des Leads",
+      "description": "Suivez vos prospects, automatisez le scoring et maximisez vos conversions"
+    },
+    "mobileApp": {
+      "title": "Application Mobile",
+      "description": "Accédez à votre backoffice depuis n'importe où avec notre application mobile responsive. Gérez vos propriétés, consultez vos analytics et répondez aux leads en déplacement.",
+      "mobileOptimized": "Interface optimisée mobile",
+      "realTimeNotifications": "Notifications en temps réel",
+      "autoSync": "Synchronisation automatique"
+    }
+  },
+  "plans": {
+    "free": {
+      "name": "Gratuit",
+      "description": "Parfait pour découvrir et tester la plateforme",
+      "badge": "Gratuit à vie",
+      "cta": "Commencer gratuitement",
+      "popular": "Le plus populaire"
+    },
+    "starter": {
+      "name": "Starter",
+      "description": "Idéal pour les particuliers et petites agences",
+      "cta": "Essayer Starter",
+      "popular": "Populaire"
+    },
+    "pro": {
+      "name": "Pro",
+      "description": "Pour les agences qui veulent maximiser leur performance",
+      "badge": "Le plus populaire",
+      "cta": "Essayer Pro"
+    },
+    "enterprise": {
+      "name": "Enterprise",
+      "description": "Solution sur mesure pour les grandes organisations",
+      "badge": "Sur mesure",
+      "cta": "Contacter les ventes"
+    }
+  },
+  "features": {
+    "upTo": "Jusqu'à",
+    "properties": "propriétés",
+    "unlimited": "illimitées",
+    "basicSearch": "Recherche de base",
+    "intelligentSearch": "Recherche intelligente",
+    "advancedSearch": "Recherche intelligente avancée",
+    "autoGeolocation": "Géolocalisation automatique",
+    "geolocationPOI": "Géolocalisation + Points d'intérêt",
+    "mediaUpload": "Upload de médias",
+    "mediaPerProperty": "par propriété",
+    "unlimitedMedia": "illimité",
+    "unlimitedMediaTours": "Médias illimités + Visites virtuelles",
+    "emailSupport": "Support par email",
+    "basicDashboard": "Dashboard de base",
+    "improvedDashboard": "Dashboard amélioré",
+    "basicAnalytics": "Analytics de base",
+    "advancedAnalytics": "Analytics avancés complets",
+    "basicNeighborhood": "Insights quartiers de base",
+    "detailedNeighborhood": "Insights quartiers détaillés",
+    "ecoFilters": "Filtres écologiques",
+    "advancedEcoFilters": "Filtres écologiques avancés",
+    "basicLeads": "Gestion des leads (basique)",
+    "completeLeads": "Gestion complète des leads",
+    "autoLeadScoring": "Scoring automatique des leads",
+    "users": "utilisateurs",
+    "limitedAPI": "API limitée",
+    "completeAPI": "API complète",
+    "crmSync": "Synchronisation CRM (HubSpot)",
+    "prioritySupport": "Support prioritaire",
+    "customization": "Personnalisation",
+    "basicCustomization": "Personnalisation de base",
+    "completeCustomization": "Personnalisation complète",
+    "allInPro": "Tout dans Pro",
+    "unlimitedUsers": "Utilisateurs illimités",
+    "multiOrg": "Multi-organisations",
+    "advancedRBAC": "RBAC avancé",
+    "customAnalytics": "Analytics personnalisés",
+    "customIntegrations": "Intégrations sur mesure",
+    "dedicatedDev": "Développements dédiés",
+    "support24": "Support 24/7 dédié",
+    "accountManager": "Account Manager dédié",
+    "training": "Formation et onboarding",
+    "sla": "SLA garantis",
+    "dedicatedHosting": "Hébergement dédié (optionnel)",
+    "securityAudit": "Audit de sécurité",
+    "tooltips": {
+      "upTo10Properties": "Créez et gérez jusqu'à 10 annonces immobilières simultanément",
+      "upTo50Properties": "Créez et gérez jusqu'à 50 annonces immobilières simultanément",
+      "unlimitedProperties": "Aucune limite sur le nombre d'annonces que vous pouvez créer et gérer",
+      "basicSearch": "Recherche par mots-clés, localisation et type de propriété",
+      "intelligentSearch": "Recherche avancée avec filtres multiples et suggestions intelligentes",
+      "advancedSearch": "Recherche avec IA, filtres avancés, sauvegarde de recherches et alertes",
+      "basicAnalytics": "Vues des statistiques de base sur vos propriétés (vues, clics, contacts)",
+      "advancedAnalytics": "Dashboard complet avec analyses détaillées, conversion tracking, et rapports personnalisables",
+      "basicNeighborhood": "Informations de base sur les quartiers (prix moyen, transports, écoles)",
+      "detailedNeighborhood": "Analyse approfondie des quartiers avec données détaillées, tendances du marché et projections",
+      "basicLeads": "Système de base pour suivre et gérer les contacts intéressés par vos propriétés",
+      "completeLeads": "CRM intégré avec pipeline, scoring automatique, et gestion complète du cycle de vente",
+      "autoLeadScoring": "Système IA qui évalue et priorise automatiquement vos leads selon leur potentiel",
+      "crmSync": "Intégration native avec HubSpot pour synchroniser automatiquement vos leads et contacts",
+      "limitedAPI": "Accès API avec limite de 1000 requêtes par jour",
+      "completeAPI": "Accès API illimité avec documentation complète et support technique",
+      "prioritySupport": "Temps de réponse garanti sous 24h avec canal de communication dédié",
+      "basicCustomization": "Personnalisation limitée de l'interface et des workflows",
+      "completeCustomization": "Personnalisation complète de l'interface, workflows, et intégrations sur mesure",
+      "multiOrg": "Gérez plusieurs organisations depuis un seul compte avec facturation centralisée",
+      "advancedRBAC": "Système de rôles et permissions granulaires pour un contrôle d'accès précis",
+      "customAnalytics": "Création de dashboards et rapports personnalisés selon vos besoins spécifiques",
+      "customIntegrations": "Développement d'intégrations personnalisées avec vos outils existants",
+      "dedicatedDev": "Équipe de développement dédiée pour créer des fonctionnalités exclusives",
+      "accountManager": "Responsable de compte dédié pour vous accompagner dans l'utilisation optimale de la plateforme",
+      "sla": "Garanties contractuelles sur le temps de disponibilité (99.9% uptime) et les temps de réponse",
+      "securityAudit": "Audit de sécurité régulier de votre instance pour garantir la protection de vos données"
+    }
+  },
+  "comparison": {
+    "title": "Comparaison des plans",
+    "description": "Comparez toutes les fonctionnalités pour trouver le plan adapté à vos besoins",
+    "feature": "Fonctionnalité",
+    "properties": "Propriétés",
+    "users": "Utilisateurs",
+    "support": "Support",
+    "api": "API",
+    "analytics": "Analytics",
+    "crmIntegration": "CRM Integration",
+    "customization": "Personnalisation",
+    "monthlyPrice": "Prix mensuel",
+    "annualPrice": "Prix annuel",
+    "email": "Email",
+    "priority": "Prioritaire",
+    "dedicated24": "24/7 Dédié",
+    "basic": "De base",
+    "custom": "Personnalisés",
+    "limited": "Limitée",
+    "included": "Inclus",
+    "notIncluded": "Non inclus"
+  },
+  "trust": {
+    "title": "Garanties et avantages inclus",
+    "description": "Nous nous engageons à votre satisfaction avec des garanties claires",
+    "cancellation": {
+      "title": "Annulation à tout moment",
+      "description": "Annulez votre abonnement à tout moment sans pénalité. Vous conservez l'accès jusqu'à la fin de la période payée."
+    },
+    "noHiddenFees": {
+      "title": "Pas de frais cachés",
+      "description": "Le prix affiché est le prix que vous payez. Aucun frais de transaction, aucun frais caché. Transparence totale."
+    },
+    "supportIncluded": {
+      "title": "Support inclus",
+      "description": "Support par email pour tous les plans. Support prioritaire et dédié pour les plans Pro et Enterprise."
+    },
+    "trustTitle": "Ils nous font confiance",
+    "trustDescription": "Rejoignez des milliers d'agences immobilières qui utilisent Viridial",
+    "testimonials": {
+      "jean": {
+        "name": "Jean Dupont",
+        "role": "Agence Immobilière Paris",
+        "text": "Viridial a transformé notre façon de gérer nos propriétés. L'interface est intuitive et les analytics nous aident à prendre de meilleures décisions. ROI impressionnant en seulement 3 mois."
+      },
+      "marie": {
+        "name": "Marie Laurent",
+        "role": "Agence Pro, Lyon",
+        "text": "La gestion des leads est devenue tellement plus simple. Le scoring automatique nous fait gagner des heures chaque semaine. Support excellent et réactif."
+      },
+      "pierre": {
+        "name": "Pierre Martin",
+        "role": "Immobilier Premium, Marseille",
+        "text": "Plan Enterprise personnalisé qui répond parfaitement à nos besoins. L'équipe dédiée est toujours là pour nous aider. Investissement qui en vaut vraiment la peine."
+      }
+    },
+    "stats": {
+      "agencies": "Agences actives",
+      "properties": "Propriétés gérées",
+      "uptime": "Uptime garanti",
+      "enterpriseSupport": "Support Enterprise"
+    }
+  },
+  "faq": {
+    "title": "Questions fréquentes",
+    "description": "Tout ce que vous devez savoir sur nos tarifs et plans",
+    "changePlan": {
+      "question": "Puis-je changer de plan à tout moment ?",
+      "answer": "Oui, vous pouvez upgrader ou downgrader votre plan à tout moment. Les changements sont appliqués immédiatement avec un ajustement de facturation au prorata. Si vous passez à un plan supérieur, vous ne payez que la différence pour le reste de la période. Si vous passez à un plan inférieur, le crédit est appliqué à votre prochaine facture."
+    },
+    "hiddenFees": {
+      "question": "Y a-t-il des frais cachés ?",
+      "answer": "Non, nos tarifs sont totalement transparents. Le prix affiché est le prix que vous payez. Il n'y a pas de frais de transaction, pas de frais cachés, pas de frais d'installation. L'abonnement annuel vous fait économiser 2 mois (soit 17% de réduction) par rapport à l'abonnement mensuel."
+    },
+    "cancel": {
+      "question": "Que se passe-t-il si j'annule mon abonnement ?",
+      "answer": "Vous pouvez annuler votre abonnement à tout moment depuis votre tableau de bord. Votre accès reste actif jusqu'à la fin de la période payée (mois ou année). Aucun remboursement n'est effectué pour les périodes déjà payées, mais vous conservez l'accès complet jusqu'à l'expiration de votre abonnement. Vous pouvez réactiver votre abonnement à tout moment."
+    },
+    "freeLimit": {
+      "question": "Le plan gratuit a-t-il une limite de temps ?",
+      "answer": "Non, le plan gratuit est disponible indéfiniment et sans aucune limite de temps. Vous pouvez l'utiliser aussi longtemps que vous le souhaitez, sans carte de crédit requise. Passez à un plan payant uniquement lorsque vous avez besoin de fonctionnalités supplémentaires ou de limites plus élevées."
+    },
+    "vat": {
+      "question": "Les prix incluent-ils la TVA ?",
+      "answer": "Les prix affichés sont hors taxes (HT). La TVA sera ajoutée lors du paiement selon votre localisation géographique. Pour les entreprises européennes disposant d'un numéro de TVA intracommunautaire valide, la TVA est reverse-charge (vous reversez vous-même la TVA). Contactez-nous pour plus d'informations sur la facturation pour votre pays."
+    },
+    "discounts": {
+      "question": "Proposez-vous des réductions pour les startups ou les ONG ?",
+      "answer": "Oui, nous proposons des tarifs préférentiels pour les startups éligibles (moins de 3 ans, moins de 10 employés) et les organisations à but non lucratif reconnues. Les réductions peuvent aller jusqu'à 50% selon votre situation. Contactez notre équipe commerciale avec les détails de votre organisation pour discuter de votre éligibilité et obtenir une proposition personnalisée."
+    },
+    "trial": {
+      "question": "Puis-je tester un plan payant avant de m'engager ?",
+      "answer": "Oui, tous nos plans payants incluent une période d'essai gratuit de 14 jours. Vous pouvez tester toutes les fonctionnalités du plan sans carte de crédit. À la fin de la période d'essai, vous pouvez choisir de continuer avec le plan ou revenir au plan gratuit sans aucun engagement."
+    },
+    "payment": {
+      "question": "Comment puis-je payer mon abonnement ?",
+      "answer": "Nous acceptons les paiements par carte de crédit (Visa, Mastercard, American Express) et les virements bancaires pour les abonnements annuels et Enterprise. Les paiements sont sécurisés via Stripe (certifié PCI-DSS). Pour les plans Enterprise, nous proposons également des options de facturation personnalisées avec des conditions de paiement négociables."
+    }
+  },
+  "enterprise": {
+    "title": "Besoin d'une solution sur mesure ?",
+    "description": "Notre équipe peut créer un plan Enterprise adapté à vos besoins spécifiques, avec des fonctionnalités personnalisées, un support dédié 24/7 et des SLA garantis.",
+    "cta": "Contacter les ventes",
+    "ctaSecondary": "Voir toutes les fonctionnalités",
+    "benefits": {
+      "exclusiveFeatures": {
+        "title": "Fonctionnalités exclusives",
+        "description": "Développements dédiés pour répondre à vos besoins spécifiques"
+      },
+      "dedicatedSupport": {
+        "title": "Support dédié 24/7",
+        "description": "Équipe de support dédiée toujours disponible pour vous aider"
+      },
+      "slaGuaranteed": {
+        "title": "SLA garantis",
+        "description": "99.9% uptime garanti avec compensation en cas de non-respect"
+      }
+    }
+  }
+}
+

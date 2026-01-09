@@ -1,0 +1,183 @@
+{
+  "login": {
+    "title": "Bienvenue !",
+    "subtitle": "Pas encore de compte ?",
+    "email": "Email",
+    "emailPlaceholder": "votre@email.com",
+    "password": "Mot de passe",
+    "passwordPlaceholder": "••••••••",
+    "forgotPassword": "Mot de passe oublié ?",
+    "submit": "Continuer",
+    "submitLoading": "Connexion...",
+    "signup": "S'inscrire",
+    "or": "ou",
+    "googleLogin": "Continuer avec Google",
+    "terms": "En vous connectant, vous acceptez nos",
+    "termsLink": "Conditions d'utilisation",
+    "toasts": {
+      "signupSuccess": {
+        "title": "Inscription réussie",
+        "description": "Vous pouvez maintenant vous connecter."
+      },
+      "resetSuccess": {
+        "title": "Mot de passe réinitialisé",
+        "description": "Vous pouvez maintenant vous connecter avec votre nouveau mot de passe."
+      },
+      "loginSuccess": {
+        "title": "Connexion réussie",
+        "description": "Bienvenue ! Redirection en cours..."
+      },
+      "loginError": {
+        "title": "Erreur de connexion",
+        "description": "Une erreur est survenue lors de la connexion"
+      }
+    },
+    "validation": {
+      "emailRequired": "Veuillez entrer une adresse email valide",
+      "passwordRequired": "Le mot de passe est requis"
+    },
+    "loading": "Chargement..."
+  },
+  "signup": {
+    "title": "Créer un compte",
+    "subtitle": "Vous avez déjà un compte ?",
+    "email": "Email",
+    "emailPlaceholder": "votre@email.com",
+    "password": "Mot de passe",
+    "passwordPlaceholder": "••••••••",
+    "confirmPassword": "Confirmer le mot de passe",
+    "confirmPasswordPlaceholder": "••••••••",
+    "submit": "Créer un compte",
+    "submitLoading": "Création...",
+    "login": "Se connecter",
+    "passwordHint": "Au moins 8 caractères, une majuscule, une minuscule et un chiffre",
+    "terms": "En créant un compte, vous acceptez nos",
+    "termsLink": "Conditions d'utilisation",
+    "toasts": {
+      "success": {
+        "title": "Inscription réussie !",
+        "description": "Un email de vérification a été envoyé à {{email}}. Veuillez vérifier votre boîte de réception."
+      },
+      "redirect": {
+        "title": "Inscription réussie",
+        "description": "Redirection vers la page de connexion..."
+      },
+      "error": {
+        "title": "Erreur d'inscription",
+        "description": "Une erreur est survenue lors de l'inscription"
+      }
+    },
+    "validation": {
+      "emailRequired": "Veuillez entrer une adresse email valide",
+      "passwordMin": "Le mot de passe doit contenir au moins 8 caractères",
+      "passwordLowercase": "Le mot de passe doit contenir au moins une minuscule",
+      "passwordUppercase": "Le mot de passe doit contenir au moins une majuscule",
+      "passwordDigit": "Le mot de passe doit contenir au moins un chiffre",
+      "confirmPasswordMatch": "Les mots de passe ne correspondent pas"
+    },
+    "loading": "Chargement..."
+  },
+  "forgotPassword": {
+    "title": "Mot de passe oublié ?",
+    "description": "Entrez votre email pour recevoir un lien de réinitialisation",
+    "email": "Email",
+    "emailPlaceholder": "votre@email.com",
+    "submit": "Envoyer le lien",
+    "submitLoading": "Envoi...",
+    "backToLogin": "Retour à la connexion",
+    "submitted": {
+      "title": "Email envoyé !",
+      "message": "Si cet email est enregistré, un lien de réinitialisation a été envoyé à {{email}}.",
+      "hint": "Vérifiez votre boîte de réception et vos spams. Le lien expirera dans 1 heure."
+    },
+    "toasts": {
+      "success": {
+        "title": "Email envoyé",
+        "description": "Si cet email est enregistré, un lien de réinitialisation a été envoyé."
+      },
+      "error": {
+        "title": "Erreur",
+        "description": "Une erreur est survenue lors de l'envoi de l'email."
+      }
+    },
+    "validation": {
+      "emailRequired": "Veuillez entrer une adresse email valide"
+    }
+  },
+  "resetPassword": {
+    "title": "Réinitialiser votre mot de passe",
+    "description": "Entrez votre nouveau mot de passe ci-dessous",
+    "password": "Nouveau mot de passe",
+    "passwordPlaceholder": "••••••••",
+    "confirmPassword": "Confirmer le mot de passe",
+    "confirmPasswordPlaceholder": "••••••••",
+    "passwordHint": "Au moins 8 caractères, une majuscule, une minuscule et un chiffre",
+    "submit": "Réinitialiser le mot de passe",
+    "submitLoading": "Réinitialisation...",
+    "backToLogin": "Retour à la connexion",
+    "requestNewLink": "Demander un nouveau lien",
+    "tokenMissing": "Token de réinitialisation manquant. Veuillez utiliser le lien reçu par email.",
+    "tokenError": "Token de réinitialisation manquant",
+    "loading": "Chargement...",
+    "success": {
+      "title": "Mot de passe réinitialisé !",
+      "message": "Votre mot de passe a été modifié avec succès.",
+      "redirect": "Redirection vers la page de connexion...",
+      "loginNow": "Se connecter maintenant"
+    },
+    "toasts": {
+      "success": {
+        "title": "Mot de passe réinitialisé",
+        "description": "Votre mot de passe a été réinitialisé avec succès. Redirection..."
+      },
+      "error": {
+        "title": "Erreur",
+        "description": "Une erreur est survenue lors de la réinitialisation"
+      },
+      "tokenMissing": {
+        "title": "Token manquant",
+        "description": "Veuillez utiliser le lien reçu par email."
+      }
+    },
+    "validation": {
+      "passwordMin": "Le mot de passe doit contenir au moins 8 caractères",
+      "passwordLowercase": "Le mot de passe doit contenir au moins une minuscule",
+      "passwordUppercase": "Le mot de passe doit contenir au moins une majuscule",
+      "passwordDigit": "Le mot de passe doit contenir au moins un chiffre",
+      "confirmPasswordMatch": "Les mots de passe ne correspondent pas"
+    }
+  },
+  "verifyEmail": {
+    "title": "Vérification de votre email",
+    "description": "Veuillez patienter pendant la vérification...",
+    "tokenMissing": "Token de vérification manquant. Veuillez utiliser le lien reçu par email.",
+    "tokenMissingMessage": "Token de vérification manquant",
+    "tokenMissingHint": "Veuillez utiliser le lien de vérification reçu par email.",
+    "backToLogin": "Retour à la connexion",
+    "loading": "Chargement...",
+    "verifying": "Vérification en cours...",
+    "success": {
+      "title": "Email vérifié avec succès !",
+      "message": "Votre adresse email a été vérifiée. Vous pouvez maintenant vous connecter.",
+      "redirect": "Redirection vers la page de connexion...",
+      "loginNow": "Se connecter maintenant"
+    },
+    "error": {
+      "title": "Erreur de vérification",
+      "message": "Le lien a peut-être expiré ou a déjà été utilisé.",
+      "helpLink": "Besoin d'aide ?"
+    },
+    "resend": "Renvoyer l'email",
+    "toasts": {
+      "resendSuccess": {
+        "title": "Email renvoyé",
+        "description": "Un nouvel email de vérification a été envoyé."
+      },
+      "resendError": {
+        "title": "Erreur",
+        "description": "Une erreur est survenue lors de l'envoi de l'email."
+      }
+    }
+  }
+}
+

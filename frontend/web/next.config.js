@@ -7,6 +7,21 @@ const nextConfig = {
     NEXT_PUBLIC_PROPERTY_API_URL: process.env.NEXT_PUBLIC_PROPERTY_API_URL || 'http://localhost:3001',
     NEXT_PUBLIC_SEARCH_API_URL: process.env.NEXT_PUBLIC_SEARCH_API_URL || 'http://localhost:3003',
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '/**',
+      },
+      // Add other image domains as needed (e.g., MinIO, S3, CDN)
+      // {
+      //   protocol: 'https',
+      //   hostname: 'your-cdn-domain.com',
+      //   pathname: '/**',
+      // },
+    ],
+  },
   // Suppress hydration warnings caused by browser extensions
   onDemandEntries: {
     maxInactiveAge: 25 * 1000,

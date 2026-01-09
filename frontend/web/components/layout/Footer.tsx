@@ -1,22 +1,29 @@
 'use client';
 
 import Link from 'next/link';
+import { useTranslation } from '@/contexts/I18nContext';
 
 export function Footer() {
+  const { t } = useTranslation();
+  
   return (
-    <footer className="border-t border-[var(--color-neutral-400)] bg-[var(--color-neutral-100)] mt-auto">
+    <footer 
+      className="border-t border-gray-200 bg-gray-50 mt-auto"
+      role="contentinfo"
+      aria-label="Pied de page"
+    >
       <div className="container mx-auto max-w-7xl px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Solutions */}
-          <div>
-            <h3 className="text-sm font-semibold text-[var(--color-primary)] mb-4">
+          <nav aria-label="Solutions">
+            <h3 className="text-sm font-semibold text-gray-900 mb-4">
               Solutions
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-2" role="list">
               <li>
                 <Link
                   href="/for-agents"
-                  className="text-sm text-[var(--color-muted)] hover:text-[var(--color-primary)] transition-colors"
+                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:rounded-md focus:px-1"
                 >
                   Pour les agents
                 </Link>
@@ -24,59 +31,59 @@ export function Footer() {
               <li>
                 <Link
                   href="/for-brands"
-                  className="text-sm text-[var(--color-muted)] hover:text-[var(--color-primary)] transition-colors"
+                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:rounded-md focus:px-1"
                 >
                   Pour les marques
                 </Link>
               </li>
             </ul>
-          </div>
+          </nav>
 
           {/* Viridial */}
-          <div>
-            <h3 className="text-sm font-semibold text-[var(--color-primary)] mb-4">
+          <nav aria-label="Viridial">
+            <h3 className="text-sm font-semibold text-gray-900 mb-4">
               Viridial
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-2" role="list">
               <li>
                 <Link
                   href="/terms"
-                  className="text-sm text-[var(--color-muted)] hover:text-[var(--color-primary)] transition-colors"
+                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:rounded-md focus:px-1"
                 >
-                  Conditions
+                  {t('footer.terms')}
                 </Link>
               </li>
               <li>
                 <Link
                   href="/privacy"
-                  className="text-sm text-[var(--color-muted)] hover:text-[var(--color-primary)] transition-colors"
+                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:rounded-md focus:px-1"
                 >
-                  Confidentialité
+                  {t('footer.privacy')}
                 </Link>
               </li>
             </ul>
-          </div>
+          </nav>
 
           {/* Liens utiles */}
-          <div>
-            <h3 className="text-sm font-semibold text-[var(--color-primary)] mb-4">
+          <nav aria-label="Liens utiles">
+            <h3 className="text-sm font-semibold text-gray-900 mb-4">
               Liens utiles
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-2" role="list">
               <li>
                 <Link
                   href="/blog"
-                  className="text-sm text-[var(--color-muted)] hover:text-[var(--color-primary)] transition-colors"
+                  className="text-sm text-gray-600 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:rounded-md focus:px-1"
                 >
                   Blog
                 </Link>
               </li>
             </ul>
-          </div>
+          </nav>
 
           {/* Copyright */}
-          <div className="md:col-span-4 pt-4 border-t border-[var(--color-neutral-400)]">
-            <p className="text-xs text-[var(--color-muted)] text-center">
+          <div className="md:col-span-4 pt-4 border-t border-gray-200">
+            <p className="text-xs text-gray-500 text-center">
               © Copyright {new Date().getFullYear()} Viridial
             </p>
           </div>
