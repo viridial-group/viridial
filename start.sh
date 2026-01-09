@@ -515,15 +515,87 @@ MINIO_ROOT_USER=minioadmin" .env
   if command -v pm2 &> /dev/null; then
     echo -e "${BLUE}📦 Démarrage avec PM2...${NC}"
     
+    # Vérifier si les services sont déjà buildés
+    echo -e "${BLUE}🔨 Vérification des builds...${NC}"
+    BUILD_NEEDED=false
+    
+    BACKEND_SERVICES=(
+      "auth-service"
+      "property-service"
+      "geolocation-service"
+      "search-service"
+      "marketing-service"
+      "review-service"
+    )
+    
+    for service in "${BACKEND_SERVICES[@]}"; do
+      SERVICE_DIR="$PROJECT_ROOT/services/$service"
+      if [ ! -d "$SERVICE_DIR/dist" ]; then
+        BUILD_NEEDED=true
+        echo -e "${YELLOW}   ⚠️  $service n'est pas buildé${NC}"
+      fi
+    done
+    
+    if [ ! -d "$PROJECT_ROOT/frontend/web/.next" ]; then
+      BUILD_NEEDED=true
+      echo -e "${YELLOW}   ⚠️  Frontend n'est pas buildé${NC}"
+    fi
+    
+    if [ "$BUILD_NEEDED" = true ]; then
+      echo -e "${YELLOW}⚠️  Certains services ne sont pas buildés.${NC}"
+      echo -e "${BLUE}💡 Exécutez d'abord: ${YELLOW}./deploy-production.sh${NC}"
+      echo -e "${BLUE}   Ou builder manuellement chaque service avec: ${YELLOW}npm run build${NC}"
+      echo ""
+      read -p "Voulez-vous continuer quand même? (y/N) " -n 1 -r
+      echo
+      if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        exit 1
+      fi
+    fi
+    
     # Démarrer les services backend avec PM2
     cd services/auth-service
-    pm2 start npm --name "auth-service" -- start || pm2 restart auth-service
+    if [ -d "dist" ]; then
+      pm2 start npm --name "auth-service" -- start || pm2 restart auth-service --update-env
+    else
+      echo -e "${YELLOW}⚠️  auth-service/dist manquant, ignoré${NC}"
+    fi
+    
     cd "$PROJECT_ROOT/services/property-service"
-    pm2 start npm --name "property-service" -- start || pm2 restart property-service
+    if [ -d "dist" ]; then
+      pm2 start npm --name "property-service" -- start || pm2 restart property-service --update-env
+    else
+      echo -e "${YELLOW}⚠️  property-service/dist manquant, ignoré${NC}"
+    fi
+    
     cd "$PROJECT_ROOT/services/geolocation-service"
-    pm2 start npm --name "geolocation-service" -- start || pm2 restart geolocation-service
+    if [ -d "dist" ]; then
+      pm2 start npm --name "geolocation-service" -- start || pm2 restart geolocation-service --update-env
+    else
+      echo -e "${YELLOW}⚠️  geolocation-service/dist manquant, ignoré${NC}"
+    fi
+    
     cd "$PROJECT_ROOT/services/search-service"
-    pm2 start npm --name "search-service" -- start || pm2 restart search-service
+    if [ -d "dist" ]; then
+      pm2 start npm --name "search-service" -- start || pm2 restart search-service --update-env
+    else
+      echo -e "${YELLOW}⚠️  search-service/dist manquant, ignoré${NC}"
+    fi
+    
+    cd "$PROJECT_ROOT/services/marketing-service"
+    if [ -d "dist" ]; then
+      pm2 start npm --name "marketing-service" -- start || pm2 restart marketing-service --update-env
+    else
+      echo -e "${YELLOW}⚠️  marketing-service/dist manquant, ignoré${NC}"
+    fi
+    
+    cd "$PROJECT_ROOT/services/review-service"
+    if [ -d "dist" ]; then
+      pm2 start npm --name "review-service" -- start || pm2 restart review-service --update-env
+    else
+      echo -e "${YELLOW}⚠️  review-service/dist manquant, ignoré${NC}"
+    fi
+    
     cd "$PROJECT_ROOT"
     
     # Démarrer le frontend en production
@@ -589,11 +661,27 @@ MINIO_ROOT_USER=minioadmin" .env
     echo -e "${BLUE}📦 Installer PM2:${NC}"
     echo -e "   ${BLUE}npm install -g pm2${NC}"
     echo ""
+    echo -e "${YELLOW}💡 Pour un déploiement complet avec build et nginx, utilisez:${NC}"
+    echo -e "   ${BLUE}sudo ./deploy-production.sh${NC}"
+    echo ""
     echo -e "${YELLOW}Alternative: Utilisez systemd pour gérer les services${NC}"
   fi
   
   echo ""
   echo -e "${GREEN}✅ Services démarrés en mode production${NC}"
+  echo ""
+  echo -e "${BLUE}📋 Services disponibles:${NC}"
+  echo -e "   🌐 Frontend:           http://localhost:3000"
+  echo -e "   🔐 Auth Service:       http://localhost:3001"
+  echo -e "   🏠 Property Service:   http://localhost:3002"
+  echo -e "   📍 Geolocation Service: http://localhost:3003"
+  echo -e "   🔍 Search Service:     http://localhost:3004"
+  echo -e "   📢 Marketing Service:  http://localhost:3005"
+  echo -e "   ⭐ Review Service:     http://localhost:3006"
+  echo ""
+  echo -e "${YELLOW}💡 Pour configurer nginx avec www.viridial.com:${NC}"
+  echo -e "   ${BLUE}sudo ./deploy-production.sh${NC}"
+  echo ""
 fi
 
 
