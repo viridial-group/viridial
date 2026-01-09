@@ -220,10 +220,28 @@ MINIO_ROOT_USER=minioadmin" .env
   cd "$PROJECT_ROOT/frontend/web"
   
   echo -e "${BLUE}📦 Compilation du frontend avec SASS...${NC}"
+  
+  # S'assurer que les chemins communs sont dans le PATH
+  export PATH="/usr/local/bin:/opt/homebrew/bin:$HOME/.local/share/pnpm:$PATH"
+  
+  # Détecter pnpm (vérifier plusieurs chemins possibles)
+  PNPM_CMD=""
+  if command -v pnpm >/dev/null 2>&1; then
+    PNPM_CMD="pnpm"
+  elif [ -x "/usr/local/bin/pnpm" ]; then
+    PNPM_CMD="/usr/local/bin/pnpm"
+  elif [ -x "/opt/homebrew/bin/pnpm" ]; then
+    PNPM_CMD="/opt/homebrew/bin/pnpm"
+  elif [ -x "$HOME/.local/share/pnpm/pnpm" ]; then
+    PNPM_CMD="$HOME/.local/share/pnpm/pnpm"
+  elif [ -x "$HOME/.pnpm-store/pnpm" ]; then
+    PNPM_CMD="$HOME/.pnpm-store/pnpm"
+  fi
+  
   if [ ! -d "node_modules" ]; then
-    echo -e "${YELLOW}⚠️  node_modules manquant. Exécution de pnpm install...${NC}"
-    if command -v pnpm >/dev/null 2>&1; then
-      pnpm install
+    if [ -n "$PNPM_CMD" ]; then
+      echo -e "${YELLOW}⚠️  node_modules manquant. Exécution de pnpm install...${NC}"
+      $PNPM_CMD install
     elif command -v npm >/dev/null 2>&1; then
       echo -e "${YELLOW}⚠️  pnpm non trouvé, utilisation de npm...${NC}"
       npm install
@@ -235,10 +253,13 @@ MINIO_ROOT_USER=minioadmin" .env
   
   # Démarrer le serveur de développement Next.js (en arrière-plan)
   echo -e "${BLUE}🚀 Démarrage du serveur de développement Next.js...${NC}"
-  if command -v pnpm >/dev/null 2>&1; then
-    pnpm run dev > /tmp/nextjs-dev.log 2>&1 &
-  else
+  if [ -n "$PNPM_CMD" ]; then
+    $PNPM_CMD run dev > /tmp/nextjs-dev.log 2>&1 &
+  elif command -v npm >/dev/null 2>&1; then
     npm run dev > /tmp/nextjs-dev.log 2>&1 &
+  else
+    echo -e "${RED}❌ Impossible de démarrer le serveur: ni pnpm ni npm trouvé${NC}"
+    exit 1
   fi
   NEXTJS_PID=$!
   echo $NEXTJS_PID > /tmp/nextjs.pid
@@ -303,12 +324,33 @@ else
     
     # Démarrer le frontend en production
     cd frontend/web
+    
+    # S'assurer que les chemins communs sont dans le PATH
+    export PATH="/usr/local/bin:/opt/homebrew/bin:$HOME/.local/share/pnpm:$PATH"
+    
+    # Détecter pnpm (vérifier plusieurs chemins possibles)
+    PNPM_CMD=""
     if command -v pnpm >/dev/null 2>&1; then
-      pnpm run build
-      pm2 start pnpm --name "frontend" -- start || pm2 restart frontend
-    else
+      PNPM_CMD="pnpm"
+    elif [ -x "/usr/local/bin/pnpm" ]; then
+      PNPM_CMD="/usr/local/bin/pnpm"
+    elif [ -x "/opt/homebrew/bin/pnpm" ]; then
+      PNPM_CMD="/opt/homebrew/bin/pnpm"
+    elif [ -x "$HOME/.local/share/pnpm/pnpm" ]; then
+      PNPM_CMD="$HOME/.local/share/pnpm/pnpm"
+    elif [ -x "$HOME/.pnpm-store/pnpm" ]; then
+      PNPM_CMD="$HOME/.pnpm-store/pnpm"
+    fi
+    
+    if [ -n "$PNPM_CMD" ]; then
+      $PNPM_CMD run build
+      pm2 start $PNPM_CMD --name "frontend" -- start || pm2 restart frontend
+    elif command -v npm >/dev/null 2>&1; then
       npm run build
       pm2 start npm --name "frontend" -- start || pm2 restart frontend
+    else
+      echo -e "${RED}❌ Impossible de builder le frontend: ni pnpm ni npm trouvé${NC}"
+      exit 1
     fi
     cd "$PROJECT_ROOT"
     
