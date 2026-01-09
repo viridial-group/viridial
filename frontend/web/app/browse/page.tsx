@@ -17,6 +17,7 @@ import { Badge } from '@/components/ui/badge';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from '@/contexts/I18nContext';
 import { 
   MapPin, 
   Bed, 
@@ -30,6 +31,7 @@ import {
 } from 'lucide-react';
 
 export default function BrowsePropertiesPage() {
+  const { t } = useTranslation();
   const propertyService = usePropertyService();
   const { isAuthenticated } = useAuth();
   const [properties, setProperties] = useState<Property[]>([]);
@@ -92,7 +94,7 @@ export default function BrowsePropertiesPage() {
         <main className="flex flex-1 items-center justify-center px-4">
           <div className="text-center">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-3 border-viridial-200 border-t-primary mb-4"></div>
-            <div className="text-base font-medium text-gray-700">Chargement des propriétés...</div>
+            <div className="text-base font-medium text-gray-700">{t('search.browse.loading')}</div>
           </div>
         </main>
         <Footer />
@@ -115,19 +117,19 @@ export default function BrowsePropertiesPage() {
             <div className="text-center text-white">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 text-white text-sm font-medium mb-6">
                 <Sparkles className="h-4 w-4" />
-                Découvrez nos propriétés écologiques
+                {t('search.browse.hero.badge')}
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-                Propriétés Disponibles
+                {t('search.browse.hero.title')}
               </h1>
               <p className="text-xl md:text-2xl text-viridial-50 max-w-3xl mx-auto mb-8">
-                Trouvez votre prochain logement durable parmi notre sélection de propriétés certifiées
+                {t('search.browse.hero.subtitle')}
               </p>
               {isAuthenticated && (
                 <Link href="/properties">
                   <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white/10 backdrop-blur-sm">
                     <Home className="mr-2 h-5 w-5" />
-                    Mes Propriétés
+                    {t('search.browse.hero.myProperties')}
                   </Button>
                 </Link>
               )}
@@ -151,10 +153,10 @@ export default function BrowsePropertiesPage() {
                 <CardContent className="pt-12 pb-12 text-center">
                   <Home className="h-16 w-16 text-gray-300 mx-auto mb-4" />
                   <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                    Aucune propriété disponible
+                    {t('search.browse.empty.title')}
                   </h3>
                   <p className="text-gray-600">
-                    Revenez bientôt pour découvrir nos nouvelles propriétés.
+                    {t('search.browse.empty.description')}
                   </p>
                 </CardContent>
               </Card>
@@ -191,7 +193,7 @@ export default function BrowsePropertiesPage() {
                           {isEco && (
                             <Badge className="bg-viridial-500 text-white border-0 shadow-lg backdrop-blur-sm">
                               <Leaf className="h-3 w-3 mr-1" />
-                              Éco-certifié
+                              {t('search.browse.ecoCertified')}
                             </Badge>
                           )}
                           <Badge className="bg-white/90 text-gray-900 border-0 shadow-lg backdrop-blur-sm capitalize">
@@ -255,7 +257,7 @@ export default function BrowsePropertiesPage() {
                           <Button 
                             className="w-full bg-gradient-to-r from-viridial-500 via-viridial-600 to-viridial-700 hover:from-viridial-600 hover:via-viridial-700 hover:to-viridial-800 text-white border-0 shadow-lg hover:shadow-xl transition-all group/btn"
                           >
-                            Voir les détails
+                            {t('search.browse.viewDetails')}
                             <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
                           </Button>
                         </Link>

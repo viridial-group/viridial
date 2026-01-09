@@ -26,6 +26,27 @@
     "apartment": "Appartement",
     "land": "Terrain",
     "commercial": "Commercial"
-  }
+  },
+  "list": {
+    "hero": {
+      "title": "Mes Propriétés",
+      "subtitle": "Gérez toutes vos annonces immobilières en un seul endroit",
+      "newProperty": "Nouvelle Propriété"
+    },
+    "empty": {
+      "title": "Aucune propriété pour le moment",
+      "description": "Commencez à créer votre première propriété et gérez facilement toutes vos annonces immobilières depuis un seul endroit.",
+      "action": "Créer votre première propriété"
+    },
+    "actions": {
+      "view": "Voir",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "upload": "Télécharger"
+    },
+    "loading": "Chargement..."
+  },
+  "delete": "Supprimer la propriété",
+  "deleteConfirmation": "Êtes-vous sûr de vouloir supprimer cette propriété ? Cette action est irréversible."
 }
 

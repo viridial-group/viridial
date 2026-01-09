@@ -27,6 +27,26 @@
     "bedrooms": "chambres",
     "bathrooms": "salles de bain",
     "surface": "m²"
+  },
+  "browse": {
+    "hero": {
+      "badge": "Découvrez nos propriétés écologiques",
+      "title": "Propriétés Disponibles",
+      "subtitle": "Trouvez votre prochain logement durable parmi notre sélection de propriétés certifiées",
+      "myProperties": "Mes Propriétés"
+    },
+    "empty": {
+      "title": "Aucune propriété disponible",
+      "description": "Revenez bientôt pour découvrir nos nouvelles propriétés."
+    },
+    "loading": "Chargement des propriétés...",
+    "ecoCertified": "Éco-certifié",
+    "viewDetails": "Voir détails",
+    "favorite": "Ajouter aux favoris",
+    "unfavorite": "Retirer des favoris",
+    "bedrooms": "chambres",
+    "bathrooms": "salles de bain",
+    "surface": "m²"
   }
 }
 

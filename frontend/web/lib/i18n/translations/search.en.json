@@ -1,32 +1,51 @@
 {
-  "title": "Rechercher une propriété",
-  "placeholder": "Rechercher une propriété, un lieu, une adresse...",
-  "noResults": "Aucun résultat trouvé",
-  "resultsCount": "{{count}} résultat(s) trouvé(s)",
-  "filters": "Filtres",
-  "priceRange": "Fourchette de prix",
-  "propertyType": "Type de propriété",
-  "status": "Statut",
-  "sortBy": "Trier par",
-  "sortRelevance": "Pertinence",
-  "sortPriceAsc": "Prix croissant",
-  "sortPriceDesc": "Prix décroissant",
+  "title": "Search for a property",
+  "placeholder": "Search for a property, location, address...",
+  "noResults": "No results found",
+  "resultsCount": "{{count}} result(s) found",
+  "filters": "Filters",
+  "priceRange": "Price range",
+  "propertyType": "Property type",
+  "status": "Status",
+  "sortBy": "Sort by",
+  "sortRelevance": "Relevance",
+  "sortPriceAsc": "Price ascending",
+  "sortPriceDesc": "Price descending",
   "sortDistance": "Distance",
-  "viewMode": "Mode d'affichage",
-  "list": "Liste",
-  "grid": "Grille",
-  "map": "Carte",
+  "viewMode": "View mode",
+  "list": "List",
+  "grid": "Grid",
+  "map": "Map",
   "quickFilters": {
-    "ecoCertified": "Éco-certifié",
-    "newListings": "Nouveautés",
-    "priceReduced": "Prix réduits",
-    "featured": "À la une"
+    "ecoCertified": "Eco-certified",
+    "newListings": "New listings",
+    "priceReduced": "Price reduced",
+    "featured": "Featured"
   },
   "property": {
-    "viewDetails": "Voir détails",
-    "bedrooms": "chambres",
-    "bathrooms": "salles de bain",
+    "viewDetails": "View details",
+    "bedrooms": "bedrooms",
+    "bathrooms": "bathrooms",
+    "surface": "m²"
+  },
+  "browse": {
+    "hero": {
+      "badge": "Discover our eco-friendly properties",
+      "title": "Available Properties",
+      "subtitle": "Find your next sustainable home among our selection of certified properties",
+      "myProperties": "My Properties"
+    },
+    "empty": {
+      "title": "No properties available",
+      "description": "Come back soon to discover our new properties."
+    },
+    "loading": "Loading properties...",
+    "ecoCertified": "Eco-certified",
+    "viewDetails": "View details",
+    "favorite": "Add to favorites",
+    "unfavorite": "Remove from favorites",
+    "bedrooms": "bedrooms",
+    "bathrooms": "bathrooms",
     "surface": "m²"
   }
 }
-

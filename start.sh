@@ -238,15 +238,42 @@ MINIO_ROOT_USER=minioadmin" .env
     PNPM_CMD="$HOME/.pnpm-store/pnpm"
   fi
   
+  # Détecter npm (vérifier plusieurs chemins possibles)
+  NPM_CMD=""
+  if command -v npm >/dev/null 2>&1; then
+    NPM_CMD="npm"
+  elif [ -x "/usr/local/bin/npm" ]; then
+    NPM_CMD="/usr/local/bin/npm"
+  elif [ -x "/opt/homebrew/bin/npm" ]; then
+    NPM_CMD="/opt/homebrew/bin/npm"
+  elif [ -x "$(which node 2>/dev/null | sed 's|/node$|/npm|')" ]; then
+    # Essayer de trouver npm dans le même répertoire que node
+    NODE_PATH=$(which node 2>/dev/null)
+    if [ -n "$NODE_PATH" ] && [ -x "${NODE_PATH%/*}/npm" ]; then
+      NPM_CMD="${NODE_PATH%/*}/npm"
+    fi
+  fi
+  
   if [ ! -d "node_modules" ]; then
     if [ -n "$PNPM_CMD" ]; then
       echo -e "${YELLOW}⚠️  node_modules manquant. Exécution de pnpm install...${NC}"
       $PNPM_CMD install
-    elif command -v npm >/dev/null 2>&1; then
+    elif [ -n "$NPM_CMD" ]; then
       echo -e "${YELLOW}⚠️  pnpm non trouvé, utilisation de npm...${NC}"
-      npm install
+      $NPM_CMD install
     else
-      echo -e "${RED}❌ pnpm et npm non trouvés. Veuillez installer pnpm: npm install -g pnpm${NC}"
+      echo -e "${RED}❌ pnpm et npm non trouvés.${NC}"
+      echo -e "${YELLOW}💡 Solutions possibles:${NC}"
+      echo -e "   1. Installez Node.js (qui inclut npm): https://nodejs.org/"
+      echo -e "   2. Ou installez pnpm globalement: ${BLUE}npm install -g pnpm${NC}"
+      echo -e "   3. Ou utilisez nvm pour gérer Node.js: ${BLUE}curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash${NC}"
+      echo -e "${YELLOW}📋 Vérification de Node.js:${NC}"
+      if command -v node >/dev/null 2>&1; then
+        echo -e "   ✅ Node.js trouvé: $(command -v node) ($(node --version 2>/dev/null || echo 'version inconnue'))"
+      else
+        echo -e "   ❌ Node.js non trouvé dans PATH"
+        echo -e "   💡 Vérifiez si Node.js est installé: ${BLUE}ls -la /usr/local/bin/node /opt/homebrew/bin/node${NC}"
+      fi
       exit 1
     fi
   fi
@@ -255,12 +282,13 @@ MINIO_ROOT_USER=minioadmin" .env
   echo -e "${BLUE}🚀 Démarrage du serveur de développement Next.js...${NC}"
   if [ -n "$PNPM_CMD" ]; then
     $PNPM_CMD run dev > /tmp/nextjs-dev.log 2>&1 &
-  elif command -v npm >/dev/null 2>&1; then
-    npm run dev > /tmp/nextjs-dev.log 2>&1 &
-  else
-    echo -e "${RED}❌ Impossible de démarrer le serveur: ni pnpm ni npm trouvé${NC}"
-    exit 1
-  fi
+  elif [ -n "$NPM_CMD" ]; then
+    $NPM_CMD run dev > /tmp/nextjs-dev.log 2>&1 &
+    else
+      echo -e "${RED}❌ Impossible de démarrer le serveur: ni pnpm ni npm trouvé${NC}"
+      echo -e "${YELLOW}💡 Solutions: Installez Node.js ou pnpm (voir messages ci-dessus)${NC}"
+      exit 1
+    fi
   NEXTJS_PID=$!
   echo $NEXTJS_PID > /tmp/nextjs.pid
   sleep 5
@@ -342,14 +370,31 @@ else
       PNPM_CMD="$HOME/.pnpm-store/pnpm"
     fi
     
+    # Détecter npm (vérifier plusieurs chemins possibles)
+    NPM_CMD=""
+    if command -v npm >/dev/null 2>&1; then
+      NPM_CMD="npm"
+    elif [ -x "/usr/local/bin/npm" ]; then
+      NPM_CMD="/usr/local/bin/npm"
+    elif [ -x "/opt/homebrew/bin/npm" ]; then
+      NPM_CMD="/opt/homebrew/bin/npm"
+    elif [ -x "$(which node 2>/dev/null | sed 's|/node$|/npm|')" ]; then
+      # Essayer de trouver npm dans le même répertoire que node
+      NODE_PATH=$(which node 2>/dev/null)
+      if [ -n "$NODE_PATH" ] && [ -x "${NODE_PATH%/*}/npm" ]; then
+        NPM_CMD="${NODE_PATH%/*}/npm"
+      fi
+    fi
+    
     if [ -n "$PNPM_CMD" ]; then
       $PNPM_CMD run build
       pm2 start $PNPM_CMD --name "frontend" -- start || pm2 restart frontend
-    elif command -v npm >/dev/null 2>&1; then
-      npm run build
-      pm2 start npm --name "frontend" -- start || pm2 restart frontend
+    elif [ -n "$NPM_CMD" ]; then
+      $NPM_CMD run build
+      pm2 start $NPM_CMD --name "frontend" -- start || pm2 restart frontend
     else
       echo -e "${RED}❌ Impossible de builder le frontend: ni pnpm ni npm trouvé${NC}"
+      echo -e "${YELLOW}💡 Installez Node.js ou pnpm (voir messages ci-dessus)${NC}"
       exit 1
     fi
     cd "$PROJECT_ROOT"
@@ -372,4 +417,5 @@ else
   echo ""
   echo -e "${GREEN}✅ Services démarrés en mode production${NC}"
 fi
+
 

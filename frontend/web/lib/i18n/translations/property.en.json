@@ -1,31 +1,52 @@
 {
-  "title": "Titre",
+  "title": "Title",
   "description": "Description",
-  "price": "Prix",
-  "location": "Localisation",
+  "price": "Price",
+  "location": "Location",
   "type": "Type",
-  "status": "Statut",
-  "bedrooms": "Chambres",
-  "bathrooms": "Salles de bain",
+  "status": "Status",
+  "bedrooms": "Bedrooms",
+  "bathrooms": "Bathrooms",
   "surface": "Surface",
-  "created": "Créé le",
-  "updated": "Mis à jour le",
-  "viewDetails": "Voir les détails",
-  "edit": "Modifier la propriété",
-  "delete": "Supprimer la propriété",
+  "created": "Created on",
+  "updated": "Updated on",
+  "viewDetails": "View details",
+  "edit": "Edit property",
+  "delete": "Delete property",
   "statuses": {
-    "draft": "Brouillon",
-    "pending": "En attente",
-    "listed": "Publié",
-    "sold": "Vendu",
-    "rented": "Loué",
-    "archived": "Archivé"
+    "draft": "Draft",
+    "pending": "Pending",
+    "listed": "Listed",
+    "sold": "Sold",
+    "rented": "Rented",
+    "archived": "Archived"
   },
   "types": {
-    "house": "Maison",
-    "apartment": "Appartement",
-    "land": "Terrain",
+    "house": "House",
+    "apartment": "Apartment",
+    "land": "Land",
     "commercial": "Commercial"
-  }
+  },
+  "list": {
+    "hero": {
+      "title": "My Properties",
+      "subtitle": "Manage all your real estate listings in one place",
+      "newProperty": "New Property"
+    },
+    "empty": {
+      "title": "No properties yet",
+      "description": "Start creating your first property and easily manage all your real estate listings from one place.",
+      "action": "Create your first property"
+    },
+    "actions": {
+      "view": "View",
+      "edit": "Edit",
+      "delete": "Delete",
+      "upload": "Upload"
+    },
+    "loading": "Loading..."
+  },
+  "delete": "Delete property",
+  "deleteConfirmation": "Are you sure you want to delete this property? This action is irreversible."
 }
 

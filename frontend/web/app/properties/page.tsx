@@ -20,11 +20,13 @@ import { useToast } from '@/components/ui/simple-toast';
 import { useConfirm } from '@/components/ui/simple-alert-dialog';
 import { PropertyListSkeleton } from '@/components/ui/loading-skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
+import { useTranslation } from '@/contexts/I18nContext';
 import { Home, Plus, MapPin, Eye, Edit, Trash2, Upload, Sparkles } from 'lucide-react';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 
 export default function PropertiesPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const propertyService = usePropertyService();
@@ -62,10 +64,10 @@ export default function PropertiesPage() {
 
   const handleDelete = async (id: string) => {
     confirm({
-      title: 'Supprimer la propriété',
-      description: 'Êtes-vous sûr de vouloir supprimer cette propriété ? Cette action est irréversible.',
+      title: t('property.delete'),
+      description: t('property.deleteConfirmation'),
       variant: 'danger',
-      confirmLabel: 'Supprimer',
+      confirmLabel: t('common.delete'),
       onConfirm: async () => {
         try {
           await propertyService.delete(id);
@@ -179,16 +181,16 @@ export default function PropertiesPage() {
             <div className="flex items-center justify-between flex-wrap gap-4">
               <div>
                 <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-                  Mes Propriétés
+                  {t('property.list.hero.title')}
                 </h1>
                 <p className="text-lg text-viridial-50">
-                  Gérez toutes vos annonces immobilières en un seul endroit
+                  {t('property.list.hero.subtitle')}
                 </p>
               </div>
               <Link href="/properties/new">
                 <Button size="lg" className="bg-white text-viridial-600 hover:bg-gray-50 border-0 shadow-xl hover:shadow-2xl transition-all">
                   <Plus className="mr-2 h-5 w-5" />
-                  Nouvelle Propriété
+                  {t('property.list.hero.newProperty')}
                 </Button>
               </Link>
             </div>
@@ -210,9 +212,9 @@ export default function PropertiesPage() {
           {properties.length === 0 ? (
             <EmptyState
               icon={Home}
-              title="Aucune propriété pour le moment"
-              description="Commencez à créer votre première propriété et gérez facilement toutes vos annonces immobilières depuis un seul endroit."
-              actionLabel="Créer votre première propriété"
+              title={t('property.list.empty.title')}
+              description={t('property.list.empty.description')}
+              actionLabel={t('property.list.empty.action')}
               actionHref="/properties/new"
               className="fade-in"
             />
@@ -279,13 +281,13 @@ export default function PropertiesPage() {
                         <Link href={`/properties/${property.id}`} className="flex-1 min-w-[90px]">
                           <Button variant="outline" size="sm" className="w-full border-gray-300 hover:bg-gray-50 text-sm transition-all">
                             <Eye className="mr-1.5 h-4 w-4" />
-                            Voir
+                            {t('property.list.actions.view')}
                           </Button>
                         </Link>
                         <Link href={`/properties/${property.id}/edit`} className="flex-1 min-w-[90px]">
                           <Button variant="outline" size="sm" className="w-full border-gray-300 hover:bg-gray-50 text-sm transition-all">
                             <Edit className="mr-1.5 h-4 w-4" />
-                            Modifier
+                            {t('property.list.actions.edit')}
                           </Button>
                         </Link>
                         {property.status !== PropertyStatus.LISTED && (
