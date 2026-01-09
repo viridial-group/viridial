@@ -97,9 +97,10 @@ export default function PropertiesPage() {
 
   if (authLoading || isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="text-lg">Chargement...</div>
+          <div className="inline-block animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-green-600 mb-4"></div>
+          <div className="text-sm font-medium text-gray-700">Chargement...</div>
         </div>
       </div>
     );
@@ -110,87 +111,90 @@ export default function PropertiesPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-screen flex-col bg-gray-50">
       <Header />
       <main className="flex flex-1 flex-col px-4 py-8 sm:px-6 lg:px-8">
         <div className="container mx-auto max-w-7xl">
-          <div className="mb-6 flex items-center justify-between">
+          <div className="mb-8 flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-semibold text-[var(--color-primary)]">
+              <h1 className="text-2xl font-semibold text-gray-900">
                 Mes Propriétés
               </h1>
-              <p className="mt-1 text-sm text-[var(--color-muted)]">
+              <p className="mt-1.5 text-sm text-gray-500">
                 Gérez vos annonces immobilières
               </p>
             </div>
             <Link href="/properties/new">
-              <Button className="rounded-md">
+              <Button className="bg-green-600 hover:bg-green-700 text-white border-0">
                 + Nouvelle Propriété
               </Button>
             </Link>
           </div>
 
           {error && (
-            <Card className="mb-6 border-red-500 bg-red-50">
+            <Card className="mb-6 border border-red-200 bg-red-50">
               <CardContent className="pt-6">
-                <p className="text-red-700">{error}</p>
+                <p className="text-sm font-medium text-red-700">{error}</p>
               </CardContent>
             </Card>
           )}
 
           {properties.length === 0 ? (
-            <Card>
-              <CardContent className="pt-6 text-center">
-                <p className="text-[var(--color-muted)] mb-4">
+            <Card className="border border-gray-200">
+              <CardContent className="pt-12 pb-12 text-center">
+                <p className="text-gray-600 mb-6 font-medium">
                   Vous n'avez pas encore de propriétés.
                 </p>
                 <Link href="/properties/new">
-                  <Button>Créer votre première propriété</Button>
+                  <Button className="bg-green-600 hover:bg-green-700 text-white">
+                    Créer votre première propriété
+                  </Button>
                 </Link>
               </CardContent>
             </Card>
           ) : (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {properties.map((property) => {
                 const mainTranslation = property.translations[0];
                 return (
-                  <Card key={property.id} className="hover:shadow-lg transition-shadow">
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <CardTitle className="text-lg">
+                  <Card key={property.id} className="hover:shadow-md transition-all duration-200 border border-gray-200 bg-white">
+                    <CardHeader className="pb-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <CardTitle className="text-base font-semibold text-gray-900 line-clamp-2 flex-1">
                           {mainTranslation?.title || 'Sans titre'}
                         </CardTitle>
                         <span
-                          className={`px-2 py-1 text-xs text-white rounded ${getStatusColor(
+                          className={`px-2.5 py-1 text-xs font-semibold text-white rounded-md border border-gray-300 ${getStatusColor(
                             property.status,
                           )}`}
                         >
                           {getStatusLabel(property.status)}
                         </span>
                       </div>
-                      <CardDescription>
-                        {property.type} • {property.city || 'Ville non spécifiée'}
+                      <CardDescription className="text-xs text-gray-500 mt-2">
+                        <span className="capitalize">{property.type}</span>
+                        {property.city && <span> • {property.city}</span>}
                       </CardDescription>
                     </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2 mb-4">
-                        <p className="text-2xl font-bold text-[var(--color-primary)]">
+                    <CardContent className="pt-0">
+                      <div className="space-y-3 mb-5">
+                        <p className="text-xl font-bold text-gray-900">
                           {property.price.toLocaleString()} {property.currency}
                         </p>
                         {mainTranslation?.description && (
-                          <p className="text-sm text-[var(--color-muted)] line-clamp-2">
+                          <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed">
                             {mainTranslation.description}
                           </p>
                         )}
                       </div>
-                      <div className="flex gap-2 flex-wrap">
-                        <Link href={`/properties/${property.id}`} className="flex-1">
-                          <Button variant="outline" size="sm" className="w-full">
+                      <div className="flex gap-2 flex-wrap pt-3 border-t border-gray-200">
+                        <Link href={`/properties/${property.id}`} className="flex-1 min-w-[80px]">
+                          <Button variant="outline" size="sm" className="w-full border-gray-300 hover:bg-gray-50 text-sm">
                             Voir
                           </Button>
                         </Link>
-                        <Link href={`/properties/${property.id}/edit`} className="flex-1">
-                          <Button variant="outline" size="sm" className="w-full">
+                        <Link href={`/properties/${property.id}/edit`} className="flex-1 min-w-[80px]">
+                          <Button variant="outline" size="sm" className="w-full border-gray-300 hover:bg-gray-50 text-sm">
                             Modifier
                           </Button>
                         </Link>
@@ -198,7 +202,7 @@ export default function PropertiesPage() {
                           <Button
                             variant="success"
                             size="sm"
-                            className="flex-1"
+                            className="flex-1 min-w-[80px] text-sm bg-green-600 hover:bg-green-700"
                             onClick={() => handlePublish(property.id)}
                           >
                             Publier
@@ -207,6 +211,7 @@ export default function PropertiesPage() {
                         <Button
                           variant="danger"
                           size="sm"
+                          className="text-sm bg-red-600 hover:bg-red-700 border-0"
                           onClick={() => handleDelete(property.id)}
                         >
                           Supprimer
