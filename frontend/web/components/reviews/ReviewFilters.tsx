@@ -45,7 +45,20 @@ export const ReviewFilters = memo(function ReviewFilters({
 
   const activeFiltersCount = Object.keys(filters).filter((key) => {
     const value = filters[key as keyof typeof filters];
-    return value !== undefined && value !== null && value !== '';
+    // Handle different types correctly
+    if (value === undefined || value === null) {
+      return false;
+    }
+    // For numbers, check if > 0 (minRating, maxRating)
+    if (typeof value === 'number') {
+      return value > 0;
+    }
+    // For booleans, only count if true
+    if (typeof value === 'boolean') {
+      return value === true;
+    }
+    // For ReviewSortBy (enum/string), always count as active if defined
+    return true;
   }).length;
 
   const clearAllFilters = () => {

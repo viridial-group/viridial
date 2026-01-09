@@ -20,7 +20,9 @@ import { useToast } from '@/components/ui/simple-toast';
 import { useConfirm } from '@/components/ui/simple-alert-dialog';
 import { PropertyListSkeleton } from '@/components/ui/loading-skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
-import { Home, Plus } from 'lucide-react';
+import { Home, Plus, MapPin, Eye, Edit, Trash2, Upload, Sparkles } from 'lucide-react';
+import Image from 'next/image';
+import { Badge } from '@/components/ui/badge';
 
 export default function PropertiesPage() {
   const router = useRouter();
@@ -163,28 +165,42 @@ export default function PropertiesPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50">
+    <div className="flex min-h-screen flex-col bg-gradient-to-br from-gray-50 via-white to-viridial-50/30">
       <Header />
-      <main id="main-content" className="flex flex-1 flex-col px-4 py-8 sm:px-6 lg:px-8 page-transition">
-        <div className="container mx-auto max-w-7xl">
-          <div className="mb-8 flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-semibold text-gray-900">
-                Mes Propriétés
-              </h1>
-              <p className="mt-1.5 text-sm text-gray-500">
-                Gérez vos annonces immobilières
-              </p>
-            </div>
-            <Link href="/properties/new">
-              <Button className="bg-primary hover:bg-viridial-700 text-white border-0 btn-press scale-on-hover">
-                + Nouvelle Propriété
-              </Button>
-            </Link>
+      <main id="main-content" className="flex flex-1 flex-col page-transition">
+        {/* Hero Section */}
+        <section className="relative bg-gradient-to-br from-viridial-600 via-viridial-500 to-teal-500 py-12 lg:py-16 overflow-hidden">
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute top-10 left-10 w-72 h-72 bg-white rounded-full opacity-10 blur-3xl animate-pulse"></div>
+            <div className="absolute bottom-10 right-10 w-72 h-72 bg-white rounded-full opacity-10 blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
           </div>
+          
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div>
+                <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
+                  Mes Propriétés
+                </h1>
+                <p className="text-lg text-viridial-50">
+                  Gérez toutes vos annonces immobilières en un seul endroit
+                </p>
+              </div>
+              <Link href="/properties/new">
+                <Button size="lg" className="bg-white text-viridial-600 hover:bg-gray-50 border-0 shadow-xl hover:shadow-2xl transition-all">
+                  <Plus className="mr-2 h-5 w-5" />
+                  Nouvelle Propriété
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Properties Grid */}
+        <section className="py-8 lg:py-12 px-4 sm:px-6 lg:px-8">
+          <div className="container mx-auto max-w-7xl">
 
           {error && (
-            <Card className="mb-6 border border-red-200 bg-red-50">
+            <Card className="mb-8 border-2 border-red-200 bg-red-50 shadow-lg">
               <CardContent className="pt-6">
                 <p className="text-sm font-medium text-red-700">{error}</p>
               </CardContent>
@@ -201,37 +217,56 @@ export default function PropertiesPage() {
               className="fade-in"
             />
           ) : (
-            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {properties.map((property, index) => {
                 const mainTranslation = property.translations[0];
+                const imageUrl = property.mediaUrls && property.mediaUrls.length > 0
+                  ? property.mediaUrls[0]
+                  : `https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&h=600&fit=crop&q=80`;
+                
                 return (
                   <Card 
                     key={property.id} 
-                    className="stagger-item card-hover border border-gray-200 bg-white overflow-hidden cursor-pointer group"
+                    className="group border-2 border-gray-200 hover:border-viridial-300 hover:shadow-2xl transition-all duration-300 overflow-hidden bg-white cursor-pointer animate-fade-in"
+                    style={{ animationDelay: `${index * 50}ms` }}
                     onClick={() => router.push(`/properties/${property.id}`)}
                   >
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between gap-2">
-                        <CardTitle className="text-base font-semibold text-gray-900 line-clamp-2 flex-1 group-hover:text-primary transition-colors duration-200">
-                          {mainTranslation?.title || 'Sans titre'}
-                        </CardTitle>
-                        <span
-                          className={`px-2.5 py-1 text-xs font-semibold text-white rounded-md border border-gray-300 ${getStatusColor(
-                            property.status,
-                          )}`}
+                    {/* Image Section */}
+                    <div className="relative h-48 w-full overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
+                      <Image
+                        src={imageUrl}
+                        alt={mainTranslation?.title || 'Propriété'}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-500"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      
+                      {/* Status Badge */}
+                      <div className="absolute top-4 right-4">
+                        <Badge 
+                          className={`${getStatusColor(property.status)} text-white border-0 shadow-lg backdrop-blur-sm`}
                         >
                           {getStatusLabel(property.status)}
-                        </span>
+                        </Badge>
                       </div>
-                      <CardDescription className="text-xs text-gray-500 mt-2">
+                    </div>
+
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg font-bold text-gray-900 line-clamp-2 group-hover:text-viridial-600 transition-colors duration-200">
+                        {mainTranslation?.title || 'Sans titre'}
+                      </CardTitle>
+                      <CardDescription className="flex items-center gap-1 text-sm text-gray-600 mt-2">
+                        <MapPin className="h-4 w-4 text-viridial-500" />
                         <span className="capitalize">{property.type}</span>
                         {property.city && <span> • {property.city}</span>}
                       </CardDescription>
                     </CardHeader>
+
                     <CardContent className="pt-0">
                       <div className="space-y-3 mb-5">
-                        <p className="text-xl font-bold text-gray-900">
-                          {property.price.toLocaleString()} {property.currency}
+                        <p className="text-2xl font-bold text-gray-900">
+                          {property.price.toLocaleString('fr-FR')} {property.currency}
                         </p>
                         {mainTranslation?.description && (
                           <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed">
@@ -239,40 +274,44 @@ export default function PropertiesPage() {
                           </p>
                         )}
                       </div>
-                      <div className="flex gap-2 flex-wrap pt-3 border-t border-gray-200" onClick={(e) => e.stopPropagation()}>
-                        <Link href={`/properties/${property.id}`} className="flex-1 min-w-[80px]">
-                          <Button variant="outline" size="sm" className="w-full border-gray-300 hover:bg-gray-50 text-sm btn-press scale-on-hover">
+                      
+                      <div className="flex gap-2 flex-wrap pt-4 border-t border-gray-200" onClick={(e) => e.stopPropagation()}>
+                        <Link href={`/properties/${property.id}`} className="flex-1 min-w-[90px]">
+                          <Button variant="outline" size="sm" className="w-full border-gray-300 hover:bg-gray-50 text-sm transition-all">
+                            <Eye className="mr-1.5 h-4 w-4" />
                             Voir
                           </Button>
                         </Link>
-                        <Link href={`/properties/${property.id}/edit`} className="flex-1 min-w-[80px]">
-                          <Button variant="outline" size="sm" className="w-full border-gray-300 hover:bg-gray-50 text-sm btn-press scale-on-hover">
+                        <Link href={`/properties/${property.id}/edit`} className="flex-1 min-w-[90px]">
+                          <Button variant="outline" size="sm" className="w-full border-gray-300 hover:bg-gray-50 text-sm transition-all">
+                            <Edit className="mr-1.5 h-4 w-4" />
                             Modifier
                           </Button>
                         </Link>
                         {property.status !== PropertyStatus.LISTED && (
-                        <Button
-                          variant="success"
-                          size="sm"
-                          className="flex-1 min-w-[80px] text-sm bg-primary hover:bg-viridial-700 btn-press scale-on-hover"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handlePublish(property.id);
-                          }}
-                        >
-                          Publier
-                        </Button>
+                          <Button
+                            variant="success"
+                            size="sm"
+                            className="flex-1 min-w-[90px] text-sm bg-gradient-to-r from-viridial-500 to-viridial-600 hover:from-viridial-600 hover:to-viridial-700 text-white border-0 shadow-md hover:shadow-lg transition-all"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handlePublish(property.id);
+                            }}
+                          >
+                            <Upload className="mr-1.5 h-4 w-4" />
+                            Publier
+                          </Button>
                         )}
                         <Button
                           variant="danger"
                           size="sm"
-                          className="btn-press scale-on-hover text-sm bg-red-600 hover:bg-red-700 border-0"
+                          className="text-sm bg-red-600 hover:bg-red-700 text-white border-0 shadow-md hover:shadow-lg transition-all"
                           onClick={(e) => {
                             e.stopPropagation();
                             handleDelete(property.id);
                           }}
                         >
-                          Supprimer
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </CardContent>

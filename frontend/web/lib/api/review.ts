@@ -131,7 +131,7 @@ function getAuthToken(): string | null {
  * Create headers with authentication
  */
 function getHeaders(): HeadersInit {
-  const headers: HeadersInit = {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   };
 

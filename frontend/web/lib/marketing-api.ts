@@ -15,9 +15,9 @@ async function marketingApi(endpoint: string, options: ApiOptions = {}) {
   // Récupérer le token depuis localStorage ou cookies
   const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
-  const headers: HeadersInit = {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    ...fetchOptions.headers,
+    ...(fetchOptions.headers as Record<string, string>),
   };
 
   if (token) {

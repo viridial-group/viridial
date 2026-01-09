@@ -169,7 +169,7 @@ export class PropertyService {
    * Obtenir les headers avec authentification
    */
   private getHeaders(): HeadersInit {
-    const headers: HeadersInit = {
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
 

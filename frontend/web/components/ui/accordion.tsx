@@ -40,7 +40,7 @@ const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(
     const contextValue = React.useMemo<AccordionContextValue>(
       () => ({
         value,
-        onValueChange: (itemValue: string) => {
+        onValueChange: (itemValue: string | null) => {
           if (type === "single") {
             setValue(itemValue === value && collapsible ? null : itemValue)
           }

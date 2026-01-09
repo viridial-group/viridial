@@ -221,13 +221,25 @@ MINIO_ROOT_USER=minioadmin" .env
   
   echo -e "${BLUE}📦 Compilation du frontend avec SASS...${NC}"
   if [ ! -d "node_modules" ]; then
-    echo -e "${YELLOW}⚠️  node_modules manquant. Exécution de npm install...${NC}"
-    npm install
+    echo -e "${YELLOW}⚠️  node_modules manquant. Exécution de pnpm install...${NC}"
+    if command -v pnpm >/dev/null 2>&1; then
+      pnpm install
+    elif command -v npm >/dev/null 2>&1; then
+      echo -e "${YELLOW}⚠️  pnpm non trouvé, utilisation de npm...${NC}"
+      npm install
+    else
+      echo -e "${RED}❌ pnpm et npm non trouvés. Veuillez installer pnpm: npm install -g pnpm${NC}"
+      exit 1
+    fi
   fi
   
   # Démarrer le serveur de développement Next.js (en arrière-plan)
   echo -e "${BLUE}🚀 Démarrage du serveur de développement Next.js...${NC}"
-  npm run dev > /tmp/nextjs-dev.log 2>&1 &
+  if command -v pnpm >/dev/null 2>&1; then
+    pnpm run dev > /tmp/nextjs-dev.log 2>&1 &
+  else
+    npm run dev > /tmp/nextjs-dev.log 2>&1 &
+  fi
   NEXTJS_PID=$!
   echo $NEXTJS_PID > /tmp/nextjs.pid
   sleep 5
@@ -241,10 +253,12 @@ MINIO_ROOT_USER=minioadmin" .env
   echo ""
   echo -e "${BLUE}📊 Services disponibles:${NC}"
   echo -e "   🌐 Frontend:           http://localhost:3000"
-  echo -e "   🔐 Auth Service:       http://localhost:8080"
-  echo -e "   🏠 Property Service:   http://localhost:3001"
-  echo -e "   📍 Geolocation Service: http://localhost:3002"
-  echo -e "   🔍 Search Service:     http://localhost:3003"
+  echo -e "   🔐 Auth Service:       http://localhost:3001"
+  echo -e "   🏠 Property Service:   http://localhost:3002"
+  echo -e "   📍 Geolocation Service: http://localhost:3003"
+  echo -e "   🔍 Search Service:     http://localhost:3004"
+  echo -e "   📢 Marketing Service:  http://localhost:3005"
+  echo -e "   ⭐ Review Service:     http://localhost:3006"
   echo -e "   🗄️  Postgres:           localhost:5432"
   echo -e "   🔴 Redis:              localhost:6379"
   echo -e "   🔎 Meilisearch:        http://localhost:7700"
@@ -289,8 +303,13 @@ else
     
     # Démarrer le frontend en production
     cd frontend/web
-    npm run build
-    pm2 start npm --name "frontend" -- start || pm2 restart frontend
+    if command -v pnpm >/dev/null 2>&1; then
+      pnpm run build
+      pm2 start pnpm --name "frontend" -- start || pm2 restart frontend
+    else
+      npm run build
+      pm2 start npm --name "frontend" -- start || pm2 restart frontend
+    fi
     cd "$PROJECT_ROOT"
     
     echo -e "${GREEN}✅ Services démarrés avec PM2${NC}"
