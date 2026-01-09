@@ -31,47 +31,47 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-[var(--color-neutral-200)]">
+    <div className="flex min-h-screen flex-col bg-gray-50">
       <Header />
       
       <main className="flex flex-1 items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
         <div className="w-full max-w-md">
           <div className="mb-8 text-center">
-            <h1 className="text-2xl font-semibold text-[var(--color-primary)] mb-2">
+            <h1 className="text-2xl font-semibold text-gray-900 mb-2">
               Mot de passe oublié ?
             </h1>
-            <p className="text-sm text-[var(--color-muted)]">
+            <p className="text-sm text-gray-600">
               Entrez votre email pour recevoir un lien de réinitialisation
             </p>
           </div>
 
-          <div className="bg-[var(--color-neutral-100)] border border-[var(--color-neutral-400)] rounded-[var(--radius)] shadow-[0_4px_12px_rgba(11,18,32,0.04)] p-6">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
             {isSubmitted ? (
-              <div className="text-center space-y-4">
-                <div className="rounded-md bg-[var(--color-success)]/15 p-4 text-sm text-[var(--color-success)] border border-[var(--color-success)]/20">
+              <div className="text-center space-y-5">
+                <div className="rounded-md bg-green-50 p-4 text-sm text-green-700 border border-green-200">
                   <p className="font-medium mb-2">✅ Email envoyé !</p>
                   <p>
                     Si cet email est enregistré, un lien de réinitialisation a été envoyé à <strong>{email}</strong>.
                   </p>
-                  <p className="mt-2 text-xs">
+                  <p className="mt-2 text-xs text-gray-600">
                     Vérifiez votre boîte de réception et vos spams. Le lien expirera dans 1 heure.
                   </p>
                 </div>
                 <Link href="/login">
-                  <Button variant="accent" className="w-full">
+                  <Button className="w-full bg-green-600 hover:bg-green-700 text-white border-0">
                     Retour à la connexion
                   </Button>
                 </Link>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-5">
                 {error && (
-                  <div className="mb-4 rounded-md bg-[var(--color-danger)]/15 p-3 text-sm text-[var(--color-danger)] border border-[var(--color-danger)]/20">
+                  <div className="mb-5 rounded-md bg-red-50 p-3.5 text-sm text-red-700 border border-red-200">
                     {error}
                   </div>
                 )}
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="text-[var(--color-primary)] text-sm font-medium">
+                <div className="space-y-1.5">
+                  <Label htmlFor="email" className="text-gray-700">
                     Email
                   </Label>
                   <Input
@@ -82,25 +82,24 @@ export default function ForgotPasswordPage() {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     disabled={isLoading}
-                    className="h-11 border-[var(--color-neutral-400)] rounded-md"
+                    className="h-11"
                   />
                 </div>
 
                 <Button
                   type="submit"
-                  variant="accent"
-                  className="w-full h-11 rounded-md"
+                  className="w-full h-11 bg-green-600 hover:bg-green-700 text-white border-0"
                   disabled={isLoading}
                 >
                   {isLoading ? 'Envoi...' : 'Envoyer le lien'}
                 </Button>
 
-                <div className="text-center">
+                <div className="text-center pt-3 border-t border-gray-200">
                   <Link
                     href="/login"
-                    className="text-sm text-[var(--color-accent)] hover:underline"
+                    className="text-sm text-gray-500 hover:text-gray-700 hover:underline font-medium"
                   >
-                    Retour à la connexion
+                    ← Retour à la connexion
                   </Link>
                 </div>
               </form>

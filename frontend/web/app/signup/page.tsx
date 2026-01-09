@@ -84,44 +84,44 @@ function SignupForm() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-[var(--color-neutral-200)]">
+    <div className="flex min-h-screen flex-col bg-gray-50">
       <Header />
       
       <main className="flex flex-1 items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
         <div className="w-full max-w-md">
           <div className="mb-8 text-center">
-            <h1 className="text-2xl font-semibold text-[var(--color-primary)] mb-2">
+            <h1 className="text-2xl font-semibold text-gray-900 mb-2">
               Créer un compte
             </h1>
-            <p className="text-sm text-[var(--color-muted)]">
+            <p className="text-sm text-gray-600">
               Vous avez déjà un compte ?{' '}
               <Link
                 href="/login"
-                className="text-[var(--color-accent)] hover:underline font-medium"
+                className="text-green-600 hover:text-green-700 hover:underline font-medium"
               >
                 Se connecter
               </Link>
             </p>
           </div>
 
-          <div className="bg-[var(--color-neutral-100)] border border-[var(--color-neutral-400)] rounded-[var(--radius)] shadow-[0_4px_12px_rgba(11,18,32,0.04)] p-6">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
             {showSuccessMessage && successEmail ? (
-              <div className="text-center space-y-4">
-                <div className="rounded-md bg-[var(--color-success)]/15 p-4 text-sm text-[var(--color-success)] border border-[var(--color-success)]/20">
+              <div className="text-center space-y-5">
+                <div className="rounded-md bg-green-50 p-4 text-sm text-green-700 border border-green-200">
                   <p className="font-medium mb-2">✅ Inscription réussie !</p>
                   <p className="mb-2">
                     Un email de vérification a été envoyé à <strong>{successEmail}</strong>
                   </p>
-                  <p className="text-xs text-[var(--color-muted)]">
+                  <p className="text-xs text-gray-600">
                     Veuillez cliquer sur le lien dans l'email pour activer votre compte.
                   </p>
                 </div>
-                <div className="space-y-2">
-                  <p className="text-xs text-[var(--color-muted)]">
+                <div className="space-y-3">
+                  <p className="text-xs text-gray-500">
                     Vous n'avez pas reçu l'email ?
                   </p>
                   <Link href="/login">
-                    <Button variant="accent" className="w-full">
+                    <Button className="w-full bg-green-600 hover:bg-green-700 text-white border-0">
                       Aller à la connexion
                     </Button>
                   </Link>
@@ -130,14 +130,14 @@ function SignupForm() {
             ) : (
               <>
                 {error && (
-                  <div className="mb-4 rounded-md bg-[var(--color-danger)]/15 p-3 text-sm text-[var(--color-danger)] border border-[var(--color-danger)]/20">
+                  <div className="mb-5 rounded-md bg-red-50 p-3.5 text-sm text-red-700 border border-red-200">
                     {error}
                   </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-[var(--color-primary)] text-sm font-medium">
+                <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="space-y-1.5">
+                <Label htmlFor="email" className="text-gray-700">
                   Email
                 </Label>
                 <Input
@@ -148,12 +148,12 @@ function SignupForm() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   disabled={isLoading}
-                  className="h-11 border-[var(--color-neutral-400)] rounded-md"
+                  className="h-11"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-[var(--color-primary)] text-sm font-medium">
+              <div className="space-y-1.5">
+                <Label htmlFor="password" className="text-gray-700">
                   Mot de passe
                 </Label>
                 <Input
@@ -164,15 +164,15 @@ function SignupForm() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   disabled={isLoading}
-                  className="h-11 border-[var(--color-neutral-400)] rounded-md"
+                  className="h-11"
                 />
-                <p className="text-xs text-[var(--color-muted)]">
+                <p className="text-xs text-gray-500">
                   Au moins 8 caractères, une majuscule, une minuscule et un chiffre
                 </p>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword" className="text-[var(--color-primary)] text-sm font-medium">
+              <div className="space-y-1.5">
+                <Label htmlFor="confirmPassword" className="text-gray-700">
                   Confirmer le mot de passe
                 </Label>
                 <Input
@@ -183,23 +183,22 @@ function SignupForm() {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
                   disabled={isLoading}
-                  className="h-11 border-[var(--color-neutral-400)] rounded-md"
+                  className="h-11"
                 />
               </div>
 
               <Button
                 type="submit"
-                variant="accent"
-                className="w-full h-11 rounded-md"
+                className="w-full h-11 bg-green-600 hover:bg-green-700 text-white border-0"
                 disabled={isLoading}
               >
                 {isLoading ? 'Création...' : 'Créer un compte'}
               </Button>
             </form>
 
-            <p className="mt-6 text-xs text-center text-[var(--color-muted)]">
+            <p className="mt-6 text-xs text-center text-gray-500">
               En créant un compte, vous acceptez nos{' '}
-              <Link href="/terms" className="text-[var(--color-accent)] hover:underline">
+              <Link href="/terms" className="text-green-600 hover:text-green-700 hover:underline font-medium">
                 Conditions d'utilisation
               </Link>
               .
@@ -218,10 +217,13 @@ function SignupForm() {
 export default function SignupPage() {
   return (
     <Suspense fallback={
-      <div className="flex min-h-screen flex-col bg-[var(--color-neutral-200)]">
+      <div className="flex min-h-screen flex-col bg-gray-50">
         <Header />
         <main className="flex flex-1 items-center justify-center">
-          <div className="text-center">Chargement...</div>
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-2 border-gray-200 border-t-green-600 mb-3"></div>
+            <div className="text-sm text-gray-600">Chargement...</div>
+          </div>
         </main>
         <Footer />
       </div>

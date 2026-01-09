@@ -46,11 +46,12 @@ export default function BrowsePropertiesPage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen flex-col bg-white">
+      <div className="flex min-h-screen flex-col bg-gray-50">
         <Header />
         <main className="flex flex-1 items-center justify-center px-4">
           <div className="text-center">
-            <div className="text-lg">Chargement...</div>
+            <div className="inline-block animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-green-600 mb-4"></div>
+            <div className="text-sm font-medium text-gray-700">Chargement...</div>
           </div>
         </main>
         <Footer />
@@ -59,69 +60,72 @@ export default function BrowsePropertiesPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-screen flex-col bg-gray-50">
       <Header />
       <main className="flex flex-1 flex-col px-4 py-8 sm:px-6 lg:px-8">
         <div className="container mx-auto max-w-7xl">
-          <div className="mb-6 flex items-center justify-between">
+          <div className="mb-8 flex items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-semibold text-[var(--color-primary)]">
+              <h1 className="text-2xl font-semibold text-gray-900">
                 Propriétés Disponibles
               </h1>
-              <p className="mt-1 text-sm text-[var(--color-muted)]">
+              <p className="mt-1.5 text-sm text-gray-500">
                 Découvrez nos propriétés immobilières
               </p>
             </div>
             {isAuthenticated && (
               <Link href="/properties">
-                <Button variant="outline">Mes Propriétés</Button>
+                <Button variant="outline" className="border-gray-300 hover:bg-gray-50">
+                  Mes Propriétés
+                </Button>
               </Link>
             )}
           </div>
 
           {error && (
-            <Card className="mb-6 border-red-500 bg-red-50">
+            <Card className="mb-6 border border-red-200 bg-red-50">
               <CardContent className="pt-6">
-                <p className="text-red-700">{error}</p>
+                <p className="text-sm font-medium text-red-700">{error}</p>
               </CardContent>
             </Card>
           )}
 
           {properties.length === 0 ? (
-            <Card>
+            <Card className="border border-gray-200 bg-white">
               <CardContent className="pt-6 text-center">
-                <p className="text-[var(--color-muted)]">
+                <p className="text-gray-600">
                   Aucune propriété disponible pour le moment.
                 </p>
               </CardContent>
             </Card>
           ) : (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {properties.map((property) => {
                 const mainTranslation = property.translations[0];
                 return (
-                  <Card key={property.id} className="hover:shadow-lg transition-shadow">
-                    <CardHeader>
-                      <CardTitle className="text-lg">
+                  <Card key={property.id} className="border border-gray-200 hover:shadow-lg transition-shadow cursor-pointer group">
+                    <CardHeader className="pb-4">
+                      <CardTitle className="text-lg font-semibold text-gray-900 group-hover:text-green-600 transition-colors">
                         {mainTranslation?.title || 'Sans titre'}
                       </CardTitle>
-                      <CardDescription>
-                        {property.type} • {property.city || 'Ville non spécifiée'}
+                      <CardDescription className="text-sm text-gray-500 mt-1">
+                        <span className="capitalize">{property.type}</span>
+                        {property.city && <span> • {property.city}</span>}
                       </CardDescription>
                     </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2 mb-4">
-                        <p className="text-2xl font-bold text-[var(--color-primary)]">
+                    <CardContent className="pt-0">
+                      <div className="space-y-3 mb-5">
+                        <p className="text-xl font-bold text-gray-900">
                           {property.price.toLocaleString()} {property.currency}
                         </p>
                         {mainTranslation?.description && (
-                          <p className="text-sm text-[var(--color-muted)] line-clamp-2">
+                          <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed">
                             {mainTranslation.description}
                           </p>
                         )}
                       </div>
                       <Link href={`/property/${property.id}`}>
-                        <Button variant="outline" className="w-full">
+                        <Button variant="outline" className="w-full border-gray-300 hover:bg-gray-50">
                           Voir les détails
                         </Button>
                       </Link>

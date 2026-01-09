@@ -145,9 +145,10 @@ export default function EditPropertyPage() {
 
   if (authLoading || isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="text-lg">Chargement...</div>
+          <div className="inline-block animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-green-600 mb-4"></div>
+          <div className="text-sm font-medium text-gray-700">Chargement...</div>
         </div>
       </div>
     );
@@ -158,36 +159,39 @@ export default function EditPropertyPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-screen flex-col bg-gray-50">
       <Header />
       <main className="flex flex-1 flex-col px-4 py-8 sm:px-6 lg:px-8">
         <div className="container mx-auto max-w-4xl">
-          <div className="mb-6">
-            <Link href={`/properties/${propertyId}`} className="text-sm text-[var(--color-muted)] hover:underline">
+          <div className="mb-8">
+            <Link href={`/properties/${propertyId}`} className="text-sm text-gray-500 hover:text-gray-700 font-medium inline-flex items-center gap-1 mb-4">
               ← Retour à la propriété
             </Link>
-            <h1 className="mt-4 text-3xl font-semibold text-[var(--color-primary)]">
+            <h1 className="text-2xl font-semibold text-gray-900">
               Modifier la Propriété
             </h1>
+            <p className="mt-1.5 text-sm text-gray-500">
+              Modifiez les informations de votre propriété
+            </p>
           </div>
 
           {error && (
-            <Card className="mb-6 border-red-500 bg-red-50">
+            <Card className="mb-6 border border-red-200 bg-red-50">
               <CardContent className="pt-6">
-                <p className="text-red-700">{error}</p>
+                <p className="text-sm font-medium text-red-700">{error}</p>
               </CardContent>
             </Card>
           )}
 
           <form onSubmit={handleSubmit}>
-            <div className="space-y-6">
+            <div className="space-y-5">
               {/* Type et Prix */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Informations de base</CardTitle>
-                  <CardDescription>Type de propriété et prix</CardDescription>
+              <Card className="border border-gray-200 bg-white">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-lg font-semibold text-gray-900">Informations de base</CardTitle>
+                  <CardDescription className="text-sm text-gray-500 mt-1">Type de propriété et prix</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-4 pt-0">
                   <div>
                     <Label htmlFor="type">Type de propriété *</Label>
                     <Select value={type} onValueChange={(value) => setType(value as PropertyType)}>
@@ -251,12 +255,12 @@ export default function EditPropertyPage() {
               </Card>
 
               {/* Adresse */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Adresse</CardTitle>
-                  <CardDescription>L'adresse sera géocodée automatiquement</CardDescription>
+              <Card className="border border-gray-200 bg-white">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-lg font-semibold text-gray-900">Adresse</CardTitle>
+                  <CardDescription className="text-sm text-gray-500 mt-1">L'adresse sera géocodée automatiquement</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-4 pt-0">
                   <div>
                     <Label htmlFor="street">Rue</Label>
                     <Input
@@ -312,12 +316,12 @@ export default function EditPropertyPage() {
               </Card>
 
               {/* Description */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Description</CardTitle>
-                  <CardDescription>Informations multilingues sur la propriété</CardDescription>
+              <Card className="border border-gray-200 bg-white">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-lg font-semibold text-gray-900">Description</CardTitle>
+                  <CardDescription className="text-sm text-gray-500 mt-1">Informations multilingues sur la propriété</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-4 pt-0">
                   <div>
                     <Label htmlFor="language">Langue *</Label>
                     <Select value={language} onValueChange={(value) => setLanguage(value)}>
@@ -356,12 +360,12 @@ export default function EditPropertyPage() {
               </Card>
 
               {/* Médias */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Médias</CardTitle>
-                  <CardDescription>URLs des images de la propriété</CardDescription>
+              <Card className="border border-gray-200 bg-white">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-lg font-semibold text-gray-900">Médias</CardTitle>
+                  <CardDescription className="text-sm text-gray-500 mt-1">URLs des images de la propriété</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-4 pt-0">
                   {mediaUrls.map((url, index) => (
                     <div key={index} className="flex gap-2">
                       <Input
@@ -377,6 +381,7 @@ export default function EditPropertyPage() {
                           variant="outline"
                           size="sm"
                           onClick={() => handleRemoveMediaUrl(index)}
+                          className="border-gray-300 hover:bg-gray-50"
                         >
                           Supprimer
                         </Button>
@@ -387,19 +392,20 @@ export default function EditPropertyPage() {
                     type="button"
                     variant="outline"
                     onClick={handleAddMediaUrl}
+                    className="border-gray-300 hover:bg-gray-50"
                   >
                     + Ajouter une URL
                   </Button>
                 </CardContent>
               </Card>
 
-              <div className="flex justify-end gap-4">
+              <div className="flex justify-end gap-3 pt-2">
                 <Link href={`/properties/${propertyId}`}>
-                  <Button type="button" variant="outline">
+                  <Button type="button" variant="outline" className="border-gray-300 hover:bg-gray-50">
                     Annuler
                   </Button>
                 </Link>
-                <Button type="submit" disabled={isSubmitting}>
+                <Button type="submit" disabled={isSubmitting} className="bg-green-600 hover:bg-green-700 text-white border-0">
                   {isSubmitting ? 'Enregistrement...' : 'Enregistrer les modifications'}
                 </Button>
               </div>

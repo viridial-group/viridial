@@ -87,21 +87,21 @@ function ResetPasswordForm() {
 
   if (!token) {
     return (
-      <div className="flex min-h-screen flex-col bg-[var(--color-neutral-200)]">
+      <div className="flex min-h-screen flex-col bg-gray-50">
         <Header />
         <main className="flex flex-1 items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
           <div className="w-full max-w-md">
-            <div className="bg-[var(--color-neutral-100)] border border-[var(--color-neutral-400)] rounded-[var(--radius)] shadow-[0_4px_12px_rgba(11,18,32,0.04)] p-6">
-              <div className="text-center space-y-4">
-                <div className="rounded-md bg-[var(--color-danger)]/15 p-4 text-sm text-[var(--color-danger)] border border-[var(--color-danger)]/20">
+            <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
+              <div className="text-center space-y-5">
+                <div className="rounded-md bg-red-50 p-4 text-sm text-red-700 border border-red-200">
                   {error || 'Token de réinitialisation manquant'}
                 </div>
                 <Link href="/forgot-password">
-                  <Button variant="accent" className="w-full">
+                  <Button className="w-full bg-green-600 hover:bg-green-700 text-white border-0">
                     Demander un nouveau lien
                   </Button>
                 </Link>
-                <Link href="/login" className="block text-sm text-[var(--color-accent)] hover:underline">
+                <Link href="/login" className="block text-sm text-green-600 hover:text-green-700 hover:underline font-medium">
                   Retour à la connexion
                 </Link>
               </div>
@@ -114,44 +114,44 @@ function ResetPasswordForm() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[var(--color-neutral-200)]">
+    <div className="flex min-h-screen flex-col bg-gray-50">
       <Header />
       
       <main className="flex flex-1 items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
         <div className="w-full max-w-md">
           <div className="mb-8 text-center">
-            <h1 className="text-2xl font-semibold text-[var(--color-primary)] mb-2">
+            <h1 className="text-2xl font-semibold text-gray-900 mb-2">
               Réinitialiser votre mot de passe
             </h1>
-            <p className="text-sm text-[var(--color-muted)]">
+            <p className="text-sm text-gray-600">
               Entrez votre nouveau mot de passe ci-dessous
             </p>
           </div>
 
-          <div className="bg-[var(--color-neutral-100)] border border-[var(--color-neutral-400)] rounded-[var(--radius)] shadow-[0_4px_12px_rgba(11,18,32,0.04)] p-6">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
             {isSuccess ? (
-              <div className="text-center space-y-4">
-                <div className="rounded-md bg-[var(--color-success)]/15 p-4 text-sm text-[var(--color-success)] border border-[var(--color-success)]/20">
+              <div className="text-center space-y-5">
+                <div className="rounded-md bg-green-50 p-4 text-sm text-green-700 border border-green-200">
                   <p className="font-medium mb-2">✅ Mot de passe réinitialisé !</p>
                   <p>Votre mot de passe a été modifié avec succès.</p>
-                  <p className="mt-2 text-xs">Redirection vers la page de connexion...</p>
+                  <p className="mt-2 text-xs text-gray-600">Redirection vers la page de connexion...</p>
                 </div>
                 <Link href="/login">
-                  <Button variant="accent" className="w-full">
+                  <Button className="w-full bg-green-600 hover:bg-green-700 text-white border-0">
                     Se connecter maintenant
                   </Button>
                 </Link>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-5">
                 {error && (
-                  <div className="mb-4 rounded-md bg-[var(--color-danger)]/15 p-3 text-sm text-[var(--color-danger)] border border-[var(--color-danger)]/20">
+                  <div className="mb-5 rounded-md bg-red-50 p-3.5 text-sm text-red-700 border border-red-200">
                     {error}
                   </div>
                 )}
 
-                <div className="space-y-2">
-                  <Label htmlFor="newPassword" className="text-[var(--color-primary)] text-sm font-medium">
+                <div className="space-y-1.5">
+                  <Label htmlFor="newPassword" className="text-gray-700">
                     Nouveau mot de passe
                   </Label>
                   <Input
@@ -162,15 +162,15 @@ function ResetPasswordForm() {
                     onChange={(e) => setNewPassword(e.target.value)}
                     required
                     disabled={isLoading}
-                    className="h-11 border-[var(--color-neutral-400)] rounded-md"
+                    className="h-11"
                   />
-                  <p className="text-xs text-[var(--color-muted)]">
+                  <p className="text-xs text-gray-500">
                     Au moins 8 caractères, une majuscule, une minuscule et un chiffre
                   </p>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="confirmPassword" className="text-[var(--color-primary)] text-sm font-medium">
+                <div className="space-y-1.5">
+                  <Label htmlFor="confirmPassword" className="text-gray-700">
                     Confirmer le mot de passe
                   </Label>
                   <Input
@@ -181,25 +181,24 @@ function ResetPasswordForm() {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
                     disabled={isLoading}
-                    className="h-11 border-[var(--color-neutral-400)] rounded-md"
+                    className="h-11"
                   />
                 </div>
 
                 <Button
                   type="submit"
-                  variant="accent"
-                  className="w-full h-11 rounded-md"
+                  className="w-full h-11 bg-green-600 hover:bg-green-700 text-white border-0"
                   disabled={isLoading}
                 >
                   {isLoading ? 'Réinitialisation...' : 'Réinitialiser le mot de passe'}
                 </Button>
 
-                <div className="text-center">
+                <div className="text-center pt-3 border-t border-gray-200">
                   <Link
                     href="/login"
-                    className="text-sm text-[var(--color-accent)] hover:underline"
+                    className="text-sm text-gray-500 hover:text-gray-700 hover:underline font-medium"
                   >
-                    Retour à la connexion
+                    ← Retour à la connexion
                   </Link>
                 </div>
               </form>
@@ -216,10 +215,13 @@ function ResetPasswordForm() {
 export default function ResetPasswordPage() {
   return (
     <Suspense fallback={
-      <div className="flex min-h-screen flex-col bg-[var(--color-neutral-200)]">
+      <div className="flex min-h-screen flex-col bg-gray-50">
         <Header />
         <main className="flex flex-1 items-center justify-center">
-          <div className="text-center">Chargement...</div>
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-2 border-gray-200 border-t-green-600 mb-3"></div>
+            <div className="text-sm text-gray-600">Chargement...</div>
+          </div>
         </main>
         <Footer />
       </div>

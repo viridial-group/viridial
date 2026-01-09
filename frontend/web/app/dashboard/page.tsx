@@ -25,9 +25,10 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="text-lg">Chargement...</div>
+          <div className="inline-block animate-spin rounded-full h-10 w-10 border-2 border-gray-200 border-t-green-600 mb-4"></div>
+          <div className="text-sm font-medium text-gray-700">Chargement...</div>
         </div>
       </div>
     );
@@ -38,52 +39,68 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--color-neutral-200)]">
+    <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto max-w-7xl px-4 py-8">
-        <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-3xl font-semibold text-[var(--color-primary)]">
-            Tableau de bord
-          </h1>
-          <Button variant="outline" onClick={logout} className="rounded-md">
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold text-gray-900">
+              Tableau de bord
+            </h1>
+            <p className="mt-1.5 text-sm text-gray-500">
+              Gérez vos propriétés immobilières
+            </p>
+          </div>
+          <Button variant="outline" onClick={logout} className="border-gray-300 hover:bg-gray-50">
             Déconnexion
           </Button>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <Card className="bg-[var(--color-neutral-100)]">
-            <CardHeader>
-              <CardTitle className="text-[var(--color-primary)]">
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <Card className="border border-gray-200 bg-white">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg font-semibold text-gray-900">
                 Bienvenue sur Viridial
               </CardTitle>
-              <CardDescription className="text-[var(--color-muted)]">
+              <CardDescription className="text-sm text-gray-500 mt-1.5">
                 Vous êtes connecté avec succès !
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <p className="text-[var(--color-muted)] mb-4">
+            <CardContent className="pt-0">
+              <p className="text-sm text-gray-600 mb-5 leading-relaxed">
                 Gérez vos propriétés immobilières depuis votre tableau de bord.
               </p>
               <Link href="/properties">
-                <Button className="w-full">Mes Propriétés</Button>
+                <Button className="w-full bg-green-600 hover:bg-green-700 text-white border-0">
+                  Mes Propriétés
+                </Button>
               </Link>
             </CardContent>
           </Card>
 
-          <Card className="bg-[var(--color-neutral-100)]">
-            <CardHeader>
-              <CardTitle className="text-[var(--color-primary)]">
+          <Card className="border border-gray-200 bg-white">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg font-semibold text-gray-900">
                 Actions rapides
               </CardTitle>
-              <CardDescription className="text-[var(--color-muted)]">
+              <CardDescription className="text-sm text-gray-500 mt-1.5">
                 Accès rapide aux fonctionnalités
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className="space-y-2 pt-0">
               <Link href="/properties/new">
-                <Button variant="outline" className="w-full">+ Nouvelle Propriété</Button>
+                <Button variant="outline" className="w-full border-gray-300 hover:bg-gray-50">
+                  + Nouvelle Propriété
+                </Button>
               </Link>
               <Link href="/properties">
-                <Button variant="outline" className="w-full">Voir toutes mes propriétés</Button>
+                <Button variant="outline" className="w-full border-gray-300 hover:bg-gray-50">
+                  Voir toutes mes propriétés
+                </Button>
+              </Link>
+              <Link href="/search">
+                <Button variant="outline" className="w-full border-gray-300 hover:bg-gray-50">
+                  Rechercher des propriétés
+                </Button>
               </Link>
             </CardContent>
           </Card>

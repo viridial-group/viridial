@@ -55,20 +55,20 @@ function LoginForm() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="flex min-h-screen flex-col bg-gray-50">
       <Header />
       <main className="flex flex-1 items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
         <div className="w-full max-w-md">
           {/* Welcome message */}
           <div className="mb-8 text-center">
-            <h1 className="text-2xl font-semibold text-[var(--color-primary)] mb-2">
+            <h1 className="text-2xl font-semibold text-gray-900 mb-2">
               Bienvenue !
             </h1>
-            <p className="text-sm text-[var(--color-muted)]">
+            <p className="text-sm text-gray-600">
               Pas encore de compte ?{' '}
               <Link
                 href="/signup"
-                className="text-[var(--color-accent)] hover:underline font-medium"
+                className="text-green-600 hover:text-green-700 hover:underline font-medium"
               >
                 S'inscrire
               </Link>
@@ -76,24 +76,24 @@ function LoginForm() {
           </div>
 
           {/* Login form */}
-          <div className="bg-[var(--color-neutral-100)] border border-[var(--color-neutral-400)] rounded-[var(--radius)] shadow-[0_4px_12px_rgba(11,18,32,0.04)] p-6">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
             {success && (
-              <div className="mb-4 rounded-md bg-[var(--color-success)]/15 p-3 text-sm text-[var(--color-success)] border border-[var(--color-success)]/20">
+              <div className="mb-5 rounded-md bg-green-50 p-3.5 text-sm text-green-700 border border-green-200">
                 {success}
               </div>
             )}
             {error && (
-              <div className="mb-4 rounded-md bg-[var(--color-danger)]/15 p-3 text-sm text-[var(--color-danger)] border border-[var(--color-danger)]/20">
+              <div className="mb-5 rounded-md bg-red-50 p-3.5 text-sm text-red-700 border border-red-200">
                 {error}
               </div>
             )}
 
             
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-5">
               {/* Email field */}
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-[var(--color-primary)] text-sm font-medium">
+              <div className="space-y-1.5">
+                <Label htmlFor="email" className="text-gray-700">
                   Email
                 </Label>
                 <Input
@@ -104,19 +104,19 @@ function LoginForm() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   disabled={isLoading}
-                  className="h-11 border-[var(--color-neutral-400)] rounded-md"
+                  className="h-11"
                 />
               </div>
 
               {/* Password field */}
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password" className="text-[var(--color-primary)] text-sm font-medium">
+                  <Label htmlFor="password" className="text-gray-700">
                     Mot de passe
                   </Label>
                   <Link
                     href="/forgot-password"
-                    className="text-xs text-[var(--color-accent)] hover:underline"
+                    className="text-xs text-green-600 hover:text-green-700 hover:underline font-medium"
                   >
                     Mot de passe oublié ?
                   </Link>
@@ -129,15 +129,14 @@ function LoginForm() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   disabled={isLoading}
-                  className="h-11 border-[var(--color-neutral-400)] rounded-md"
+                  className="h-11"
                 />
               </div>
 
               {/* Submit button */}
               <Button
                 type="submit"
-                variant="accent"
-                className="w-full h-11 rounded-md bg-[rgb(var(--color-gray-900)/var(--tw-bg-opacity,1))] hover:opacity-90"
+                className="w-full h-11 bg-green-600 hover:bg-green-700 text-white border-0"
                 disabled={isLoading}
               >
                 {isLoading ? 'Connexion...' : 'Continuer'}
@@ -145,12 +144,12 @@ function LoginForm() {
             </form>
 
 {/* Separator */}
-<div className="relative mt-4">
+<div className="relative mt-6">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-[var(--color-neutral-400)]" />
+                <span className="w-full border-t border-gray-200" />
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="bg-[var(--color-neutral-100)] px-2 text-[var(--color-muted)]">
+                <span className="bg-white px-3 text-gray-500 font-medium">
                   ou
                 </span>
               </div>
@@ -160,7 +159,7 @@ function LoginForm() {
 <Button
               type="button"
               variant="outline"
-              className="w-full h-11 rounded-md border-[var(--color-neutral-400)] mt-4"
+              className="w-full h-11 border-gray-300 hover:bg-gray-50 mt-5"
               onClick={handleGoogleLogin}
               disabled={isLoading}
             >
@@ -187,9 +186,9 @@ function LoginForm() {
 
             
             {/* Legal text */}
-            <p className="mt-6 text-xs text-center text-[var(--color-muted)]">
+            <p className="mt-6 text-xs text-center text-gray-500">
               En vous connectant, vous acceptez nos{' '}
-              <Link href="/terms" className="text-[var(--color-accent)] hover:underline">
+              <Link href="/terms" className="text-green-600 hover:text-green-700 hover:underline font-medium">
                 Conditions d'utilisation
               </Link>
               .
@@ -206,10 +205,13 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="flex min-h-screen flex-col bg-white">
+      <div className="flex min-h-screen flex-col bg-gray-50">
         <Header />
         <main className="flex flex-1 items-center justify-center">
-          <div className="text-center">Chargement...</div>
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-2 border-gray-200 border-t-green-600 mb-3"></div>
+            <div className="text-sm text-gray-600">Chargement...</div>
+          </div>
         </main>
         <Footer />
       </div>
