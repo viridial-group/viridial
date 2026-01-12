@@ -22,9 +22,9 @@ export class PropertyStatisticsService {
 
     // Create separate query builders for each query (query builders are mutable)
     const createBaseQuery = () => {
-      const qb = this.propertyRepo.createQueryBuilder('property').where('property.deletedAt IS NULL');
+      const qb = this.propertyRepo.createQueryBuilder('property').where('property.deleted_at IS NULL');
       if (userId) {
-        qb.andWhere('property.userId = :userId', { userId });
+        qb.andWhere('property.user_id = :userId', { userId });
       }
       return qb;
     };
@@ -48,16 +48,16 @@ export class PropertyStatisticsService {
 
       // By status
       createBaseQuery()
-        .select('property.status', 'status')
+        .select('property.statusCode', 'status')
         .addSelect('COUNT(*)', 'count')
-        .groupBy('property.status')
+        .groupBy('property.statusCode')
         .getRawMany(),
 
       // By type
       createBaseQuery()
-        .select('property.type', 'type')
+        .select('property.typeCode', 'type')
         .addSelect('COUNT(*)', 'count')
-        .groupBy('property.type')
+        .groupBy('property.typeCode')
         .getRawMany(),
 
       // By country
@@ -100,18 +100,18 @@ export class PropertyStatisticsService {
 
       // Recently published (last 7 days)
       createBaseQuery()
-        .andWhere('property.publishedAt >= :sevenDaysAgo', { sevenDaysAgo })
-        .andWhere('property.status = :listedStatus', { listedStatus: PropertyStatus.LISTED })
+        .andWhere('property.published_at >= :sevenDaysAgo', { sevenDaysAgo })
+        .andWhere('property.status_code = :listedStatus', { listedStatus: PropertyStatus.LISTED })
         .getCount(),
 
       // Recently created (last 7 days)
       createBaseQuery()
-        .andWhere('property.createdAt >= :sevenDaysAgo', { sevenDaysAgo })
+        .andWhere('property.created_at >= :sevenDaysAgo', { sevenDaysAgo })
         .getCount(),
 
       // With images
       createBaseQuery()
-        .andWhere("property.mediaUrls IS NOT NULL AND property.mediaUrls != '[]'::jsonb")
+        .andWhere("property.media_urls IS NOT NULL AND property.media_urls != '[]'::jsonb")
         .getCount(),
 
       // With coordinates
@@ -201,20 +201,20 @@ export class PropertyStatisticsService {
   ): Promise<Partial<PropertyStatisticsDto>> {
     const queryBuilder = this.propertyRepo
       .createQueryBuilder('property')
-      .where('property.deletedAt IS NULL')
-      .andWhere('property.createdAt >= :startDate', { startDate })
-      .andWhere('property.createdAt <= :endDate', { endDate });
+      .where('property.deleted_at IS NULL')
+      .andWhere('property.created_at >= :startDate', { startDate })
+      .andWhere('property.created_at <= :endDate', { endDate });
 
     if (userId) {
-      queryBuilder.andWhere('property.userId = :userId', { userId });
+      queryBuilder.andWhere('property.user_id = :userId', { userId });
     }
 
     const total = await queryBuilder.getCount();
 
     const byStatus = await queryBuilder
-      .select('property.status', 'status')
+      .select('property.statusCode', 'status')
       .addSelect('COUNT(*)', 'count')
-      .groupBy('property.status')
+      .groupBy('property.statusCode')
       .getRawMany();
 
     const statusMap: Record<string, number> = {};

@@ -81,7 +81,12 @@ export class PropertyController {
     const filterUserId = userId || (user ? user.id : undefined);
     const filterStatus = status || (user ? undefined : PropertyStatus.LISTED); // Public users only see listed properties
     
-    return this.propertyService.findAll(filterUserId, filterStatus, limit, offset);
+    const result = await this.propertyService.findAll(filterUserId, filterStatus, limit, offset);
+    
+    return {
+      properties: result.properties,
+      total: result.total,
+    };
   }
 
   @Get(':id')
@@ -89,7 +94,12 @@ export class PropertyController {
     // Allow public access to listed properties, require auth for draft/review
     const userId = user?.id;
     // Always load translations for public display
-    return this.propertyService.findOne(id, userId, true);
+    const property = await this.propertyService.findOne(id, userId, true);
+    
+    // Exclude userId from response
+    const { userId: _, ...propertyWithoutUserId } = property;
+    
+    return propertyWithoutUserId;
   }
 
   @Put(':id')

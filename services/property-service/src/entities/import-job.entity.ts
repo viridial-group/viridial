@@ -13,7 +13,7 @@ export enum ImportStatus {
   FAILED = 'failed',
 }
 
-@Entity({ name: 'import_jobs' })
+@Entity({ name: 'pr_import_jobs' })
 export class ImportJob {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -51,10 +51,12 @@ export class ImportJob {
   @Column({ type: 'text', nullable: true })
   notes!: string | null;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @Column({ name: 'created_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn()
   createdAt!: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @Column({ name: 'updated_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @UpdateDateColumn()
   updatedAt!: Date;
 
   @Column({ name: 'completed_at', type: 'timestamp', nullable: true })

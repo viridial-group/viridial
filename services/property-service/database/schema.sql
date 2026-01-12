@@ -11,29 +11,29 @@
 -- Drop tables in reverse order of dependencies to avoid foreign key constraint errors
 
 -- Drop main tables first (those with foreign keys)
-DROP TABLE IF EXISTS custom_field_values CASCADE;
-DROP TABLE IF EXISTS custom_field_definitions CASCADE;
-DROP TABLE IF EXISTS import_jobs CASCADE;
-DROP TABLE IF EXISTS property_favorites CASCADE;
-DROP TABLE IF EXISTS property_flags CASCADE;
-DROP TABLE IF EXISTS property_details CASCADE;
-DROP TABLE IF EXISTS property_translations CASCADE;
-DROP TABLE IF EXISTS properties CASCADE;
-DROP TABLE IF EXISTS neighborhoods CASCADE;
+DROP TABLE IF EXISTS pr_custom_field_values CASCADE;
+DROP TABLE IF EXISTS pr_custom_field_definitions CASCADE;
+DROP TABLE IF EXISTS pr_import_jobs CASCADE;
+DROP TABLE IF EXISTS pr_property_favorites CASCADE;
+DROP TABLE IF EXISTS pr_property_flags CASCADE;
+DROP TABLE IF EXISTS pr_property_details CASCADE;
+DROP TABLE IF EXISTS pr_property_translations CASCADE;
+DROP TABLE IF EXISTS pr_properties CASCADE;
+DROP TABLE IF EXISTS pr_neighborhoods CASCADE;
 
 -- Drop reference tables (those referenced by main tables)
-DROP TABLE IF EXISTS import_statuses CASCADE;
-DROP TABLE IF EXISTS custom_field_types CASCADE;
-DROP TABLE IF EXISTS flag_statuses CASCADE;
-DROP TABLE IF EXISTS property_types CASCADE; -- CASCADE will also drop subtypes
-DROP TABLE IF EXISTS property_statuses CASCADE;
+DROP TABLE IF EXISTS pr_import_statuses CASCADE;
+DROP TABLE IF EXISTS pr_custom_field_types CASCADE;
+DROP TABLE IF EXISTS pr_flag_statuses CASCADE;
+DROP TABLE IF EXISTS pr_property_types CASCADE; -- CASCADE will also drop subtypes
+DROP TABLE IF EXISTS pr_property_statuses CASCADE;
 
 -- =====================================================
 -- 1. REFERENCE TABLES (Types and Subtypes)
 -- =====================================================
 
 -- Property Status Reference Table
-CREATE TABLE IF NOT EXISTS property_statuses (
+CREATE TABLE IF NOT EXISTS pr_property_statuses (
     code VARCHAR(50) PRIMARY KEY,
     label JSONB NOT NULL, -- Multilingual labels: {"fr": "Brouillon", "en": "Draft"}
     description JSONB, -- Optional description
@@ -43,11 +43,11 @@ CREATE TABLE IF NOT EXISTS property_statuses (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_property_statuses_active ON property_statuses(is_active);
-CREATE INDEX IF NOT EXISTS idx_property_statuses_order ON property_statuses(display_order);
+CREATE INDEX IF NOT EXISTS idx_pr_property_statuses_active ON pr_property_statuses(is_active);
+CREATE INDEX IF NOT EXISTS idx_pr_property_statuses_order ON pr_property_statuses(display_order);
 
 -- Property Type Reference Table (with subtypes support)
-CREATE TABLE IF NOT EXISTS property_types (
+CREATE TABLE IF NOT EXISTS pr_property_types (
     code VARCHAR(50) PRIMARY KEY,
     parent_code VARCHAR(50), -- NULL for main types, code of parent for subtypes
     label JSONB NOT NULL, -- Multilingual labels: {"fr": "Maison", "en": "House"}
@@ -57,15 +57,15 @@ CREATE TABLE IF NOT EXISTS property_types (
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_property_type_parent FOREIGN KEY (parent_code) REFERENCES property_types(code) ON DELETE CASCADE
+    CONSTRAINT fk_pr_property_type_parent FOREIGN KEY (parent_code) REFERENCES pr_property_types(code) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_property_types_parent ON property_types(parent_code);
-CREATE INDEX IF NOT EXISTS idx_property_types_active ON property_types(is_active);
-CREATE INDEX IF NOT EXISTS idx_property_types_order ON property_types(display_order);
+CREATE INDEX IF NOT EXISTS idx_pr_property_types_parent ON pr_property_types(parent_code);
+CREATE INDEX IF NOT EXISTS idx_pr_property_types_active ON pr_property_types(is_active);
+CREATE INDEX IF NOT EXISTS idx_pr_property_types_order ON pr_property_types(display_order);
 
 -- Flag Status Reference Table
-CREATE TABLE IF NOT EXISTS flag_statuses (
+CREATE TABLE IF NOT EXISTS pr_flag_statuses (
     code VARCHAR(50) PRIMARY KEY,
     label JSONB NOT NULL,
     description JSONB,
@@ -75,11 +75,11 @@ CREATE TABLE IF NOT EXISTS flag_statuses (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_flag_statuses_active ON flag_statuses(is_active);
-CREATE INDEX IF NOT EXISTS idx_flag_statuses_order ON flag_statuses(display_order);
+CREATE INDEX IF NOT EXISTS idx_pr_flag_statuses_active ON pr_flag_statuses(is_active);
+CREATE INDEX IF NOT EXISTS idx_pr_flag_statuses_order ON pr_flag_statuses(display_order);
 
 -- Custom Field Type Reference Table
-CREATE TABLE IF NOT EXISTS custom_field_types (
+CREATE TABLE IF NOT EXISTS pr_custom_field_types (
     code VARCHAR(50) PRIMARY KEY,
     label JSONB NOT NULL,
     description JSONB,
@@ -90,11 +90,11 @@ CREATE TABLE IF NOT EXISTS custom_field_types (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_custom_field_types_active ON custom_field_types(is_active);
-CREATE INDEX IF NOT EXISTS idx_custom_field_types_order ON custom_field_types(display_order);
+CREATE INDEX IF NOT EXISTS idx_pr_custom_field_types_active ON pr_custom_field_types(is_active);
+CREATE INDEX IF NOT EXISTS idx_pr_custom_field_types_order ON pr_custom_field_types(display_order);
 
 -- Import Status Reference Table
-CREATE TABLE IF NOT EXISTS import_statuses (
+CREATE TABLE IF NOT EXISTS pr_import_statuses (
     code VARCHAR(50) PRIMARY KEY,
     label JSONB NOT NULL,
     description JSONB,
@@ -104,15 +104,15 @@ CREATE TABLE IF NOT EXISTS import_statuses (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_import_statuses_active ON import_statuses(is_active);
-CREATE INDEX IF NOT EXISTS idx_import_statuses_order ON import_statuses(display_order);
+CREATE INDEX IF NOT EXISTS idx_pr_import_statuses_active ON pr_import_statuses(is_active);
+CREATE INDEX IF NOT EXISTS idx_pr_import_statuses_order ON pr_import_statuses(display_order);
 
 -- =====================================================
 -- 2. MAIN TABLES
 -- =====================================================
 
 -- Neighborhoods Table
-CREATE TABLE IF NOT EXISTS neighborhoods (
+CREATE TABLE IF NOT EXISTS pr_neighborhoods (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     slug VARCHAR(100) UNIQUE NOT NULL,
     name VARCHAR(200) NOT NULL,
@@ -130,13 +130,13 @@ CREATE TABLE IF NOT EXISTS neighborhoods (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_neighborhoods_slug ON neighborhoods(slug);
-CREATE INDEX IF NOT EXISTS idx_neighborhoods_city ON neighborhoods(city);
-CREATE INDEX IF NOT EXISTS idx_neighborhoods_region ON neighborhoods(region);
-CREATE INDEX IF NOT EXISTS idx_neighborhoods_country ON neighborhoods(country);
+CREATE INDEX IF NOT EXISTS idx_pr_neighborhoods_slug ON pr_neighborhoods(slug);
+CREATE INDEX IF NOT EXISTS idx_pr_neighborhoods_city ON pr_neighborhoods(city);
+CREATE INDEX IF NOT EXISTS idx_pr_neighborhoods_region ON pr_neighborhoods(region);
+CREATE INDEX IF NOT EXISTS idx_pr_neighborhoods_country ON pr_neighborhoods(country);
 
 -- Properties Table
-CREATE TABLE IF NOT EXISTS properties (
+CREATE TABLE IF NOT EXISTS pr_properties (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     internal_code VARCHAR(50) NOT NULL UNIQUE, -- Generated automatically by service on create
     external_code VARCHAR(100), -- Optional external reference code (can be NULL)
@@ -158,25 +158,25 @@ CREATE TABLE IF NOT EXISTS properties (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     published_at TIMESTAMP,
     deleted_at TIMESTAMP,
-    CONSTRAINT fk_property_neighborhood FOREIGN KEY (neighborhood_id) REFERENCES neighborhoods(id) ON DELETE SET NULL,
-    CONSTRAINT fk_property_status FOREIGN KEY (status_code) REFERENCES property_statuses(code),
-    CONSTRAINT fk_property_type FOREIGN KEY (type_code) REFERENCES property_types(code)
+    CONSTRAINT fk_pr_property_neighborhood FOREIGN KEY (neighborhood_id) REFERENCES pr_neighborhoods(id) ON DELETE SET NULL,
+    CONSTRAINT fk_pr_property_status FOREIGN KEY (status_code) REFERENCES pr_property_statuses(code),
+    CONSTRAINT fk_pr_property_type FOREIGN KEY (type_code) REFERENCES pr_property_types(code)
 );
 
-CREATE INDEX IF NOT EXISTS idx_properties_internal_code ON properties(internal_code);
-CREATE INDEX IF NOT EXISTS idx_properties_external_code ON properties(external_code) WHERE external_code IS NOT NULL;
-CREATE INDEX IF NOT EXISTS idx_properties_user_id ON properties(user_id);
-CREATE INDEX IF NOT EXISTS idx_properties_status_code ON properties(status_code);
-CREATE INDEX IF NOT EXISTS idx_properties_type_code ON properties(type_code);
-CREATE INDEX IF NOT EXISTS idx_properties_postal_code ON properties(postal_code);
-CREATE INDEX IF NOT EXISTS idx_properties_city ON properties(city);
-CREATE INDEX IF NOT EXISTS idx_properties_country ON properties(country);
-CREATE INDEX IF NOT EXISTS idx_properties_neighborhood_id ON properties(neighborhood_id);
-CREATE INDEX IF NOT EXISTS idx_properties_deleted_at ON properties(deleted_at);
-CREATE INDEX IF NOT EXISTS idx_properties_location ON properties(latitude, longitude) WHERE latitude IS NOT NULL AND longitude IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_pr_properties_internal_code ON pr_properties(internal_code);
+CREATE INDEX IF NOT EXISTS idx_pr_properties_external_code ON pr_properties(external_code) WHERE external_code IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_pr_properties_user_id ON pr_properties(user_id);
+CREATE INDEX IF NOT EXISTS idx_pr_properties_status_code ON pr_properties(status_code);
+CREATE INDEX IF NOT EXISTS idx_pr_properties_type_code ON pr_properties(type_code);
+CREATE INDEX IF NOT EXISTS idx_pr_properties_postal_code ON pr_properties(postal_code);
+CREATE INDEX IF NOT EXISTS idx_pr_properties_city ON pr_properties(city);
+CREATE INDEX IF NOT EXISTS idx_pr_properties_country ON pr_properties(country);
+CREATE INDEX IF NOT EXISTS idx_pr_properties_neighborhood_id ON pr_properties(neighborhood_id);
+CREATE INDEX IF NOT EXISTS idx_pr_properties_deleted_at ON pr_properties(deleted_at);
+CREATE INDEX IF NOT EXISTS idx_pr_properties_location ON pr_properties(latitude, longitude) WHERE latitude IS NOT NULL AND longitude IS NOT NULL;
 
 -- Property Translations Table
-CREATE TABLE IF NOT EXISTS property_translations (
+CREATE TABLE IF NOT EXISTS pr_property_translations (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     property_id UUID NOT NULL,
     language VARCHAR(5) NOT NULL,
@@ -185,15 +185,15 @@ CREATE TABLE IF NOT EXISTS property_translations (
     notes TEXT,
     meta_title VARCHAR(255),
     meta_description TEXT,
-    CONSTRAINT fk_translation_property FOREIGN KEY (property_id) REFERENCES properties(id) ON DELETE CASCADE,
-    CONSTRAINT uk_translation_property_language UNIQUE (property_id, language)
+    CONSTRAINT fk_pr_translation_property FOREIGN KEY (property_id) REFERENCES pr_properties(id) ON DELETE CASCADE,
+    CONSTRAINT uk_pr_translation_property_language UNIQUE (property_id, language)
 );
 
-CREATE INDEX IF NOT EXISTS idx_translations_property_id ON property_translations(property_id);
-CREATE INDEX IF NOT EXISTS idx_translations_language ON property_translations(language);
+CREATE INDEX IF NOT EXISTS idx_pr_translations_property_id ON pr_property_translations(property_id);
+CREATE INDEX IF NOT EXISTS idx_pr_translations_language ON pr_property_translations(language);
 
 -- Property Details Table
-CREATE TABLE IF NOT EXISTS property_details (
+CREATE TABLE IF NOT EXISTS pr_property_details (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     property_id UUID UNIQUE NOT NULL,
     surface_area DECIMAL(10, 2),
@@ -229,13 +229,13 @@ CREATE TABLE IF NOT EXISTS property_details (
     max_capacity INT,
     amenities JSONB,
     features JSONB,
-    CONSTRAINT fk_details_property FOREIGN KEY (property_id) REFERENCES properties(id) ON DELETE CASCADE
+    CONSTRAINT fk_pr_details_property FOREIGN KEY (property_id) REFERENCES pr_properties(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_details_property_id ON property_details(property_id);
+CREATE INDEX IF NOT EXISTS idx_pr_details_property_id ON pr_property_details(property_id);
 
 -- Property Flags Table
-CREATE TABLE IF NOT EXISTS property_flags (
+CREATE TABLE IF NOT EXISTS pr_property_flags (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     property_id UUID NOT NULL,
     flagged_by VARCHAR(255) NOT NULL,
@@ -247,29 +247,29 @@ CREATE TABLE IF NOT EXISTS property_flags (
     moderation_notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_flag_property FOREIGN KEY (property_id) REFERENCES properties(id) ON DELETE CASCADE,
-    CONSTRAINT fk_flag_status FOREIGN KEY (status_code) REFERENCES flag_statuses(code)
+    CONSTRAINT fk_pr_flag_property FOREIGN KEY (property_id) REFERENCES pr_properties(id) ON DELETE CASCADE,
+    CONSTRAINT fk_pr_flag_status FOREIGN KEY (status_code) REFERENCES pr_flag_statuses(code)
 );
 
-CREATE INDEX IF NOT EXISTS idx_flags_property_id ON property_flags(property_id);
-CREATE INDEX IF NOT EXISTS idx_flags_flagged_by ON property_flags(flagged_by);
-CREATE INDEX IF NOT EXISTS idx_flags_status_code ON property_flags(status_code);
+CREATE INDEX IF NOT EXISTS idx_pr_flags_property_id ON pr_property_flags(property_id);
+CREATE INDEX IF NOT EXISTS idx_pr_flags_flagged_by ON pr_property_flags(flagged_by);
+CREATE INDEX IF NOT EXISTS idx_pr_flags_status_code ON pr_property_flags(status_code);
 
 -- Property Favorites Table
-CREATE TABLE IF NOT EXISTS property_favorites (
+CREATE TABLE IF NOT EXISTS pr_property_favorites (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id VARCHAR(255) NOT NULL,
     property_id UUID NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_favorite_property FOREIGN KEY (property_id) REFERENCES properties(id) ON DELETE CASCADE,
-    CONSTRAINT uk_favorite_user_property UNIQUE (user_id, property_id)
+    CONSTRAINT fk_pr_favorite_property FOREIGN KEY (property_id) REFERENCES pr_properties(id) ON DELETE CASCADE,
+    CONSTRAINT uk_pr_favorite_user_property UNIQUE (user_id, property_id)
 );
 
-CREATE INDEX IF NOT EXISTS idx_favorites_user_id ON property_favorites(user_id);
-CREATE INDEX IF NOT EXISTS idx_favorites_property_id ON property_favorites(property_id);
+CREATE INDEX IF NOT EXISTS idx_pr_favorites_user_id ON pr_property_favorites(user_id);
+CREATE INDEX IF NOT EXISTS idx_pr_favorites_property_id ON pr_property_favorites(property_id);
 
 -- Custom Field Definitions Table
-CREATE TABLE IF NOT EXISTS custom_field_definitions (
+CREATE TABLE IF NOT EXISTS pr_custom_field_definitions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     organization_id UUID,
     entity_type VARCHAR(50) NOT NULL,
@@ -285,17 +285,17 @@ CREATE TABLE IF NOT EXISTS custom_field_definitions (
     deleted_at TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT uk_field_org_entity_key UNIQUE (organization_id, entity_type, field_key),
-    CONSTRAINT fk_field_type FOREIGN KEY (field_type_code) REFERENCES custom_field_types(code)
+    CONSTRAINT uk_pr_field_org_entity_key UNIQUE (organization_id, entity_type, field_key),
+    CONSTRAINT fk_pr_field_type FOREIGN KEY (field_type_code) REFERENCES pr_custom_field_types(code)
 );
 
-CREATE INDEX IF NOT EXISTS idx_field_def_org_id ON custom_field_definitions(organization_id);
-CREATE INDEX IF NOT EXISTS idx_field_def_entity_type ON custom_field_definitions(entity_type);
-CREATE INDEX IF NOT EXISTS idx_field_def_deleted_at ON custom_field_definitions(deleted_at);
-CREATE INDEX IF NOT EXISTS idx_field_def_field_type_code ON custom_field_definitions(field_type_code);
+CREATE INDEX IF NOT EXISTS idx_pr_field_def_org_id ON pr_custom_field_definitions(organization_id);
+CREATE INDEX IF NOT EXISTS idx_pr_field_def_entity_type ON pr_custom_field_definitions(entity_type);
+CREATE INDEX IF NOT EXISTS idx_pr_field_def_deleted_at ON pr_custom_field_definitions(deleted_at);
+CREATE INDEX IF NOT EXISTS idx_pr_field_def_field_type_code ON pr_custom_field_definitions(field_type_code);
 
 -- Custom Field Values Table
-CREATE TABLE IF NOT EXISTS custom_field_values (
+CREATE TABLE IF NOT EXISTS pr_custom_field_values (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     organization_id UUID,
     entity_type VARCHAR(50) NOT NULL,
@@ -308,16 +308,16 @@ CREATE TABLE IF NOT EXISTS custom_field_values (
     value_json JSONB,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_value_field_def FOREIGN KEY (field_definition_id) REFERENCES custom_field_definitions(id) ON DELETE CASCADE,
-    CONSTRAINT uk_value_entity_field UNIQUE (entity_type, entity_id, field_definition_id)
+    CONSTRAINT fk_pr_value_field_def FOREIGN KEY (field_definition_id) REFERENCES pr_custom_field_definitions(id) ON DELETE CASCADE,
+    CONSTRAINT uk_pr_value_entity_field UNIQUE (entity_type, entity_id, field_definition_id)
 );
 
-CREATE INDEX IF NOT EXISTS idx_field_values_org_id ON custom_field_values(organization_id);
-CREATE INDEX IF NOT EXISTS idx_field_values_entity ON custom_field_values(entity_type, entity_id);
-CREATE INDEX IF NOT EXISTS idx_field_values_field_def_id ON custom_field_values(field_definition_id);
+CREATE INDEX IF NOT EXISTS idx_pr_field_values_org_id ON pr_custom_field_values(organization_id);
+CREATE INDEX IF NOT EXISTS idx_pr_field_values_entity ON pr_custom_field_values(entity_type, entity_id);
+CREATE INDEX IF NOT EXISTS idx_pr_field_values_field_def_id ON pr_custom_field_values(field_definition_id);
 
 -- Import Jobs Table
-CREATE TABLE IF NOT EXISTS import_jobs (
+CREATE TABLE IF NOT EXISTS pr_import_jobs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id VARCHAR(255) NOT NULL,
     status_code VARCHAR(50) NOT NULL DEFAULT 'processing',
@@ -330,46 +330,46 @@ CREATE TABLE IF NOT EXISTS import_jobs (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     completed_at TIMESTAMP,
-    CONSTRAINT fk_import_status FOREIGN KEY (status_code) REFERENCES import_statuses(code)
+    CONSTRAINT fk_pr_import_status FOREIGN KEY (status_code) REFERENCES pr_import_statuses(code)
 );
 
-CREATE INDEX IF NOT EXISTS idx_import_jobs_user_id ON import_jobs(user_id);
-CREATE INDEX IF NOT EXISTS idx_import_jobs_status_code ON import_jobs(status_code);
+CREATE INDEX IF NOT EXISTS idx_pr_import_jobs_user_id ON pr_import_jobs(user_id);
+CREATE INDEX IF NOT EXISTS idx_pr_import_jobs_status_code ON pr_import_jobs(status_code);
 
 -- =====================================================
 -- 3. SEED DATA - Reference Tables
 -- =====================================================
 
 -- Property Statuses
-INSERT INTO property_statuses (code, label, description, display_order, is_active) VALUES
+INSERT INTO pr_property_statuses (code, label, description, display_order, is_active) VALUES
 ('draft', 
  '{"fr": "Brouillon", "en": "Draft"}',
  '{"fr": "Propriété en cours de création, non publiée", "en": "Property being created, not published"}',
  1, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, display_order = EXCLUDED.display_order;
 
-INSERT INTO property_statuses (code, label, description, display_order, is_active) VALUES
+INSERT INTO pr_property_statuses (code, label, description, display_order, is_active) VALUES
 ('review', 
  '{"fr": "En révision", "en": "Under Review"}',
  '{"fr": "Propriété soumise pour modération", "en": "Property submitted for moderation"}',
  2, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, display_order = EXCLUDED.display_order;
 
-INSERT INTO property_statuses (code, label, description, display_order, is_active) VALUES
+INSERT INTO pr_property_statuses (code, label, description, display_order, is_active) VALUES
 ('listed', 
  '{"fr": "Publiée", "en": "Listed"}',
  '{"fr": "Propriété publiée et visible publiquement", "en": "Property published and publicly visible"}',
  3, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, display_order = EXCLUDED.display_order;
 
-INSERT INTO property_statuses (code, label, description, display_order, is_active) VALUES
+INSERT INTO pr_property_statuses (code, label, description, display_order, is_active) VALUES
 ('flagged', 
  '{"fr": "Signalée", "en": "Flagged"}',
  '{"fr": "Propriété signalée, nécessite une révision", "en": "Property flagged, requires review"}',
  4, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, display_order = EXCLUDED.display_order;
 
-INSERT INTO property_statuses (code, label, description, display_order, is_active) VALUES
+INSERT INTO pr_property_statuses (code, label, description, display_order, is_active) VALUES
 ('archived', 
  '{"fr": "Archivée", "en": "Archived"}',
  '{"fr": "Propriété archivée, non visible publiquement", "en": "Property archived, not publicly visible"}',
@@ -377,7 +377,7 @@ INSERT INTO property_statuses (code, label, description, display_order, is_activ
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, display_order = EXCLUDED.display_order;
 
 -- Property Types (Main Types)
-INSERT INTO property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
+INSERT INTO pr_property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
 ('house', 
  NULL,
  '{"fr": "Maison", "en": "House"}',
@@ -386,7 +386,7 @@ INSERT INTO property_types (code, parent_code, label, description, icon, display
  1, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, icon = EXCLUDED.icon, display_order = EXCLUDED.display_order;
 
-INSERT INTO property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
+INSERT INTO pr_property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
 ('apartment', 
  NULL,
  '{"fr": "Appartement", "en": "Apartment"}',
@@ -395,7 +395,7 @@ INSERT INTO property_types (code, parent_code, label, description, icon, display
  2, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, icon = EXCLUDED.icon, display_order = EXCLUDED.display_order;
 
-INSERT INTO property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
+INSERT INTO pr_property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
 ('villa', 
  NULL,
  '{"fr": "Villa", "en": "Villa"}',
@@ -404,7 +404,7 @@ INSERT INTO property_types (code, parent_code, label, description, icon, display
  3, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, icon = EXCLUDED.icon, display_order = EXCLUDED.display_order;
 
-INSERT INTO property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
+INSERT INTO pr_property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
 ('land', 
  NULL,
  '{"fr": "Terrain", "en": "Land"}',
@@ -413,7 +413,7 @@ INSERT INTO property_types (code, parent_code, label, description, icon, display
  4, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, icon = EXCLUDED.icon, display_order = EXCLUDED.display_order;
 
-INSERT INTO property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
+INSERT INTO pr_property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
 ('commercial', 
  NULL,
  '{"fr": "Local Commercial", "en": "Commercial"}',
@@ -422,7 +422,7 @@ INSERT INTO property_types (code, parent_code, label, description, icon, display
  5, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, icon = EXCLUDED.icon, display_order = EXCLUDED.display_order;
 
-INSERT INTO property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
+INSERT INTO pr_property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
 ('other', 
  NULL,
  '{"fr": "Autre", "en": "Other"}',
@@ -432,7 +432,7 @@ INSERT INTO property_types (code, parent_code, label, description, icon, display
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, icon = EXCLUDED.icon, display_order = EXCLUDED.display_order;
 
 -- Property Types (Subtypes for Commercial)
-INSERT INTO property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
+INSERT INTO pr_property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
 ('commercial_office', 
  'commercial',
  '{"fr": "Bureau", "en": "Office"}',
@@ -441,7 +441,7 @@ INSERT INTO property_types (code, parent_code, label, description, icon, display
  1, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, icon = EXCLUDED.icon, display_order = EXCLUDED.display_order;
 
-INSERT INTO property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
+INSERT INTO pr_property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
 ('commercial_retail', 
  'commercial',
  '{"fr": "Commerce de Détail", "en": "Retail"}',
@@ -450,7 +450,7 @@ INSERT INTO property_types (code, parent_code, label, description, icon, display
  2, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, icon = EXCLUDED.icon, display_order = EXCLUDED.display_order;
 
-INSERT INTO property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
+INSERT INTO pr_property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
 ('commercial_warehouse', 
  'commercial',
  '{"fr": "Entrepôt", "en": "Warehouse"}',
@@ -459,7 +459,7 @@ INSERT INTO property_types (code, parent_code, label, description, icon, display
  3, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, icon = EXCLUDED.icon, display_order = EXCLUDED.display_order;
 
-INSERT INTO property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
+INSERT INTO pr_property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
 ('commercial_restaurant', 
  'commercial',
  '{"fr": "Restaurant", "en": "Restaurant"}',
@@ -468,7 +468,7 @@ INSERT INTO property_types (code, parent_code, label, description, icon, display
  4, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, icon = EXCLUDED.icon, display_order = EXCLUDED.display_order;
 
-INSERT INTO property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
+INSERT INTO pr_property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
 ('commercial_hotel', 
  'commercial',
  '{"fr": "Hôtel", "en": "Hotel"}',
@@ -478,7 +478,7 @@ INSERT INTO property_types (code, parent_code, label, description, icon, display
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, icon = EXCLUDED.icon, display_order = EXCLUDED.display_order;
 
 -- Property Types (Subtypes for Land)
-INSERT INTO property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
+INSERT INTO pr_property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
 ('land_residential', 
  'land',
  '{"fr": "Terrain Résidentiel", "en": "Residential Land"}',
@@ -487,7 +487,7 @@ INSERT INTO property_types (code, parent_code, label, description, icon, display
  1, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, icon = EXCLUDED.icon, display_order = EXCLUDED.display_order;
 
-INSERT INTO property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
+INSERT INTO pr_property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
 ('land_commercial', 
  'land',
  '{"fr": "Terrain Commercial", "en": "Commercial Land"}',
@@ -496,7 +496,7 @@ INSERT INTO property_types (code, parent_code, label, description, icon, display
  2, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, icon = EXCLUDED.icon, display_order = EXCLUDED.display_order;
 
-INSERT INTO property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
+INSERT INTO pr_property_types (code, parent_code, label, description, icon, display_order, is_active) VALUES
 ('land_agricultural', 
  'land',
  '{"fr": "Terrain Agricole", "en": "Agricultural Land"}',
@@ -506,21 +506,21 @@ INSERT INTO property_types (code, parent_code, label, description, icon, display
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, icon = EXCLUDED.icon, display_order = EXCLUDED.display_order;
 
 -- Flag Statuses
-INSERT INTO flag_statuses (code, label, description, display_order, is_active) VALUES
+INSERT INTO pr_flag_statuses (code, label, description, display_order, is_active) VALUES
 ('pending', 
  '{"fr": "En attente", "en": "Pending"}',
  '{"fr": "Signalement en attente de révision", "en": "Flag pending review"}',
  1, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, display_order = EXCLUDED.display_order;
 
-INSERT INTO flag_statuses (code, label, description, display_order, is_active) VALUES
+INSERT INTO pr_flag_statuses (code, label, description, display_order, is_active) VALUES
 ('reviewed', 
  '{"fr": "Révisé", "en": "Reviewed"}',
  '{"fr": "Signalement révisé par un modérateur", "en": "Flag reviewed by moderator"}',
  2, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, display_order = EXCLUDED.display_order;
 
-INSERT INTO flag_statuses (code, label, description, display_order, is_active) VALUES
+INSERT INTO pr_flag_statuses (code, label, description, display_order, is_active) VALUES
 ('resolved', 
  '{"fr": "Résolu", "en": "Resolved"}',
  '{"fr": "Signalement résolu et fermé", "en": "Flag resolved and closed"}',
@@ -528,7 +528,7 @@ INSERT INTO flag_statuses (code, label, description, display_order, is_active) V
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, display_order = EXCLUDED.display_order;
 
 -- Custom Field Types
-INSERT INTO custom_field_types (code, label, description, validation_schema, display_order, is_active) VALUES
+INSERT INTO pr_custom_field_types (code, label, description, validation_schema, display_order, is_active) VALUES
 ('text', 
  '{"fr": "Texte", "en": "Text"}',
  '{"fr": "Champ texte simple", "en": "Simple text field"}',
@@ -536,7 +536,7 @@ INSERT INTO custom_field_types (code, label, description, validation_schema, dis
  1, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, validation_schema = EXCLUDED.validation_schema, display_order = EXCLUDED.display_order;
 
-INSERT INTO custom_field_types (code, label, description, validation_schema, display_order, is_active) VALUES
+INSERT INTO pr_custom_field_types (code, label, description, validation_schema, display_order, is_active) VALUES
 ('textarea', 
  '{"fr": "Zone de texte", "en": "Textarea"}',
  '{"fr": "Champ texte multiligne", "en": "Multiline text field"}',
@@ -544,7 +544,7 @@ INSERT INTO custom_field_types (code, label, description, validation_schema, dis
  2, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, validation_schema = EXCLUDED.validation_schema, display_order = EXCLUDED.display_order;
 
-INSERT INTO custom_field_types (code, label, description, validation_schema, display_order, is_active) VALUES
+INSERT INTO pr_custom_field_types (code, label, description, validation_schema, display_order, is_active) VALUES
 ('number', 
  '{"fr": "Nombre", "en": "Number"}',
  '{"fr": "Champ numérique", "en": "Numeric field"}',
@@ -552,7 +552,7 @@ INSERT INTO custom_field_types (code, label, description, validation_schema, dis
  3, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, validation_schema = EXCLUDED.validation_schema, display_order = EXCLUDED.display_order;
 
-INSERT INTO custom_field_types (code, label, description, validation_schema, display_order, is_active) VALUES
+INSERT INTO pr_custom_field_types (code, label, description, validation_schema, display_order, is_active) VALUES
 ('date', 
  '{"fr": "Date", "en": "Date"}',
  '{"fr": "Champ date", "en": "Date field"}',
@@ -560,7 +560,7 @@ INSERT INTO custom_field_types (code, label, description, validation_schema, dis
  4, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, validation_schema = EXCLUDED.validation_schema, display_order = EXCLUDED.display_order;
 
-INSERT INTO custom_field_types (code, label, description, validation_schema, display_order, is_active) VALUES
+INSERT INTO pr_custom_field_types (code, label, description, validation_schema, display_order, is_active) VALUES
 ('datetime', 
  '{"fr": "Date et Heure", "en": "DateTime"}',
  '{"fr": "Champ date et heure", "en": "Date and time field"}',
@@ -568,7 +568,7 @@ INSERT INTO custom_field_types (code, label, description, validation_schema, dis
  5, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, validation_schema = EXCLUDED.validation_schema, display_order = EXCLUDED.display_order;
 
-INSERT INTO custom_field_types (code, label, description, validation_schema, display_order, is_active) VALUES
+INSERT INTO pr_custom_field_types (code, label, description, validation_schema, display_order, is_active) VALUES
 ('boolean', 
  '{"fr": "Booléen", "en": "Boolean"}',
  '{"fr": "Champ oui/non", "en": "Yes/no field"}',
@@ -576,7 +576,7 @@ INSERT INTO custom_field_types (code, label, description, validation_schema, dis
  6, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, validation_schema = EXCLUDED.validation_schema, display_order = EXCLUDED.display_order;
 
-INSERT INTO custom_field_types (code, label, description, validation_schema, display_order, is_active) VALUES
+INSERT INTO pr_custom_field_types (code, label, description, validation_schema, display_order, is_active) VALUES
 ('select', 
  '{"fr": "Sélection", "en": "Select"}',
  '{"fr": "Liste déroulante à choix unique", "en": "Single choice dropdown"}',
@@ -584,7 +584,7 @@ INSERT INTO custom_field_types (code, label, description, validation_schema, dis
  7, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, validation_schema = EXCLUDED.validation_schema, display_order = EXCLUDED.display_order;
 
-INSERT INTO custom_field_types (code, label, description, validation_schema, display_order, is_active) VALUES
+INSERT INTO pr_custom_field_types (code, label, description, validation_schema, display_order, is_active) VALUES
 ('multiselect', 
  '{"fr": "Sélection Multiple", "en": "Multi-Select"}',
  '{"fr": "Liste à choix multiples", "en": "Multiple choice list"}',
@@ -592,7 +592,7 @@ INSERT INTO custom_field_types (code, label, description, validation_schema, dis
  8, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, validation_schema = EXCLUDED.validation_schema, display_order = EXCLUDED.display_order;
 
-INSERT INTO custom_field_types (code, label, description, validation_schema, display_order, is_active) VALUES
+INSERT INTO pr_custom_field_types (code, label, description, validation_schema, display_order, is_active) VALUES
 ('url', 
  '{"fr": "URL", "en": "URL"}',
  '{"fr": "Champ URL", "en": "URL field"}',
@@ -600,7 +600,7 @@ INSERT INTO custom_field_types (code, label, description, validation_schema, dis
  9, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, validation_schema = EXCLUDED.validation_schema, display_order = EXCLUDED.display_order;
 
-INSERT INTO custom_field_types (code, label, description, validation_schema, display_order, is_active) VALUES
+INSERT INTO pr_custom_field_types (code, label, description, validation_schema, display_order, is_active) VALUES
 ('email', 
  '{"fr": "Email", "en": "Email"}',
  '{"fr": "Champ email", "en": "Email field"}',
@@ -609,21 +609,21 @@ INSERT INTO custom_field_types (code, label, description, validation_schema, dis
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, validation_schema = EXCLUDED.validation_schema, display_order = EXCLUDED.display_order;
 
 -- Import Statuses
-INSERT INTO import_statuses (code, label, description, display_order, is_active) VALUES
+INSERT INTO pr_import_statuses (code, label, description, display_order, is_active) VALUES
 ('processing', 
  '{"fr": "En cours", "en": "Processing"}',
  '{"fr": "Import en cours de traitement", "en": "Import being processed"}',
  1, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, display_order = EXCLUDED.display_order;
 
-INSERT INTO import_statuses (code, label, description, display_order, is_active) VALUES
+INSERT INTO pr_import_statuses (code, label, description, display_order, is_active) VALUES
 ('completed', 
  '{"fr": "Terminé", "en": "Completed"}',
  '{"fr": "Import terminé avec succès", "en": "Import completed successfully"}',
  2, TRUE)
 ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.description, display_order = EXCLUDED.display_order;
 
-INSERT INTO import_statuses (code, label, description, display_order, is_active) VALUES
+INSERT INTO pr_import_statuses (code, label, description, display_order, is_active) VALUES
 ('failed', 
  '{"fr": "Échoué", "en": "Failed"}',
  '{"fr": "Import échoué", "en": "Import failed"}',
@@ -635,7 +635,7 @@ ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, description = EXCLUDED.
 -- =====================================================
 
 -- Insert Neighborhoods
-INSERT INTO neighborhoods (id, slug, name, description, city, region, country, postal_code, center_latitude, center_longitude, stats, features, media_urls) VALUES
+INSERT INTO pr_neighborhoods (id, slug, name, description, city, region, country, postal_code, center_latitude, center_longitude, stats, features, media_urls) VALUES
 ('a1b2c3d4-e5f6-7890-abcd-ef1234567890', 'marrakech-medina', 'Marrakech Médina', 
  '{"fr": "Le cœur historique de Marrakech avec ses souks animés et ses riads traditionnels", "en": "The historic heart of Marrakech with its bustling souks and traditional riads"}',
  'Marrakech', 'Marrakech-Safi', 'Morocco', '40000', 31.6295, -7.9811,
@@ -644,7 +644,7 @@ INSERT INTO neighborhoods (id, slug, name, description, city, region, country, p
  '["https://example.com/images/neighborhoods/marrakech-medina-1.jpg", "https://example.com/images/neighborhoods/marrakech-medina-2.jpg"]')
 ON CONFLICT (slug) DO NOTHING;
 
-INSERT INTO neighborhoods (id, slug, name, description, city, region, country, postal_code, center_latitude, center_longitude, stats, features, media_urls) VALUES
+INSERT INTO pr_neighborhoods (id, slug, name, description, city, region, country, postal_code, center_latitude, center_longitude, stats, features, media_urls) VALUES
 ('b2c3d4e5-f6a7-8901-bcde-f12345678901', 'casablanca-ain-diab', 'Casablanca Ain Diab',
  '{"fr": "Quartier résidentiel et commercial moderne avec vue sur l''océan Atlantique", "en": "Modern residential and commercial district with views of the Atlantic Ocean"}',
  'Casablanca', 'Casablanca-Settat', 'Morocco', '20000', 33.5731, -7.5898,
@@ -653,7 +653,7 @@ INSERT INTO neighborhoods (id, slug, name, description, city, region, country, p
  '["https://example.com/images/neighborhoods/casablanca-ain-diab-1.jpg", "https://example.com/images/neighborhoods/casablanca-ain-diab-2.jpg"]')
 ON CONFLICT (slug) DO NOTHING;
 
-INSERT INTO neighborhoods (id, slug, name, description, city, region, country, postal_code, center_latitude, center_longitude, stats, features, media_urls) VALUES
+INSERT INTO pr_neighborhoods (id, slug, name, description, city, region, country, postal_code, center_latitude, center_longitude, stats, features, media_urls) VALUES
 ('c3d4e5f6-a7b8-9012-cdef-123456789012', 'rabat-agdal', 'Rabat Agdal',
  '{"fr": "Quartier résidentiel calme et verdoyant proche du centre-ville", "en": "Quiet and green residential area close to the city center"}',
  'Rabat', 'Rabat-Salé-Kénitra', 'Morocco', '10000', 34.0209, -6.8416,
@@ -663,7 +663,7 @@ INSERT INTO neighborhoods (id, slug, name, description, city, region, country, p
 ON CONFLICT (slug) DO NOTHING;
 
 -- Insert Properties
-INSERT INTO properties (id, internal_code, external_code, user_id, status_code, type_code, price, currency, latitude, longitude, street, postal_code, city, region, country, neighborhood_id, media_urls, created_at, updated_at, published_at) VALUES
+INSERT INTO pr_properties (id, internal_code, external_code, user_id, status_code, type_code, price, currency, latitude, longitude, street, postal_code, city, region, country, neighborhood_id, media_urls, created_at, updated_at, published_at) VALUES
 ('a1a2b3c4-d5e6-7890-abcd-ef1234567890', 'PROP-2024-000001', NULL, 'user-001', 'listed', 'apartment', 280000.00, 'EUR', 31.6295, -7.9811, 
  'Rue Riad Zitoun Lakdim', '40000', 'Marrakech', 'Marrakech-Safi', 'Morocco', 
  'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
@@ -671,7 +671,7 @@ INSERT INTO properties (id, internal_code, external_code, user_id, status_code, 
  '2024-01-10 10:00:00', '2024-01-15 14:30:00', '2024-01-12 09:00:00')
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO properties (id, internal_code, external_code, user_id, status_code, type_code, price, currency, latitude, longitude, street, postal_code, city, region, country, neighborhood_id, media_urls, created_at, updated_at, published_at) VALUES
+INSERT INTO pr_properties (id, internal_code, external_code, user_id, status_code, type_code, price, currency, latitude, longitude, street, postal_code, city, region, country, neighborhood_id, media_urls, created_at, updated_at, published_at) VALUES
 ('a2b3c4d5-e6f7-8901-bcde-f12345678901', 'PROP-2024-000002', NULL, 'user-001', 'listed', 'villa', 850000.00, 'EUR', 33.5731, -7.5898,
  'Boulevard de la Corniche', '20000', 'Casablanca', 'Casablanca-Settat', 'Morocco',
  'b2c3d4e5-f6a7-8901-bcde-f12345678901',
@@ -679,7 +679,7 @@ INSERT INTO properties (id, internal_code, external_code, user_id, status_code, 
  '2024-01-08 08:00:00', '2024-01-14 16:20:00', '2024-01-10 10:00:00')
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO properties (id, internal_code, external_code, user_id, status_code, type_code, price, currency, latitude, longitude, street, postal_code, city, region, country, neighborhood_id, media_urls, created_at, updated_at, published_at) VALUES
+INSERT INTO pr_properties (id, internal_code, external_code, user_id, status_code, type_code, price, currency, latitude, longitude, street, postal_code, city, region, country, neighborhood_id, media_urls, created_at, updated_at, published_at) VALUES
 ('a3c4d5e6-f7a8-9012-cdef-123456789012', 'PROP-2024-000003', NULL, 'user-002', 'listed', 'house', 420000.00, 'EUR', 34.0209, -6.8416,
  'Avenue Allal Ben Abdellah', '10000', 'Rabat', 'Rabat-Salé-Kénitra', 'Morocco',
  'c3d4e5f6-a7b8-9012-cdef-123456789012',
@@ -687,7 +687,7 @@ INSERT INTO properties (id, internal_code, external_code, user_id, status_code, 
  '2024-01-12 12:00:00', '2024-01-16 11:15:00', '2024-01-13 08:30:00')
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO properties (id, internal_code, external_code, user_id, status_code, type_code, price, currency, latitude, longitude, street, postal_code, city, region, country, neighborhood_id, media_urls, created_at, updated_at) VALUES
+INSERT INTO pr_properties (id, internal_code, external_code, user_id, status_code, type_code, price, currency, latitude, longitude, street, postal_code, city, region, country, neighborhood_id, media_urls, created_at, updated_at) VALUES
 ('a4d5e6f7-a8b9-0123-def0-123456789013', 'PROP-2024-000004', NULL, 'user-002', 'draft', 'apartment', 195000.00, 'EUR', 31.6295, -7.9811,
  'Derb Dabachi', '40000', 'Marrakech', 'Marrakech-Safi', 'Morocco',
  'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
@@ -695,7 +695,7 @@ INSERT INTO properties (id, internal_code, external_code, user_id, status_code, 
  '2024-01-15 09:00:00', '2024-01-15 09:00:00')
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO properties (id, internal_code, external_code, user_id, status_code, type_code, price, currency, latitude, longitude, street, postal_code, city, region, country, neighborhood_id, media_urls, created_at, updated_at, published_at) VALUES
+INSERT INTO pr_properties (id, internal_code, external_code, user_id, status_code, type_code, price, currency, latitude, longitude, street, postal_code, city, region, country, neighborhood_id, media_urls, created_at, updated_at, published_at) VALUES
 ('a5e6f7a8-b9c0-1234-ef01-123456789014', 'PROP-2024-000005', NULL, 'user-003', 'listed', 'commercial_retail', 1200000.00, 'EUR', 33.5731, -7.5898,
  'Avenue Mohammed V', '20000', 'Casablanca', 'Casablanca-Settat', 'Morocco',
  'b2c3d4e5-f6a7-8901-bcde-f12345678901',
@@ -703,7 +703,7 @@ INSERT INTO properties (id, internal_code, external_code, user_id, status_code, 
  '2024-01-11 10:30:00', '2024-01-15 13:45:00', '2024-01-12 10:00:00')
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO properties (id, internal_code, external_code, user_id, status_code, type_code, price, currency, latitude, longitude, street, postal_code, city, region, country, neighborhood_id, media_urls, created_at, updated_at, published_at) VALUES
+INSERT INTO pr_properties (id, internal_code, external_code, user_id, status_code, type_code, price, currency, latitude, longitude, street, postal_code, city, region, country, neighborhood_id, media_urls, created_at, updated_at, published_at) VALUES
 ('a6f7a8b9-c0d1-2345-f012-123456789015', 'PROP-2024-000006', NULL, 'user-001', 'listed', 'land_residential', 150000.00, 'EUR', 34.0209, -6.8416,
  'Route de Témara', '10000', 'Rabat', 'Rabat-Salé-Kénitra', 'Morocco',
  'c3d4e5f6-a7b8-9012-cdef-123456789012',
@@ -712,7 +712,7 @@ INSERT INTO properties (id, internal_code, external_code, user_id, status_code, 
 ON CONFLICT (id) DO NOTHING;
 
 -- Insert Property Translations
-INSERT INTO property_translations (id, property_id, language, title, description, notes, meta_title, meta_description) VALUES
+INSERT INTO pr_property_translations (id, property_id, language, title, description, notes, meta_title, meta_description) VALUES
 ('b1a2b3c4-d5e6-7890-abcd-ef1234567890', 'a1a2b3c4-d5e6-7890-abcd-ef1234567890', 'fr',
  'Riad Traditionnel dans la Médina de Marrakech',
  'Magnifique riad traditionnel restauré avec cour intérieure, 3 chambres, 2 salles de bain, terrasse avec vue sur les toits de la médina. Idéal pour investissement locatif ou résidence secondaire.',
@@ -721,7 +721,7 @@ INSERT INTO property_translations (id, property_id, language, title, description
  'Riad traditionnel restauré dans la médina de Marrakech. 3 chambres, terrasse avec vue. Parfait pour investissement ou résidence secondaire.')
 ON CONFLICT (property_id, language) DO NOTHING;
 
-INSERT INTO property_translations (id, property_id, language, title, description, notes, meta_title, meta_description) VALUES
+INSERT INTO pr_property_translations (id, property_id, language, title, description, notes, meta_title, meta_description) VALUES
 ('b1a2b3c5-d5e6-7890-abcd-ef1234567890', 'a1a2b3c4-d5e6-7890-abcd-ef1234567890', 'en',
  'Traditional Riad in Marrakech Medina',
  'Beautiful restored traditional riad with inner courtyard, 3 bedrooms, 2 bathrooms, terrace with views over the medina rooftops. Ideal for rental investment or second home.',
@@ -730,7 +730,7 @@ INSERT INTO property_translations (id, property_id, language, title, description
  'Restored traditional riad in Marrakech medina. 3 bedrooms, terrace with views. Perfect for investment or second home.')
 ON CONFLICT (property_id, language) DO NOTHING;
 
-INSERT INTO property_translations (id, property_id, language, title, description, notes, meta_title, meta_description) VALUES
+INSERT INTO pr_property_translations (id, property_id, language, title, description, notes, meta_title, meta_description) VALUES
 ('b2b3c4d5-e6f7-8901-bcde-f12345678901', 'a2b3c4d5-e6f7-8901-bcde-f12345678901', 'fr',
  'Villa Moderne avec Vue sur Mer à Casablanca',
  'Superbe villa moderne de 350m² avec jardin paysager, piscine, 5 chambres, 4 salles de bain, garage double. Située dans le quartier résidentiel d''Ain Diab avec vue imprenable sur l''océan Atlantique.',
@@ -739,7 +739,7 @@ INSERT INTO property_translations (id, property_id, language, title, description
  'Villa moderne 350m² avec piscine et vue sur mer à Casablanca. 5 chambres, jardin paysager. Quartier Ain Diab.')
 ON CONFLICT (property_id, language) DO NOTHING;
 
-INSERT INTO property_translations (id, property_id, language, title, description, notes, meta_title, meta_description) VALUES
+INSERT INTO pr_property_translations (id, property_id, language, title, description, notes, meta_title, meta_description) VALUES
 ('b2b3c4d6-e6f7-8901-bcde-f12345678901', 'a2b3c4d5-e6f7-8901-bcde-f12345678901', 'en',
  'Modern Villa with Sea View in Casablanca',
  'Beautiful modern villa of 350m² with landscaped garden, swimming pool, 5 bedrooms, 4 bathrooms, double garage. Located in the residential district of Ain Diab with stunning views of the Atlantic Ocean.',
@@ -748,7 +748,7 @@ INSERT INTO property_translations (id, property_id, language, title, description
  'Modern 350m² villa with pool and sea view in Casablanca. 5 bedrooms, landscaped garden. Ain Diab district.')
 ON CONFLICT (property_id, language) DO NOTHING;
 
-INSERT INTO property_translations (id, property_id, language, title, description, notes, meta_title, meta_description) VALUES
+INSERT INTO pr_property_translations (id, property_id, language, title, description, notes, meta_title, meta_description) VALUES
 ('b3c4d5e6-f7a8-9012-cdef-123456789012', 'a3c4d5e6-f7a8-9012-cdef-123456789012', 'fr',
  'Maison Familiale à Rabat Agdal',
  'Charmante maison de 180m² avec jardin, 4 chambres, 2 salles de bain, salon spacieux, cuisine équipée. Quartier calme et résidentiel, proche des écoles et commerces.',
@@ -757,7 +757,7 @@ INSERT INTO property_translations (id, property_id, language, title, description
  'Maison 180m² avec jardin à Rabat Agdal. 4 chambres, quartier calme et résidentiel.')
 ON CONFLICT (property_id, language) DO NOTHING;
 
-INSERT INTO property_translations (id, property_id, language, title, description, notes, meta_title, meta_description) VALUES
+INSERT INTO pr_property_translations (id, property_id, language, title, description, notes, meta_title, meta_description) VALUES
 ('b3c4d5e7-f7a8-9012-cdef-123456789012', 'a3c4d5e6-f7a8-9012-cdef-123456789012', 'en',
  'Family House in Rabat Agdal',
  'Charming 180m² house with garden, 4 bedrooms, 2 bathrooms, spacious living room, fitted kitchen. Quiet residential neighborhood, close to schools and shops.',
@@ -766,7 +766,7 @@ INSERT INTO property_translations (id, property_id, language, title, description
  '180m² house with garden in Rabat Agdal. 4 bedrooms, quiet residential neighborhood.')
 ON CONFLICT (property_id, language) DO NOTHING;
 
-INSERT INTO property_translations (id, property_id, language, title, description, notes, meta_title, meta_description) VALUES
+INSERT INTO pr_property_translations (id, property_id, language, title, description, notes, meta_title, meta_description) VALUES
 ('b4d5e6f7-a8b9-0123-def0-123456789013', 'a4d5e6f7-a8b9-0123-def0-123456789013', 'fr',
  'Appartement Moderne Marrakech',
  'Appartement moderne de 85m², 2 chambres, 1 salle de bain, balcon, situé dans la médina. En cours de rénovation.',
@@ -775,7 +775,7 @@ INSERT INTO property_translations (id, property_id, language, title, description
  'Appartement 85m² en rénovation dans la médina de Marrakech. 2 chambres.')
 ON CONFLICT (property_id, language) DO NOTHING;
 
-INSERT INTO property_translations (id, property_id, language, title, description, notes, meta_title, meta_description) VALUES
+INSERT INTO pr_property_translations (id, property_id, language, title, description, notes, meta_title, meta_description) VALUES
 ('b5e6f7a8-b9c0-1234-ef01-123456789014', 'a5e6f7a8-b9c0-1234-ef01-123456789014', 'fr',
  'Local Commercial Centre-Ville Casablanca',
  'Local commercial de 200m² idéal pour commerce de détail ou bureau. Situé avenue Mohammed V, emplacement stratégique avec forte affluence. Licence commerciale incluse.',
@@ -784,7 +784,7 @@ INSERT INTO property_translations (id, property_id, language, title, description
  'Local commercial 200m² avenue Mohammed V à Casablanca. Emplacement stratégique, licence incluse.')
 ON CONFLICT (property_id, language) DO NOTHING;
 
-INSERT INTO property_translations (id, property_id, language, title, description, notes, meta_title, meta_description) VALUES
+INSERT INTO pr_property_translations (id, property_id, language, title, description, notes, meta_title, meta_description) VALUES
 ('b6f7a8b9-c0d1-2345-f012-123456789015', 'a6f7a8b9-c0d1-2345-f012-123456789015', 'fr',
  'Terrain Constructible Rabat',
  'Terrain constructible de 500m², zone résidentielle, permis de construire possible. Vue dégagée, accès facile.',
@@ -794,38 +794,38 @@ INSERT INTO property_translations (id, property_id, language, title, description
 ON CONFLICT (property_id, language) DO NOTHING;
 
 -- Insert Property Details (same as before)
-INSERT INTO property_details (id, property_id, surface_area, land_area, bedrooms, bathrooms, total_rooms, has_garage, garage_spaces, has_parking, parking_spaces, has_elevator, has_balcony, has_terrace, has_garden, has_pool, has_fireplace, has_air_conditioning, has_heating, floor_number, total_floors, has_storage, construction_year, renovation_year, energy_class, energy_consumption, greenhouse_gas_emissions, amenities, features) VALUES
+INSERT INTO pr_property_details (id, property_id, surface_area, land_area, bedrooms, bathrooms, total_rooms, has_garage, garage_spaces, has_parking, parking_spaces, has_elevator, has_balcony, has_terrace, has_garden, has_pool, has_fireplace, has_air_conditioning, has_heating, floor_number, total_floors, has_storage, construction_year, renovation_year, energy_class, energy_consumption, greenhouse_gas_emissions, amenities, features) VALUES
 ('c1a2b3c4-d5e6-7890-abcd-ef1234567890', 'a1a2b3c4-d5e6-7890-abcd-ef1234567890', 180.00, NULL, 3, 2, 5, FALSE, NULL, FALSE, NULL, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, TRUE, NULL, 2, TRUE, 1950, 2020, 'C', 120.50, 15.30, 
  '["wifi", "security", "traditional_architecture"]',
  '{"courtyard": true, "rooftop_terrace": true, "traditional_tiles": true}')
 ON CONFLICT (property_id) DO NOTHING;
 
-INSERT INTO property_details (id, property_id, surface_area, land_area, bedrooms, bathrooms, total_rooms, has_garage, garage_spaces, has_parking, parking_spaces, has_elevator, has_balcony, has_terrace, has_garden, has_pool, has_fireplace, has_air_conditioning, has_heating, floor_number, total_floors, has_storage, construction_year, renovation_year, energy_class, energy_consumption, greenhouse_gas_emissions, amenities, features) VALUES
+INSERT INTO pr_property_details (id, property_id, surface_area, land_area, bedrooms, bathrooms, total_rooms, has_garage, garage_spaces, has_parking, parking_spaces, has_elevator, has_balcony, has_terrace, has_garden, has_pool, has_fireplace, has_air_conditioning, has_heating, floor_number, total_floors, has_storage, construction_year, renovation_year, energy_class, energy_consumption, greenhouse_gas_emissions, amenities, features) VALUES
 ('c2b3c4d5-e6f7-8901-bcde-f12345678901', 'a2b3c4d5-e6f7-8901-bcde-f12345678901', 350.00, 800.00, 5, 4, 8, TRUE, 2, TRUE, 4, FALSE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, NULL, 2, TRUE, 2015, NULL, 'B', 85.20, 8.50,
  '["wifi", "security", "alarm", "video_surveillance", "home_automation"]',
  '{"sea_view": true, "beach_access": true, "landscaped_garden": true, "pool_heating": true}')
 ON CONFLICT (property_id) DO NOTHING;
 
-INSERT INTO property_details (id, property_id, surface_area, land_area, bedrooms, bathrooms, total_rooms, has_garage, garage_spaces, has_parking, parking_spaces, has_elevator, has_balcony, has_terrace, has_garden, has_pool, has_fireplace, has_air_conditioning, has_heating, floor_number, total_floors, has_storage, construction_year, renovation_year, energy_class, energy_consumption, greenhouse_gas_emissions, amenities, features) VALUES
+INSERT INTO pr_property_details (id, property_id, surface_area, land_area, bedrooms, bathrooms, total_rooms, has_garage, garage_spaces, has_parking, parking_spaces, has_elevator, has_balcony, has_terrace, has_garden, has_pool, has_fireplace, has_air_conditioning, has_heating, floor_number, total_floors, has_storage, construction_year, renovation_year, energy_class, energy_consumption, greenhouse_gas_emissions, amenities, features) VALUES
 ('c3c4d5e6-f7a8-9012-cdef-123456789012', 'a3c4d5e6-f7a8-9012-cdef-123456789012', 180.00, 300.00, 4, 2, 6, TRUE, 1, TRUE, 2, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, NULL, 1, FALSE, 2005, 2018, 'C', 110.00, 12.80,
  '["wifi", "security"]',
  '{"garden_size": 300, "quiet_neighborhood": true}')
 ON CONFLICT (property_id) DO NOTHING;
 
-INSERT INTO property_details (id, property_id, surface_area, land_area, bedrooms, bathrooms, total_rooms, has_garage, garage_spaces, has_parking, parking_spaces, has_elevator, has_balcony, has_terrace, has_garden, has_pool, has_fireplace, has_air_conditioning, has_heating, floor_number, total_floors, has_storage, construction_year, renovation_year, energy_class, energy_consumption, greenhouse_gas_emissions, amenities, features) VALUES
+INSERT INTO pr_property_details (id, property_id, surface_area, land_area, bedrooms, bathrooms, total_rooms, has_garage, garage_spaces, has_parking, parking_spaces, has_elevator, has_balcony, has_terrace, has_garden, has_pool, has_fireplace, has_air_conditioning, has_heating, floor_number, total_floors, has_storage, construction_year, renovation_year, energy_class, energy_consumption, greenhouse_gas_emissions, amenities, features) VALUES
 ('c4d5e6f7-a8b9-0123-def0-123456789013', 'a4d5e6f7-a8b9-0123-def0-123456789013', 85.00, NULL, 2, 1, 3, FALSE, NULL, FALSE, NULL, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, 2, 3, FALSE, 1980, NULL, 'D', 150.00, 20.00,
  NULL,
  '{"renovation_planned": true, "renovation_budget": 50000}')
 ON CONFLICT (property_id) DO NOTHING;
 
-INSERT INTO property_details (id, property_id, surface_area, land_area, bedrooms, bathrooms, total_rooms, has_garage, garage_spaces, has_parking, parking_spaces, has_elevator, has_balcony, has_terrace, has_garden, has_pool, has_fireplace, has_air_conditioning, has_heating, floor_number, total_floors, has_storage, construction_year, renovation_year, energy_class, energy_consumption, greenhouse_gas_emissions, commercial_type, business_license, max_capacity, amenities, features) VALUES
+INSERT INTO pr_property_details (id, property_id, surface_area, land_area, bedrooms, bathrooms, total_rooms, has_garage, garage_spaces, has_parking, parking_spaces, has_elevator, has_balcony, has_terrace, has_garden, has_pool, has_fireplace, has_air_conditioning, has_heating, floor_number, total_floors, has_storage, construction_year, renovation_year, energy_class, energy_consumption, greenhouse_gas_emissions, commercial_type, business_license, max_capacity, amenities, features) VALUES
 ('c5e6f7a8-b9c0-1234-ef01-123456789014', 'a5e6f7a8-b9c0-1234-ef01-123456789014', 200.00, NULL, NULL, 2, NULL, FALSE, NULL, TRUE, 3, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, 1, 5, TRUE, 1990, 2010, NULL, NULL, NULL,
  'Retail', TRUE, 50,
  '["wifi", "security", "air_conditioning"]',
  '{"storefront": true, "high_traffic": true, "display_windows": true}')
 ON CONFLICT (property_id) DO NOTHING;
 
-INSERT INTO property_details (id, property_id, surface_area, land_area, zoning, buildable, building_rights, amenities, features) VALUES
+INSERT INTO pr_property_details (id, property_id, surface_area, land_area, zoning, buildable, building_rights, amenities, features) VALUES
 ('c6f7a8b9-c0d1-2345-f012-123456789015', 'a6f7a8b9-c0d1-2345-f012-123456789015', NULL, 500.00,
  'Residential', TRUE, 300.00,
  NULL,
@@ -833,7 +833,7 @@ INSERT INTO property_details (id, property_id, surface_area, land_area, zoning, 
 ON CONFLICT (property_id) DO NOTHING;
 
 -- Insert Property Favorites
-INSERT INTO property_favorites (id, user_id, property_id, created_at) VALUES
+INSERT INTO pr_property_favorites (id, user_id, property_id, created_at) VALUES
 ('e1a2b3c4-d5e6-7890-abcd-ef1234567890', 'user-004', 'a1a2b3c4-d5e6-7890-abcd-ef1234567890', '2024-01-13 10:00:00'),
 ('e2b3c4d5-e6f7-8901-bcde-f12345678901', 'user-004', 'a2b3c4d5-e6f7-8901-bcde-f12345678901', '2024-01-14 15:30:00'),
 ('e3c4d5e6-f7a8-9012-cdef-123456789012', 'user-005', 'a1a2b3c4-d5e6-7890-abcd-ef1234567890', '2024-01-15 09:20:00'),
@@ -841,7 +841,7 @@ INSERT INTO property_favorites (id, user_id, property_id, created_at) VALUES
 ON CONFLICT (user_id, property_id) DO NOTHING;
 
 -- Insert Property Flags
-INSERT INTO property_flags (id, property_id, flagged_by, reason, status_code, reviewed_by, reviewed_at, moderation_action, moderation_notes, created_at, updated_at) VALUES
+INSERT INTO pr_property_flags (id, property_id, flagged_by, reason, status_code, reviewed_by, reviewed_at, moderation_action, moderation_notes, created_at, updated_at) VALUES
 ('f1a2b3c4-d5e6-7890-abcd-ef1234567890', 'a4d5e6f7-a8b9-0123-def0-123456789013', 'user-006',
  'Prix semble trop bas pour la zone. Vérification nécessaire.',
  'pending', NULL, NULL, NULL, NULL,
@@ -849,7 +849,7 @@ INSERT INTO property_flags (id, property_id, flagged_by, reason, status_code, re
 ON CONFLICT (id) DO NOTHING;
 
 -- Insert Custom Field Definitions
-INSERT INTO custom_field_definitions (id, organization_id, entity_type, field_key, label, field_type_code, required, default_value, validation_rules, options, reusable, reusable_entity_types, created_at, updated_at) VALUES
+INSERT INTO pr_custom_field_definitions (id, organization_id, entity_type, field_key, label, field_type_code, required, default_value, validation_rules, options, reusable, reusable_entity_types, created_at, updated_at) VALUES
 ('c1a2b3c4-d5e6-7890-abcd-ef1234567890', NULL, 'property', 'swimming_pool_size',
  '{"fr": "Taille de la piscine", "en": "Swimming Pool Size"}',
  'select', FALSE, NULL, NULL,
@@ -858,7 +858,7 @@ INSERT INTO custom_field_definitions (id, organization_id, entity_type, field_ke
  '2024-01-01 10:00:00', '2024-01-01 10:00:00')
 ON CONFLICT (organization_id, entity_type, field_key) DO NOTHING;
 
-INSERT INTO custom_field_definitions (id, organization_id, entity_type, field_key, label, field_type_code, required, default_value, validation_rules, options, reusable, reusable_entity_types, created_at, updated_at) VALUES
+INSERT INTO pr_custom_field_definitions (id, organization_id, entity_type, field_key, label, field_type_code, required, default_value, validation_rules, options, reusable, reusable_entity_types, created_at, updated_at) VALUES
 ('c2b3c4d5-e6f7-8901-bcde-f12345678901', NULL, 'property', 'year_built',
  '{"fr": "Année de construction", "en": "Year Built"}',
  'number', FALSE, NULL,
@@ -867,7 +867,7 @@ INSERT INTO custom_field_definitions (id, organization_id, entity_type, field_ke
  '2024-01-01 10:00:00', '2024-01-01 10:00:00')
 ON CONFLICT (organization_id, entity_type, field_key) DO NOTHING;
 
-INSERT INTO custom_field_definitions (id, organization_id, entity_type, field_key, label, field_type_code, required, default_value, validation_rules, options, reusable, reusable_entity_types, created_at, updated_at) VALUES
+INSERT INTO pr_custom_field_definitions (id, organization_id, entity_type, field_key, label, field_type_code, required, default_value, validation_rules, options, reusable, reusable_entity_types, created_at, updated_at) VALUES
 ('c3c4d5e6-f7a8-9012-cdef-123456789012', NULL, 'property', 'proximity_to_beach',
  '{"fr": "Proximité de la plage", "en": "Proximity to Beach"}',
  'select', FALSE, NULL, NULL,
@@ -877,26 +877,26 @@ INSERT INTO custom_field_definitions (id, organization_id, entity_type, field_ke
 ON CONFLICT (organization_id, entity_type, field_key) DO NOTHING;
 
 -- Insert Custom Field Values
-INSERT INTO custom_field_values (id, organization_id, entity_type, entity_id, field_definition_id, value_text, value_number, value_date, value_boolean, value_json, created_at, updated_at) VALUES
+INSERT INTO pr_custom_field_values (id, organization_id, entity_type, entity_id, field_definition_id, value_text, value_number, value_date, value_boolean, value_json, created_at, updated_at) VALUES
 ('d1a2b3c4-d5e6-7890-abcd-ef1234567890', NULL, 'property', 'a2b3c4d5-e6f7-8901-bcde-f12345678901', 'c1a2b3c4-d5e6-7890-abcd-ef1234567890',
  NULL, NULL, NULL, NULL, '"Large (> 40m²)"',
  '2024-01-10 10:00:00', '2024-01-10 10:00:00')
 ON CONFLICT (entity_type, entity_id, field_definition_id) DO NOTHING;
 
-INSERT INTO custom_field_values (id, organization_id, entity_type, entity_id, field_definition_id, value_text, value_number, value_date, value_boolean, value_json, created_at, updated_at) VALUES
+INSERT INTO pr_custom_field_values (id, organization_id, entity_type, entity_id, field_definition_id, value_text, value_number, value_date, value_boolean, value_json, created_at, updated_at) VALUES
 ('d2b3c4d5-e6f7-8901-bcde-f12345678901', NULL, 'property', 'a2b3c4d5-e6f7-8901-bcde-f12345678901', 'c3c4d5e6-f7a8-9012-cdef-123456789012',
  NULL, NULL, NULL, NULL, '"On the beach"',
  '2024-01-10 10:00:00', '2024-01-10 10:00:00')
 ON CONFLICT (entity_type, entity_id, field_definition_id) DO NOTHING;
 
-INSERT INTO custom_field_values (id, organization_id, entity_type, entity_id, field_definition_id, value_text, value_number, value_date, value_boolean, value_json, created_at, updated_at) VALUES
+INSERT INTO pr_custom_field_values (id, organization_id, entity_type, entity_id, field_definition_id, value_text, value_number, value_date, value_boolean, value_json, created_at, updated_at) VALUES
 ('d3c4d5e6-f7a8-9012-cdef-123456789012', NULL, 'property', 'a3c4d5e6-f7a8-9012-cdef-123456789012', 'c2b3c4d5-e6f7-8901-bcde-f12345678901',
  NULL, 2005, NULL, NULL, NULL,
  '2024-01-12 12:00:00', '2024-01-12 12:00:00')
 ON CONFLICT (entity_type, entity_id, field_definition_id) DO NOTHING;
 
 -- Insert Import Jobs
-INSERT INTO import_jobs (id, user_id, status_code, total_count, success_count, error_count, errors, file_name, notes, created_at, updated_at, completed_at) VALUES
+INSERT INTO pr_import_jobs (id, user_id, status_code, total_count, success_count, error_count, errors, file_name, notes, created_at, updated_at, completed_at) VALUES
 ('1a2b3c4d-e5f6-7890-abcd-ef1234567890', 'user-001', 'completed', 50, 48, 2,
  '[{"row": 12, "property": {"title": "Test Property"}, "errors": ["Invalid price format"]}, {"row": 35, "property": {"title": "Another Property"}, "errors": ["Missing required field: city"]}]',
  'properties_import_2024_01_15.csv',
@@ -904,7 +904,7 @@ INSERT INTO import_jobs (id, user_id, status_code, total_count, success_count, e
  '2024-01-15 08:00:00', '2024-01-15 08:15:00', '2024-01-15 08:15:00')
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO import_jobs (id, user_id, status_code, total_count, success_count, error_count, errors, file_name, notes, created_at, updated_at) VALUES
+INSERT INTO pr_import_jobs (id, user_id, status_code, total_count, success_count, error_count, errors, file_name, notes, created_at, updated_at) VALUES
 ('2b3c4d5e-f6a7-8901-bcde-f12345678901', 'user-002', 'processing', 100, 0, 0,
  NULL,
  'bulk_properties_import_2024_01_16.csv',
@@ -916,19 +916,19 @@ ON CONFLICT (id) DO NOTHING;
 -- 5. COMMENTS
 -- =====================================================
 
-COMMENT ON TABLE property_statuses IS 'Statuts des propriétés (brouillon, publiée, etc.)';
-COMMENT ON TABLE property_types IS 'Types de propriétés avec support des sous-types';
-COMMENT ON TABLE flag_statuses IS 'Statuts des signalements';
-COMMENT ON TABLE custom_field_types IS 'Types de champs personnalisés disponibles';
-COMMENT ON TABLE import_statuses IS 'Statuts des jobs d''import';
-COMMENT ON TABLE neighborhoods IS 'Quartiers avec leurs caractéristiques et statistiques';
-COMMENT ON TABLE properties IS 'Propriétés immobilières avec leurs informations principales';
-COMMENT ON COLUMN properties.internal_code IS 'Code interne généré automatiquement par le service lors de la création (format: PROP-YYYY-NNNNNN)';
-COMMENT ON COLUMN properties.external_code IS 'Code externe optionnel pour référence externe (peut être NULL)';
-COMMENT ON TABLE property_translations IS 'Traductions multilingues des propriétés';
-COMMENT ON TABLE property_details IS 'Détails enrichis des propriétés selon leur type';
-COMMENT ON TABLE property_flags IS 'Signalements de propriétés pour modération';
-COMMENT ON TABLE property_favorites IS 'Favoris des utilisateurs pour les propriétés';
-COMMENT ON TABLE custom_field_definitions IS 'Définitions de champs personnalisés réutilisables';
-COMMENT ON TABLE custom_field_values IS 'Valeurs des champs personnalisés pour les entités';
-COMMENT ON TABLE import_jobs IS 'Jobs d''import en masse de propriétés';
+COMMENT ON TABLE pr_property_statuses IS 'Statuts des propriétés (brouillon, publiée, etc.)';
+COMMENT ON TABLE pr_property_types IS 'Types de propriétés avec support des sous-types';
+COMMENT ON TABLE pr_flag_statuses IS 'Statuts des signalements';
+COMMENT ON TABLE pr_custom_field_types IS 'Types de champs personnalisés disponibles';
+COMMENT ON TABLE pr_import_statuses IS 'Statuts des jobs d''import';
+COMMENT ON TABLE pr_neighborhoods IS 'Quartiers avec leurs caractéristiques et statistiques';
+COMMENT ON TABLE pr_properties IS 'Propriétés immobilières avec leurs informations principales';
+COMMENT ON COLUMN pr_properties.internal_code IS 'Code interne généré automatiquement par le service lors de la création (format: PROP-YYYY-NNNNNN)';
+COMMENT ON COLUMN pr_properties.external_code IS 'Code externe optionnel pour référence externe (peut être NULL)';
+COMMENT ON TABLE pr_property_translations IS 'Traductions multilingues des propriétés';
+COMMENT ON TABLE pr_property_details IS 'Détails enrichis des propriétés selon leur type';
+COMMENT ON TABLE pr_property_flags IS 'Signalements de propriétés pour modération';
+COMMENT ON TABLE pr_property_favorites IS 'Favoris des utilisateurs pour les propriétés';
+COMMENT ON TABLE pr_custom_field_definitions IS 'Définitions de champs personnalisés réutilisables';
+COMMENT ON TABLE pr_custom_field_values IS 'Valeurs des champs personnalisés pour les entités';
+COMMENT ON TABLE pr_import_jobs IS 'Jobs d''import en masse de propriétés';

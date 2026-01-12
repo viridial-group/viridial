@@ -38,6 +38,7 @@
     "itemsCount": "Items",
     "actions": "Actions",
     "accessDenied": "Access Denied",
+    "unexpectedError": "An unexpected error occurred",
     "remove": "Remove",
     "more": "More"
   },
@@ -1038,5 +1039,54 @@
       "noOrganization": "No organization found",
       "noOrganizationDescription": "Please select an organization first"
     }
+  },
+  "properties": {
+    "stats": {
+      "price": "Price",
+      "surface": "Surface",
+      "bedrooms": "Bedrooms",
+      "status": "Status"
+    },
+    "status": {
+      "listed": "Listed"
+    },
+    "generalInformation": "General Information",
+    "form": {
+      "type": "Type",
+      "status": "Status"
+    },
+    "type": {
+      "undefined": "Undefined"
+    },
+    "location": "Location",
+    "address": "Address",
+    "neighborhood": "Neighborhood",
+    "tabs": {
+      "overview": "Overview",
+      "details": "Details",
+      "location": "Location",
+      "media": "Media"
+    },
+    "overview": "Overview",
+    "description": "Description",
+    "propertyDetails": "Property Details",
+    "details": {
+      "bedrooms": "Bedrooms",
+      "bathrooms": "Bathrooms",
+      "surface": "Surface",
+      "landArea": "Land Area",
+      "totalRooms": "Total Rooms",
+      "hasGarage": "Garage",
+      "garageSpaces": "spaces",
+      "hasParking": "Parking",
+      "parkingSpaces": "spaces",
+      "hasGarden": "Garden",
+      "hasAirConditioning": "Air Conditioning",
+      "hasHeating": "Heating",
+      "totalFloors": "Floors",
+      "constructionYear": "Construction Year"
+    },
+    "coordinates": "Coordinates",
+    "noDetails": "No details available"
   }
 }

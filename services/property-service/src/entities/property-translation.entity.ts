@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { Property } from './property.entity';
 
-@Entity({ name: 'property_translations' })
+@Entity({ name: 'pr_property_translations' })
 @Unique(['propertyId', 'language'])
 export class PropertyTranslation {
   @PrimaryGeneratedColumn('uuid')

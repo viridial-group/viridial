@@ -16,7 +16,7 @@ export enum FlagStatus {
   RESOLVED = 'resolved',
 }
 
-@Entity({ name: 'property_flags' })
+@Entity({ name: 'pr_property_flags' })
 export class PropertyFlag {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -51,9 +51,11 @@ export class PropertyFlag {
   @Column({ type: 'text', nullable: true })
   moderationNotes!: string | null;
 
+  @Column({ name: 'created_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
 
+  @Column({ name: 'updated_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt!: Date;
 

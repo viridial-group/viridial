@@ -12,7 +12,7 @@ import { Property } from './property.entity';
  * Property Details - Champs enrichis selon le type de bien
  * Stocke les détails spécifiques à chaque type de propriété
  */
-@Entity({ name: 'property_details' })
+@Entity({ name: 'pr_property_details' })
 export class PropertyDetails {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -22,17 +22,17 @@ export class PropertyDetails {
   propertyId!: string;
 
   // Surface et dimensions (tous types)
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  @Column({ name: 'surface_area', type: 'decimal', precision: 10, scale: 2, nullable: true })
   surfaceArea!: number | null; // m²
 
   @Column({ name: 'land_area', type: 'decimal', precision: 10, scale: 2, nullable: true })
   landArea!: number | null; // m² (pour maisons/villas avec terrain)
 
   // Chambres et pièces (house, apartment, villa)
-  @Column({ type: 'int', nullable: true })
+  @Column({ name: 'bedrooms', type: 'int', nullable: true })
   bedrooms!: number | null;
 
-  @Column({ type: 'int', nullable: true })
+  @Column({ name: 'bathrooms', type: 'int', nullable: true })
   bathrooms!: number | null;
 
   @Column({ name: 'total_rooms', type: 'int', nullable: true })
@@ -122,10 +122,10 @@ export class PropertyDetails {
   maxCapacity!: number | null; // Personnes
 
   // Autres caractéristiques (JSON pour flexibilité)
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ name: 'amenities', type: 'jsonb', nullable: true })
   amenities!: string[] | null; // ["wifi", "security", "concierge", etc.]
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ name: 'features',  type: 'jsonb', nullable: true })
   features!: Record<string, any> | null; // Autres caractéristiques spécifiques
 
   // Relations

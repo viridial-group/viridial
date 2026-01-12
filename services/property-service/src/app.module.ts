@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import type { LoggerOptions } from 'typeorm';
 import { join } from 'path';
 import { PropertyController } from './controllers/property.controller';
 import { CustomFieldController } from './controllers/custom-field.controller';
@@ -44,7 +45,16 @@ function parseDatabaseUrl(url?: string) {
       password: parsed.password,
       database: parsed.pathname.slice(1), // remove leading '/'
       autoLoadEntities: true,
-      synchronize: process.env.NODE_ENV !== 'production', // OK pour dev; à désactiver en prod avec migrations
+      synchronize: false, // OK pour dev; à désactiver en prod avec migrations
+      // Enable SQL query logging (excludes schema operations like CREATE/ALTER TABLE)
+      // Set DB_LOGGING=true in your .env file to see SQL queries
+      // Logs: SELECT, INSERT, UPDATE, DELETE queries only (no CREATE/ALTER TABLE)
+      logging: (process.env.DB_LOGGING === 'true' 
+        ? (process.env.DB_LOG_LEVEL === 'all' 
+          ? ['query', 'error', 'warn', 'info', 'log'] // 'all' but without 'schema'
+          : ['query', 'error'])
+        : false) as LoggerOptions,
+      logger: (process.env.DB_LOGGING === 'true' ? 'advanced-console' : undefined) as 'advanced-console' | undefined, // Shows formatted SQL queries
     };
   } catch (error) {
     throw new Error(`Invalid DATABASE_URL: ${error}`);

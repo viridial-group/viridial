@@ -35,7 +35,9 @@
     "nextPage": "Page suivante",
     "previousPage": "Page précédente",
     "clear": "Effacer",
+    "itemsCount": "Éléments",
     "actions": "Actions",
+    "accessDenied": "Accès refusé",
     "unexpectedError": "Une erreur inattendue s'est produite",
     "remove": "Retirer",
     "more": "Plus"
@@ -1109,6 +1111,55 @@
       "noOrganization": "Aucune organisation trouvée",
       "noOrganizationDescription": "Veuillez d'abord sélectionner une organisation"
     }
+  },
+  "properties": {
+    "stats": {
+      "price": "Prix",
+      "surface": "Surface",
+      "bedrooms": "Chambres",
+      "status": "Statut"
+    },
+    "status": {
+      "listed": "Publié"
+    },
+    "generalInformation": "Informations générales",
+    "form": {
+      "type": "Type",
+      "status": "Statut"
+    },
+    "type": {
+      "undefined": "Non défini"
+    },
+    "location": "Localisation",
+    "address": "Adresse",
+    "neighborhood": "Quartier",
+    "tabs": {
+      "overview": "Vue d'ensemble",
+      "details": "Détails",
+      "location": "Localisation",
+      "media": "Médias"
+    },
+    "overview": "Vue d'ensemble",
+    "description": "Description",
+    "propertyDetails": "Détails du bien",
+    "details": {
+      "bedrooms": "Chambres",
+      "bathrooms": "Salles de bain",
+      "surface": "Surface",
+      "landArea": "Superficie du terrain",
+      "totalRooms": "Pièces totales",
+      "hasGarage": "Garage",
+      "garageSpaces": "places",
+      "hasParking": "Parking",
+      "parkingSpaces": "places",
+      "hasGarden": "Jardin",
+      "hasAirConditioning": "Climatisation",
+      "hasHeating": "Chauffage",
+      "totalFloors": "Étages",
+      "constructionYear": "Année de construction"
+    },
+    "coordinates": "Coordonnées",
+    "noDetails": "Aucun détail disponible"
   }
 }
 

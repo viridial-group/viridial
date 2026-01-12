@@ -31,7 +31,7 @@ export enum PropertyType {
   OTHER = 'other',
 }
 
-@Entity({ name: 'properties' })
+@Entity({ name: 'pr_properties' })
 export class Property {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -105,11 +105,11 @@ export class Property {
 
   // Metadata
   @Column({ name: 'created_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
 
   @Column({ name: 'updated_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt!: Date;
 
   @Column({ name: 'published_at', type: 'timestamp', nullable: true })

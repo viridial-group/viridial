@@ -13,23 +13,23 @@ import { Property } from './property.entity';
  * Neighborhood (Quartier) Entity
  * Représente un quartier avec ses caractéristiques et statistiques
  */
-@Entity({ name: 'neighborhoods' })
+@Entity({ name: 'pr_neighborhoods' })
 export class Neighborhood {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
   // Identifiant unique du quartier (slug pour URL)
-  @Column({ type: 'varchar', length: 100, unique: true })
+  @Column({ name: 'slug', type: 'varchar', length: 100, unique: true })
   @Index()
   slug!: string;
 
   // Nom du quartier
-  @Column({ type: 'varchar', length: 200 })
+  @Column({ name: 'name', type: 'varchar', length: 200 })
   @Index()
   name!: string;
 
   // Description multilingue (JSON)
-  @Column({ type: 'jsonb' })
+  @Column({ name: 'description', type: 'jsonb' })
   description!: {
     fr?: string;
     en?: string;
@@ -37,30 +37,31 @@ export class Neighborhood {
   };
 
   // Localisation géographique
-  @Column({ type: 'varchar', length: 100 })
+  @Column({ name: 'city', type: 'varchar', length: 100 })
   @Index()
   city!: string;
 
-  @Column({ type: 'varchar', length: 100, nullable: true })
+  @Column({ name: 'region', type: 'varchar', length: 100, nullable: true })
   @Index()
   region!: string | null;
 
-  @Column({ type: 'varchar', length: 100, nullable: true })
+  @Column({ name: 'country', type: 'varchar', length: 100, nullable: true })
   @Index()
   country!: string | null;
 
-  @Column({ type: 'varchar', length: 20, nullable: true })
+  @Column({ name: 'postal_code', type: 'varchar', length: 20, nullable: true })
+  @Index()
   postalCode!: string | null;
 
   // Centre géographique du quartier
-  @Column({ type: 'decimal', precision: 10, scale: 8, nullable: true })
+  @Column({ name: 'center_latitude', type: 'decimal', precision: 10, scale: 8, nullable: true })
   centerLatitude!: number | null;
 
-  @Column({ type: 'decimal', precision: 11, scale: 8, nullable: true })
+  @Column({ name: 'center_longitude', type: 'decimal', precision: 11, scale: 8, nullable: true })
   centerLongitude!: number | null;
 
   // Statistiques du quartier
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ name: 'stats', type: 'jsonb', nullable: true })
   stats!: {
     // Prix moyen par type de propriété (EUR)
     averagePrice?: {
@@ -84,7 +85,7 @@ export class Neighborhood {
   } | null;
 
   // Caractéristiques du quartier (JSON)
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ name: 'features', type: 'jsonb', nullable: true })
   features!: {
     // Transport
     publicTransport?: {
@@ -122,16 +123,16 @@ export class Neighborhood {
   } | null;
 
   // Images du quartier
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ name: 'media_urls',   type: 'jsonb', nullable: true })
   mediaUrls!: string[] | null;
 
   // Métadonnées
   @Column({ name: 'created_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
 
   @Column({ name: 'updated_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt!: Date;
 
   // Relations

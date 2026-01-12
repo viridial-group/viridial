@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useRouter, useParams } from '@/i18n/routing';
+import { useRouter } from '@/i18n/routing';
+import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/contexts/AuthContext';
 import { propertyApi, PropertyApiError } from '@/lib/property-api';
@@ -45,6 +46,14 @@ import {
   Bath,
   Ruler,
   ExternalLink,
+  Car,
+  ParkingCircle,
+  TreePine,
+  Wind,
+  Flame,
+  Layers,
+  DoorOpen,
+  X,
 } from 'lucide-react';
 import { useToast } from '@/components/ui/toast';
 import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
@@ -75,14 +84,12 @@ const statusIcons: Record<PropertyStatus, typeof CheckCircle2> = {
   archived: XCircle,
 };
 
-const typeColors: Record<PropertyType, string> = {
+const typeColors: Partial<Record<PropertyType, string>> = {
   apartment: 'bg-blue-100 text-blue-700 border-blue-200',
   house: 'bg-green-100 text-green-700 border-green-200',
   villa: 'bg-purple-100 text-purple-700 border-purple-200',
-  studio: 'bg-orange-100 text-orange-700 border-orange-200',
   land: 'bg-yellow-100 text-yellow-700 border-yellow-200',
   commercial: 'bg-red-100 text-red-700 border-red-200',
-  office: 'bg-indigo-100 text-indigo-700 border-indigo-200',
   other: 'bg-gray-100 text-gray-700 border-gray-200',
 };
 
@@ -286,7 +293,9 @@ export default function PropertyDetailPage() {
     );
   }
 
-  const StatusIcon = statusIcons[property.status];
+  // Handle both 'status' and 'statusCode' fields, with fallback to 'draft'
+  const propertyStatus = (property as any).status || (property as any).statusCode || 'draft';
+  const StatusIcon = statusIcons[propertyStatus as PropertyStatus] || Clock; // Fallback to Clock if status not found
 
   return (
     <AgencyLayout
@@ -348,7 +357,7 @@ export default function PropertyDetailPage() {
                 <Edit className="h-4 w-4 mr-2" />
                 {tCommon('edit') || 'Edit'}
               </DropdownMenuItem>
-              {property.status === PropertyStatus.DRAFT && (
+              {propertyStatus === PropertyStatus.DRAFT && (
                 <DropdownMenuItem onClick={handlePublish} disabled={isProcessing}>
                   <CheckCircle2 className="h-4 w-4 mr-2" />
                   {t('publish') || 'Publish'}
@@ -393,9 +402,9 @@ export default function PropertyDetailPage() {
           <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
             <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">{t('stats.status') || 'Status'}</div>
             <div className="text-sm font-medium text-gray-900">
-              <Badge className={cn('text-xs px-2.5 py-1 font-medium', statusColors[property.status])}>
+              <Badge className={cn('text-xs px-2.5 py-1 font-medium', statusColors[propertyStatus as PropertyStatus] || 'bg-gray-100 text-gray-700')}>
                 <StatusIcon className="h-3.5 w-3.5 mr-1" />
-                {t(`status.${property.status}`) || property.status}
+                {t(`status.${propertyStatus}`) || propertyStatus}
               </Badge>
             </div>
           </div>
@@ -438,20 +447,20 @@ export default function PropertyDetailPage() {
                 </div>
                 <div>
                   <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">{t('form.status') || 'Status'}</p>
-                  {property.status === PropertyStatus.LISTED ? (
+                  {propertyStatus === PropertyStatus.LISTED ? (
                     <Badge variant="success" className="gap-1.5 text-xs px-2.5 py-1 font-medium">
                       <CheckCircle2 className="h-3.5 w-3.5" />
-                      {t(`status.${property.status}`) || property.status}
+                      {t(`status.${propertyStatus}`) || propertyStatus}
                     </Badge>
-                  ) : property.status === PropertyStatus.FLAGGED ? (
+                  ) : propertyStatus === PropertyStatus.FLAGGED ? (
                     <Badge variant="destructive" className="gap-1.5 text-xs px-2.5 py-1 font-medium">
                       <AlertTriangle className="h-3.5 w-3.5" />
-                      {t(`status.${property.status}`) || property.status}
+                      {t(`status.${propertyStatus}`) || propertyStatus}
                     </Badge>
                   ) : (
-                    <Badge className={cn('gap-1.5 text-xs px-2.5 py-1 font-medium', statusColors[property.status])}>
+                    <Badge className={cn('gap-1.5 text-xs px-2.5 py-1 font-medium', statusColors[propertyStatus as PropertyStatus] || 'bg-gray-100 text-gray-700')}>
                       <StatusIcon className="h-3.5 w-3.5" />
-                      {t(`status.${property.status}`) || property.status}
+                      {t(`status.${propertyStatus}`) || propertyStatus}
                     </Badge>
                   )}
                 </div>
@@ -504,7 +513,7 @@ export default function PropertyDetailPage() {
                     {property.latitude && property.longitude && (
                       <div className="flex items-center gap-2">
                         <Badge variant="outline" className="text-xs px-2 py-0.5 bg-gray-50 text-gray-700 border-gray-300 font-normal">
-                          {property.latitude.toFixed(6)}, {property.longitude.toFixed(6)}
+                          {Number(property.latitude).toFixed(6)}, {Number(property.longitude).toFixed(6)}
                         </Badge>
                       </div>
                     )}
@@ -629,6 +638,17 @@ export default function PropertyDetailPage() {
                           <p className="text-2xl font-bold text-gray-900">{property.details.landArea} m²</p>
                         </div>
                       )}
+                      {property.details.totalRooms && (
+                        <div>
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="p-2 bg-viridial-50 rounded-lg border border-viridial-100">
+                              <DoorOpen className="h-4 w-4 text-viridial-600" />
+                            </div>
+                            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t('details.totalRooms') || 'Total Rooms'}</p>
+                          </div>
+                          <p className="text-2xl font-bold text-gray-900">{property.details.totalRooms}</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
@@ -643,27 +663,177 @@ export default function PropertyDetailPage() {
               </CardHeader>
               <CardContent className="pt-6">
                 {property.details ? (
-                  <div className="grid grid-cols-2 gap-6">
-                    {Object.entries(property.details).map(([key, value]) => {
-                      if (value === null || value === undefined || key === 'id' || key === 'propertyId') return null;
-                      if (typeof value === 'boolean') {
-                        return value ? (
-                          <div key={key} className="flex items-center gap-2">
-                            <CheckCircle2 className="h-4 w-4 text-green-600" />
-                            <span className="text-sm font-medium text-gray-900">{t(`details.${key}`) || key}</span>
-                          </div>
-                        ) : null;
-                      }
-                      if (typeof value === 'number') {
-                        return (
-                          <div key={key}>
-                            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">{t(`details.${key}`) || key}</p>
-                            <p className="text-base font-semibold text-gray-900">{value}</p>
-                          </div>
-                        );
-                      }
-                      return null;
-                    })}
+                  <div className="space-y-8">
+                    {/* Rooms Section */}
+                    {(property.details.bedrooms || property.details.bathrooms || property.details.totalRooms) && (
+                      <div>
+                        <h4 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wide">Rooms</h4>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                          {property.details.bedrooms && (
+                            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                              <div className="p-2 bg-viridial-50 rounded-lg border border-viridial-100">
+                                <Bed className="h-4 w-4 text-viridial-600" />
+                              </div>
+                              <div>
+                                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t('details.bedrooms') || 'Bedrooms'}</p>
+                                <p className="text-lg font-bold text-gray-900">{property.details.bedrooms}</p>
+                              </div>
+                            </div>
+                          )}
+                          {property.details.bathrooms && (
+                            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                              <div className="p-2 bg-viridial-50 rounded-lg border border-viridial-100">
+                                <Bath className="h-4 w-4 text-viridial-600" />
+                              </div>
+                              <div>
+                                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t('details.bathrooms') || 'Bathrooms'}</p>
+                                <p className="text-lg font-bold text-gray-900">{property.details.bathrooms}</p>
+                              </div>
+                            </div>
+                          )}
+                          {property.details.totalRooms && (
+                            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                              <div className="p-2 bg-viridial-50 rounded-lg border border-viridial-100">
+                                <DoorOpen className="h-4 w-4 text-viridial-600" />
+                              </div>
+                              <div>
+                                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t('details.totalRooms') || 'Total Rooms'}</p>
+                                <p className="text-lg font-bold text-gray-900">{property.details.totalRooms}</p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Parking & Garage Section */}
+                    {(property.details.hasGarage || property.details.garageSpaces || property.details.hasParking || property.details.parkingSpaces) && (
+                      <div>
+                        <h4 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wide">Parking & Garage</h4>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          {property.details.hasGarage && (
+                            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                              <div className="p-2 bg-green-50 rounded-lg border border-green-100">
+                                <Car className="h-4 w-4 text-green-600" />
+                              </div>
+                              <div className="flex-1">
+                                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t('details.hasGarage') || 'Garage'}</p>
+                                {property.details.garageSpaces ? (
+                                  <p className="text-lg font-bold text-gray-900">
+                                    {property.details.garageSpaces} {t('details.garageSpaces') || 'spaces'}
+                                  </p>
+                                ) : (
+                                  <p className="text-sm font-medium text-green-600">Yes</p>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                          {property.details.hasParking && (
+                            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                              <div className="p-2 bg-blue-50 rounded-lg border border-blue-100">
+                                <ParkingCircle className="h-4 w-4 text-blue-600" />
+                              </div>
+                              <div className="flex-1">
+                                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t('details.hasParking') || 'Parking'}</p>
+                                {property.details.parkingSpaces ? (
+                                  <p className="text-lg font-bold text-gray-900">
+                                    {property.details.parkingSpaces} {t('details.parkingSpaces') || 'spaces'}
+                                  </p>
+                                ) : (
+                                  <p className="text-sm font-medium text-blue-600">Yes</p>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Amenities Section */}
+                    {(property.details.hasGarden || property.details.hasAirConditioning || property.details.hasHeating) && (
+                      <div>
+                        <h4 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wide">Amenities</h4>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                          {property.details.hasGarden && (
+                            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                              <div className="p-2 bg-green-50 rounded-lg border border-green-100">
+                                <TreePine className="h-4 w-4 text-green-600" />
+                              </div>
+                              <span className="text-sm font-medium text-gray-900">{t('details.hasGarden') || 'Garden'}</span>
+                            </div>
+                          )}
+                          {property.details.hasAirConditioning && (
+                            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                              <div className="p-2 bg-blue-50 rounded-lg border border-blue-100">
+                                <Wind className="h-4 w-4 text-blue-600" />
+                              </div>
+                              <span className="text-sm font-medium text-gray-900">{t('details.hasAirConditioning') || 'Air Conditioning'}</span>
+                            </div>
+                          )}
+                          {property.details.hasHeating && (
+                            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                              <div className="p-2 bg-orange-50 rounded-lg border border-orange-100">
+                                <Flame className="h-4 w-4 text-orange-600" />
+                              </div>
+                              <span className="text-sm font-medium text-gray-900">{t('details.hasHeating') || 'Heating'}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Building Information Section */}
+                    {(property.details.totalFloors || property.details.constructionYear || property.details.surfaceArea || property.details.landArea) && (
+                      <div>
+                        <h4 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wide">Building Information</h4>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          {property.details.surfaceArea && (
+                            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                              <div className="p-2 bg-viridial-50 rounded-lg border border-viridial-100">
+                                <Ruler className="h-4 w-4 text-viridial-600" />
+                              </div>
+                              <div>
+                                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t('details.surface') || 'Surface'}</p>
+                                <p className="text-lg font-bold text-gray-900">{property.details.surfaceArea} m²</p>
+                              </div>
+                            </div>
+                          )}
+                          {property.details.landArea && (
+                            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                              <div className="p-2 bg-viridial-50 rounded-lg border border-viridial-100">
+                                <Ruler className="h-4 w-4 text-viridial-600" />
+                              </div>
+                              <div>
+                                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t('details.landArea') || 'Land Area'}</p>
+                                <p className="text-lg font-bold text-gray-900">{property.details.landArea} m²</p>
+                              </div>
+                            </div>
+                          )}
+                          {property.details.totalFloors && (
+                            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                              <div className="p-2 bg-purple-50 rounded-lg border border-purple-100">
+                                <Layers className="h-4 w-4 text-purple-600" />
+                              </div>
+                              <div>
+                                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t('details.totalFloors') || 'Floors'}</p>
+                                <p className="text-lg font-bold text-gray-900">{property.details.totalFloors}</p>
+                              </div>
+                            </div>
+                          )}
+                          {property.details.constructionYear && (
+                            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                              <div className="p-2 bg-amber-50 rounded-lg border border-amber-100">
+                                <Calendar className="h-4 w-4 text-amber-600" />
+                              </div>
+                              <div>
+                                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t('details.constructionYear') || 'Construction Year'}</p>
+                                <p className="text-lg font-bold text-gray-900">{property.details.constructionYear}</p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="text-center py-12 text-gray-500">
@@ -705,7 +875,7 @@ export default function PropertyDetailPage() {
                       <div className="mt-3">
                         <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">{t('coordinates') || 'Coordinates'}</p>
                         <Badge variant="outline" className="text-xs px-2 py-0.5 bg-gray-50 text-gray-700 border-gray-300 font-normal">
-                          {property.latitude.toFixed(6)}, {property.longitude.toFixed(6)}
+                          {Number(property.latitude).toFixed(6)}, {Number(property.longitude).toFixed(6)}
                         </Badge>
                       </div>
                     )}

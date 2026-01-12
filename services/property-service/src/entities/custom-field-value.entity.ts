@@ -14,7 +14,7 @@ import { CustomFieldDefinition } from './custom-field-definition.entity';
  * Custom Field Value - Valeur d'un champ personnalisé pour une entité
  * Utilise le modèle EAV (Entity-Attribute-Value) pour stocker les valeurs typées
  */
-@Entity({ name: 'custom_field_values' })
+@Entity({ name: 'pr_custom_field_values' })
 @Index(['entityType', 'entityId', 'fieldDefinitionId'], { unique: true })
 @Index(['organizationId', 'entityType', 'entityId'])
 export class CustomFieldValue {
@@ -57,10 +57,12 @@ export class CustomFieldValue {
   valueJson!: any | null; // For select (single value), multiselect (array), complex data
 
   // Metadata
-  @CreateDateColumn({ name: 'created_at' })
+  @Column({ name: 'created_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn()
   createdAt!: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @Column({ name: 'updated_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @UpdateDateColumn()
   updatedAt!: Date;
 
   // Relations

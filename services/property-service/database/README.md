@@ -5,6 +5,7 @@ Ce répertoire contient le schéma SQL complet pour le service de gestion des pr
 ## Fichiers
 
 - **schema.sql** : Schéma complet de la base de données avec toutes les tables, index, contraintes et données de seed
+- **migrate-to-reference-tables.sql** : Script de migration pour passer de l'ancien schéma avec ENUMs au nouveau schéma avec tables de référence
 
 ## Structure de la Base de Données
 
@@ -65,6 +66,51 @@ psql -U viridial -d viridial
 ```bash
 psql -U viridial -d viridial -f database/schema.sql
 ```
+
+### Migration depuis l'Ancien Schéma (ENUMs)
+
+Si vous avez une base de données existante avec les anciennes colonnes ENUM (`status`, `type`), vous devez exécuter le script de migration **AVANT** de démarrer le service :
+
+```bash
+# Se connecter à PostgreSQL
+psql -U viridial -d viridial
+
+# Exécuter le script de migration
+\i database/migrate-to-reference-tables.sql
+```
+
+Ou via psql en ligne de commande :
+
+**Option 1: Complete Migration (Recommended for existing databases)**
+
+```bash
+psql -U viridial -d viridial -f database/full-migration-to-pr-prefix.sql
+```
+
+This script handles BOTH:
+- Migration from ENUM columns (`status`, `type`) to code columns (`status_code`, `type_code`)
+- Renaming all tables to use `pr_` prefix
+
+**Option 2: ENUM Migration Only**
+
+```bash
+psql -U viridial -d viridial -f database/migrate-to-reference-tables.sql
+```
+
+**Option 3: Table Rename Only**
+
+```bash
+psql -U viridial -d viridial -f database/migrate-to-pr-prefix.sql
+```
+
+Ce script va :
+1. Migrer les données de `status` vers `status_code` si nécessaire
+2. Migrer les données de `type` vers `type_code` si nécessaire
+3. Supprimer les anciennes colonnes `status` et `type`
+4. S'assurer que toutes les propriétés ont des valeurs valides pour `status_code` et `type_code`
+5. Ajouter les contraintes NOT NULL si nécessaire
+
+⚠️ **Important** : Exécutez ce script **avant** de démarrer le service si vous avez des données existantes. Sinon, TypeORM avec `synchronize: true` essaiera de créer/modifier les colonnes et échouera si les anciennes colonnes contiennent des valeurs null.
 
 ### Réinitialisation de la Base de Données
 

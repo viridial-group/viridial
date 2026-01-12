@@ -26,7 +26,7 @@ export enum CustomFieldType {
   EMAIL = 'email',
 }
 
-@Entity({ name: 'custom_field_definitions' })
+@Entity({ name: 'pr_custom_field_definitions' })
 @Index(['organizationId', 'entityType', 'fieldKey'], { unique: true })
 export class CustomFieldDefinition {
   @PrimaryGeneratedColumn('uuid')
@@ -85,10 +85,12 @@ export class CustomFieldDefinition {
   deletedAt!: Date | null;
 
   // Metadata
-  @CreateDateColumn({ name: 'created_at' })
+  @Column({ name: 'created_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn()
   createdAt!: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @Column({ name: 'updated_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @UpdateDateColumn()
   updatedAt!: Date;
 
   // Relations

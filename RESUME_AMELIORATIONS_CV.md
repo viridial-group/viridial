@@ -182,3 +182,4 @@ Le CV peut être adapté selon le poste visé :
 
 *CV amélioré le : Janvier 2025*
 
+

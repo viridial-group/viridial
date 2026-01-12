@@ -109,7 +109,10 @@ export const PropertyCard = memo(function PropertyCard({
     || property.translations?.[0];
 
   const mainImage = property.mediaUrls && property.mediaUrls.length > 0 ? property.mediaUrls[0] : null;
-  const StatusIcon = statusIcons[property.status];
+  
+  // Handle both 'status' and 'statusCode' fields, with fallback to 'draft'
+  const propertyStatus = (property as any).status || (property as any).statusCode || 'draft';
+  const StatusIcon = statusIcons[propertyStatus as PropertyStatus] || Clock; // Fallback to Clock if status not found
 
   return (
     <Card 
@@ -144,9 +147,9 @@ export const PropertyCard = memo(function PropertyCard({
                 <Heart className={cn('h-4 w-4', isFavorited && 'fill-current')} />
               </Button>
             )}
-            <Badge className={cn('bg-white/90 text-xs', statusColors[property.status])}>
+            <Badge className={cn('bg-white/90 text-xs', statusColors[propertyStatus as PropertyStatus] || 'bg-gray-100 text-gray-700')}>
               <StatusIcon className="h-3 w-3 mr-1" />
-              {t(`status.${property.status}`) || property.status}
+              {t(`status.${propertyStatus}`) || propertyStatus}
             </Badge>
           </div>
         </div>
@@ -154,9 +157,9 @@ export const PropertyCard = memo(function PropertyCard({
         <div className="relative w-full h-48 bg-gray-100 flex items-center justify-center rounded-t-lg">
           <ImageIcon className="h-12 w-12 text-gray-400" />
           <div className="absolute top-2 right-2">
-            <Badge className={cn('text-xs', statusColors[property.status])}>
+            <Badge className={cn('text-xs', statusColors[propertyStatus as PropertyStatus] || 'bg-gray-100 text-gray-700')}>
               <StatusIcon className="h-3 w-3 mr-1" />
-              {t(`status.${property.status}`) || property.status}
+              {t(`status.${propertyStatus}`) || propertyStatus}
             </Badge>
           </div>
         </div>

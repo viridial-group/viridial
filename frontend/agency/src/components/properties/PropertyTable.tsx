@@ -123,8 +123,10 @@ export const PropertyTable = memo(function PropertyTable({
           break;
         case 'status':
           const statusOrder = { draft: 0, review: 1, listed: 2, flagged: 3, archived: 4 };
-          aValue = statusOrder[a.status] ?? 999;
-          bValue = statusOrder[b.status] ?? 999;
+          const aStatus = (a as any).status || (a as any).statusCode || 'draft';
+          const bStatus = (b as any).status || (b as any).statusCode || 'draft';
+          aValue = statusOrder[aStatus as keyof typeof statusOrder] ?? 999;
+          bValue = statusOrder[bStatus as keyof typeof statusOrder] ?? 999;
           break;
         case 'city':
           aValue = (a.city || '').toLowerCase();
@@ -273,7 +275,11 @@ export const PropertyTable = memo(function PropertyTable({
               sortedProperties.map((property, index) => {
                 const translation = property.translations?.find(t => t.language.startsWith(currentLanguage)) 
                   || property.translations?.[0];
-                const StatusIcon = statusIcons[property.status];
+                
+                // Handle both 'status' and 'statusCode' fields, with fallback to 'draft'
+                const propertyStatus = (property as any).status || (property as any).statusCode || 'draft';
+                const StatusIcon = statusIcons[propertyStatus as PropertyStatus] || Clock; // Fallback to Clock if status not found
+                
                 const mainImage = property.mediaUrls && property.mediaUrls.length > 0 ? property.mediaUrls[0] : null;
                 const isFavorited = favoritedIds.has(property.id);
 
@@ -360,9 +366,9 @@ export const PropertyTable = memo(function PropertyTable({
                       )}
                     </TableCell>
                     <TableCell className="py-3 border-r border-gray-200">
-                      <Badge className={cn('text-xs px-2 py-0.5 gap-1', statusColors[property.status])}>
+                      <Badge className={cn('text-xs px-2 py-0.5 gap-1', statusColors[propertyStatus as PropertyStatus] || 'bg-gray-100 text-gray-700')}>
                         <StatusIcon className="h-3 w-3" />
-                        {t(`status.${property.status}`) || property.status}
+                        {t(`status.${propertyStatus}`) || propertyStatus}
                       </Badge>
                     </TableCell>
                     <TableCell className="py-3 text-sm text-gray-600 border-r border-gray-200">

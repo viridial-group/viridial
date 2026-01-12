@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { Property } from './property.entity';
 
-@Entity({ name: 'property_favorites' })
+@Entity({ name: 'pr_property_favorites' })
 @Unique(['userId', 'propertyId']) // One favorite per user per property
 export class PropertyFavorite {
   @PrimaryGeneratedColumn('uuid')
@@ -29,7 +29,7 @@ export class PropertyFavorite {
   property!: Property;
 
   @Column({ name: 'created_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
 }
 

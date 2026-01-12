@@ -89,9 +89,11 @@ export class PropertyFavoriteService {
       .leftJoinAndSelect('favorite.property', 'property')
       .leftJoinAndSelect('property.translations', 'translation')
       .leftJoinAndSelect('property.neighborhood', 'neighborhood')
-      .where('favorite.userId = :userId', { userId })
-      .andWhere('property.deletedAt IS NULL') // Exclude deleted properties
-      .orderBy('favorite.createdAt', 'DESC');
+      .where('favorite.user_id = :userId', { userId })
+      .andWhere('property.deleted_at IS NULL'); // Exclude deleted properties
+    
+    // Use property name - TypeORM will map to column name via entity metadata
+    queryBuilder.addOrderBy('favorite.createdAt', 'DESC');
 
     const total = await queryBuilder.getCount();
     const favorites = await queryBuilder.take(limit).skip(offset).getMany();
