@@ -5,7 +5,7 @@
 | Service | Port | Description |
 |---------|------|-------------|
 | **auth-service** | **3001** | Service d'authentification (JWT, sessions) |
-| **property-service** | **3002** | Service de gestion des propriétés |
+| **property-service** | **3003** | Service de gestion des propriétés |
 | **geolocation-service** | **3003** | Service de géolocalisation et géocodage |
 | **search-service** | **3004** | Service de recherche (Meilisearch) |
 | **marketing-service** | **3005** | Service de marketing automation |

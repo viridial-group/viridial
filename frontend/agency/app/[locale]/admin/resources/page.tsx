@@ -5,12 +5,11 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/routing';
 import { useAuth } from '@/contexts/AuthContext';
 import dynamic from 'next/dynamic';
+import { AgencyLayout } from '@/components/layout/AgencyLayout';
 import { ResourceCard } from '@/components/resources/ResourceCard';
 import { StatsCards } from '@/components/resources/StatsCards';
 import { CreateResourceModal } from '@/components/resources/CreateResourceModal';
 import { ResourceFilterBar } from '@/components/resources/ResourceFilterBar';
-import { Sidebar } from '@/components/navigation/Sidebar';
-import { AuthGuard } from '@/middleware/auth-guard';
 import { LanguageSelector } from '@/components/ui/language-selector';
 import { Button } from '@/components/ui/button';
 import { Tooltip } from '@/components/ui/tooltip';
@@ -109,38 +108,23 @@ export default function ResourcesPage() {
   }, [filteredResources, rowsPerPage]);
 
   return (
-    <AuthGuard>
-      <div className="h-screen bg-gray-50 flex overflow-hidden">
-        {/* Main Layout */}
-        <div className="flex flex-1 min-w-0">
-          {/* Navigation Sidebar */}
-          <Sidebar />
-
-          <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-            {/* Header */}
-            <header className="flex-shrink-0 border-b border-gray-200 bg-white z-10">
-              <div className="px-6 py-3">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h1 className="text-lg font-semibold text-gray-900">{t('title') || 'Resources'}</h1>
-                    <p className="text-xs text-gray-500">{t('subtitle') || 'Manage resources for permission system'}</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <LanguageSelector />
-                    <Button 
-                      className="gap-2 bg-viridial-600 hover:bg-viridial-700 text-sm h-9 px-4"
-                      onClick={() => setIsCreateModalOpen(true)}
-                    >
-                      <Plus className="h-3.5 w-3.5" />
-                      {t('newResource') || 'New Resource'}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </header>
-
-            {/* Main Content */}
-            <main className="flex-1 flex flex-col min-h-0 overflow-hidden">
+    <AgencyLayout
+      headerTitle={t('title') || 'Resources'}
+      headerSubtitle={t('subtitle') || 'Manage resources for permission system'}
+      headerActions={
+        <>
+          <LanguageSelector />
+          <Button 
+            className="gap-2 bg-viridial-600 hover:bg-viridial-700 text-sm h-9 px-4"
+            onClick={() => setIsCreateModalOpen(true)}
+          >
+            <Plus className="h-3.5 w-3.5" />
+            {t('newResource') || 'New Resource'}
+          </Button>
+        </>
+      }
+    >
+      <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
               {/* Fixed Top Section */}
               <div className="flex-shrink-0 p-6 pb-4 space-y-4 overflow-hidden">
                 {/* Stats Cards */}
@@ -269,9 +253,6 @@ export default function ResourcesPage() {
                   </div>
                 )}
               </div>
-            </main>
-          </div>
-        </div>
       </div>
 
       {/* Create Resource Modal */}
@@ -280,7 +261,7 @@ export default function ResourcesPage() {
         onClose={() => setIsCreateModalOpen(false)}
         onSuccess={handleCreateSuccess}
       />
-    </AuthGuard>
+    </AgencyLayout>
   );
 }
 

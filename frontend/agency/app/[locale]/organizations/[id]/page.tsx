@@ -5,14 +5,13 @@ import { useParams } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { AuthGuard } from '@/middleware/auth-guard';
+import { AgencyLayout } from '@/components/layout/AgencyLayout';
 import { organizationApi } from '@/lib/organization-api';
 import { userApi } from '@/lib/user-api';
 import { roleApi } from '@/lib/role-api';
 import type { Subscription, Plan } from '@/types/plans';
 import { UserTable } from '@/components/users/UserTable';
 import { RoleCard } from '@/components/roles/RoleCard';
-import { Sidebar } from '@/components/navigation/Sidebar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -194,25 +193,28 @@ export default function OrganizationDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Card className="max-w-md">
-          <CardHeader>
-            <CardTitle>{tCommon('loading') || 'Loading...'}</CardTitle>
-          </CardHeader>
-        </Card>
-      </div>
+      <AgencyLayout>
+        <div className="p-6 flex items-center justify-center">
+          <Card className="max-w-md bg-white">
+            <CardHeader>
+              <CardTitle>{tCommon('loading') || 'Loading...'}</CardTitle>
+            </CardHeader>
+          </Card>
+        </div>
+      </AgencyLayout>
     );
   }
 
   if (!organization) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Card className="max-w-md">
-          <CardHeader>
-            <CardTitle>{t('organizationNotFound')}</CardTitle>
-            <CardDescription>
-              {t('organizationNotFoundDescription')}
-            </CardDescription>
+      <AgencyLayout>
+        <div className="p-6 flex items-center justify-center">
+          <Card className="max-w-md bg-white">
+            <CardHeader>
+              <CardTitle>{t('organizationNotFound')}</CardTitle>
+              <CardDescription>
+                {t('organizationNotFoundDescription')}
+              </CardDescription>
           </CardHeader>
           <CardContent>
             <Button onClick={() => router.push('/')}>
@@ -220,7 +222,8 @@ export default function OrganizationDetailPage() {
             </Button>
           </CardContent>
         </Card>
-      </div>
+        </div>
+      </AgencyLayout>
     );
   }
 
@@ -800,63 +803,56 @@ export default function OrganizationDetailPage() {
   };
 
   return (
-    <AuthGuard>
-      <div className="h-screen bg-gray-50 flex overflow-hidden">
-      <div className="flex flex-1 min-w-0">
-        <Sidebar />
-
-        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-          <header className="flex-shrink-0 border-b border-gray-200 bg-white z-10">
-        <div className="px-6 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Button 
-                variant="ghost" 
-                size="icon"
-                    onClick={() => router.back()}
-                    className="h-8 w-8 text-gray-600 hover:text-gray-900"
-                    title={tCommon('back')}
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-                <div>
-                  <h1 className="text-lg font-semibold text-gray-900">{organization.name}</h1>
-                    <p className="text-xs text-gray-500">{t('organizationDetails')}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="text-sm h-9 px-4 gap-2"
-                    onClick={() => router.push(`/organizations/${organization.id}/users`)}
-                  >
-                    <Users className="h-3.5 w-3.5" />
-                    {t('userManagement') || 'User Management'}
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="text-sm h-9 px-4 gap-2"
-                    onClick={() => router.push(`/organizations/${organization.id}/org-chart`)}
-                  >
-                    <GitBranch className="h-3.5 w-3.5" />
-                    {t('viewOrganizationChart')}
-                  </Button>
-                  <Button variant="outline" size="sm" className="text-sm h-9 px-4">
-                    <Settings className="h-3.5 w-3.5 mr-2" />
-                    {tCommon('settings')}
-                  </Button>
-                  <Button className="gap-2 bg-viridial-600 hover:bg-viridial-700 text-sm h-9 px-4">
-                    <Plus className="h-3.5 w-3.5" />
-                    {t('newMember')}
-              </Button>
-            </div>
+    <AgencyLayout
+      headerContent={
+        <>
+          <Button 
+            variant="ghost" 
+            size="icon"
+            onClick={() => router.back()}
+            className="h-8 w-8 text-gray-600 hover:text-gray-900"
+            title={tCommon('back')}
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div>
+            <h1 className="text-lg font-semibold text-gray-900">{organization.name}</h1>
+            <p className="text-xs text-gray-500">{t('organizationDetails')}</p>
           </div>
-        </div>
-        </header>
-
-          <main className="flex-1 overflow-y-auto p-6">
+        </>
+      }
+      headerActions={
+        <>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="text-sm h-9 px-4 gap-2"
+            onClick={() => router.push(`/organizations/${organization.id}/users`)}
+          >
+            <Users className="h-3.5 w-3.5" />
+            {t('userManagement') || 'User Management'}
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="text-sm h-9 px-4 gap-2"
+            onClick={() => router.push(`/organizations/${organization.id}/org-chart`)}
+          >
+            <GitBranch className="h-3.5 w-3.5" />
+            {t('viewOrganizationChart')}
+          </Button>
+          <Button variant="outline" size="sm" className="text-sm h-9 px-4">
+            <Settings className="h-3.5 w-3.5 mr-2" />
+            {tCommon('settings')}
+          </Button>
+          <Button className="gap-2 bg-viridial-600 hover:bg-viridial-700 text-sm h-9 px-4">
+            <Plus className="h-3.5 w-3.5" />
+            {t('newMember')}
+          </Button>
+        </>
+      }
+    >
+      <div className="p-6">
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
               <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
@@ -1561,8 +1557,6 @@ export default function OrganizationDetailPage() {
             </div>
           </TabsContent>
         </Tabs>
-        </main>
-        </div>
       </div>
 
       {/* Modals */}
@@ -1635,8 +1629,7 @@ export default function OrganizationDetailPage() {
         onConfirm={handleConfirmDeleteSubOrganizations}
         variant="danger"
       />
-      </div>
-    </AuthGuard>
+    </AgencyLayout>
   );
 }
 

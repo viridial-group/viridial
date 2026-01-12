@@ -54,7 +54,7 @@ async function bootstrap() {
     }),
   );
 
-  const port = process.env.PORT ? Number(process.env.PORT) : 3002;
+  const port = process.env.PORT ? Number(process.env.PORT) : 3003;
   await app.listen(port);
 
   // eslint-disable-next-line no-console

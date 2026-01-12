@@ -5,12 +5,11 @@ import { useParams } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { AuthGuard } from '@/middleware/auth-guard';
+import { AgencyLayout } from '@/components/layout/AgencyLayout';
 import { organizationApi } from '@/lib/organization-api';
 import { userApi } from '@/lib/user-api';
 import { roleApi } from '@/lib/role-api';
 import { UserTable } from '@/components/users/UserTable';
-import { Sidebar } from '@/components/navigation/Sidebar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -139,72 +138,63 @@ export default function OrganizationUserManagementPage() {
 
   if (isLoading) {
     return (
-      <AuthGuard>
-        <div className="min-h-screen bg-background flex items-center justify-center">
-          <Card className="max-w-md">
+      <AgencyLayout>
+        <div className="p-6 flex items-center justify-center">
+          <Card className="max-w-md bg-white">
             <CardHeader>
               <CardTitle>{tCommon('loading') || 'Loading...'}</CardTitle>
             </CardHeader>
           </Card>
         </div>
-      </AuthGuard>
+      </AgencyLayout>
     );
   }
 
   if (!organization) {
     return (
-      <AuthGuard>
-        <div className="min-h-screen bg-background flex items-center justify-center">
-          <Card className="max-w-md">
+      <AgencyLayout>
+        <div className="p-6 flex items-center justify-center">
+          <Card className="max-w-md bg-white">
             <CardHeader>
               <CardTitle>{t('organizationNotFound') || 'Organization not found'}</CardTitle>
             </CardHeader>
           </Card>
         </div>
-      </AuthGuard>
+      </AgencyLayout>
     );
   }
 
   return (
-    <AuthGuard>
-      <div className="h-screen bg-gray-50 flex overflow-hidden">
-        <div className="flex flex-1 min-w-0">
-          <Sidebar />
-
-          <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-            <header className="flex-shrink-0 border-b border-gray-200 bg-white z-10">
-              <div className="px-6 py-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Button 
-                      variant="ghost" 
-                      size="icon"
-                      onClick={() => router.push(`/organizations/${organization.id}`)}
-                      className="h-8 w-8 text-gray-600 hover:text-gray-900"
-                      title={tCommon('back')}
-                    >
-                      <ArrowLeft className="h-4 w-4" />
-                    </Button>
-                    <div>
-                      <h1 className="text-lg font-semibold text-gray-900">{t('userManagement') || 'User Management'}</h1>
-                      <p className="text-xs text-gray-500">{organization.name}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button 
-                      size="sm" 
-                      className="gap-2 bg-viridial-600 hover:bg-viridial-700 text-white h-9 px-4"
-                      onClick={() => setIsInviteUserModalOpen(true)}
-                    >
-                      <Plus className="h-3.5 w-3.5" />
-                      {t('inviteUser') || 'Invite User'}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </header>
-
-            <main className="flex-1 overflow-y-auto p-6">
+    <AgencyLayout
+      headerContent={
+        <>
+          <Button 
+            variant="ghost" 
+            size="icon"
+            onClick={() => router.push(`/organizations/${organization.id}`)}
+            className="h-8 w-8 text-gray-600 hover:text-gray-900"
+            title={tCommon('back')}
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div>
+            <h1 className="text-lg font-semibold text-gray-900">{t('userManagement') || 'User Management'}</h1>
+            <p className="text-xs text-gray-500">{organization.name}</p>
+          </div>
+        </>
+      }
+      headerActions={
+        <Button 
+          size="sm" 
+          className="gap-2 bg-viridial-600 hover:bg-viridial-700 text-white h-9 px-4"
+          onClick={() => setIsInviteUserModalOpen(true)}
+        >
+          <Plus className="h-3.5 w-3.5" />
+          {t('inviteUser') || 'Invite User'}
+        </Button>
+      }
+    >
+      <div className="p-6">
               {/* Stats Card */}
               <div className="mb-6">
                 <Card className="border-gray-200 bg-white">
@@ -248,9 +238,6 @@ export default function OrganizationUserManagementPage() {
                   </div>
                 </CardContent>
               </Card>
-            </main>
-          </div>
-        </div>
       </div>
 
       {/* Modals */}
@@ -275,7 +262,7 @@ export default function OrganizationUserManagementPage() {
           />
         </>
       )}
-    </AuthGuard>
+    </AgencyLayout>
   );
 }
 

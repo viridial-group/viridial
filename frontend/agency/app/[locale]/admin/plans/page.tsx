@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/routing';
-import { Sidebar } from '@/components/navigation/Sidebar';
+import { AgencyLayout } from '@/components/layout/AgencyLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -37,7 +37,6 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/components/ui/toast';
 import { planApi, PlanApiError } from '@/lib/plan-api';
-import { AuthGuard } from '@/middleware/auth-guard';
 import { PlansStatsCards } from '@/components/plans/PlansStatsCards';
 import type { Plan, PlanFilters, PlanType } from '@/types/plans';
 
@@ -207,65 +206,50 @@ export default function PlansManagementPage() {
   };
 
   return (
-    <AuthGuard>
-      <div className="h-screen bg-gray-50 flex overflow-hidden">
-        <Sidebar />
-        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-          {/* Header */}
-          <header className="flex-shrink-0 border-b border-gray-200 bg-white z-10">
-            <div className="px-6 py-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h1 className="text-lg font-semibold text-gray-900">
-                    {t('title') || 'Plans Management'}
-                  </h1>
-                  <p className="text-xs text-gray-500">
-                    {t('subtitle') || 'Manage subscription plans and pricing'}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  {/* Billing Period Toggle */}
-                  <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
-                    <Button
-                      variant={billingPeriod === 'monthly' ? 'default' : 'ghost'}
-                      size="sm"
-                      onClick={() => setBillingPeriod('monthly')}
-                      className={`h-7 px-3 text-xs ${
-                        billingPeriod === 'monthly'
-                          ? 'bg-white shadow-sm text-gray-900'
-                          : 'text-gray-600 hover:text-gray-900'
-                      }`}
-                    >
-                      {t('monthly') || 'Monthly'}
-                    </Button>
-                    <Button
-                      variant={billingPeriod === 'annual' ? 'default' : 'ghost'}
-                      size="sm"
-                      onClick={() => setBillingPeriod('annual')}
-                      className={`h-7 px-3 text-xs ${
-                        billingPeriod === 'annual'
-                          ? 'bg-white shadow-sm text-gray-900'
-                          : 'text-gray-600 hover:text-gray-900'
-                      }`}
-                    >
-                      {t('annual') || 'Annual'}
-                    </Button>
-                  </div>
+    <AgencyLayout
+      headerTitle={t('title') || 'Plans Management'}
+      headerSubtitle={t('subtitle') || 'Manage subscription plans and pricing'}
+      headerActions={
+        <>
+          {/* Billing Period Toggle */}
+          <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
+            <Button
+              variant={billingPeriod === 'monthly' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setBillingPeriod('monthly')}
+              className={`h-7 px-3 text-xs ${
+                billingPeriod === 'monthly'
+                  ? 'bg-white shadow-sm text-gray-900'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              {t('monthly') || 'Monthly'}
+            </Button>
+            <Button
+              variant={billingPeriod === 'annual' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setBillingPeriod('annual')}
+              className={`h-7 px-3 text-xs ${
+                billingPeriod === 'annual'
+                  ? 'bg-white shadow-sm text-gray-900'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              {t('annual') || 'Annual'}
+            </Button>
+          </div>
 
-                  <Button
-                    className="gap-2 bg-viridial-600 hover:bg-viridial-700 text-sm h-9 px-4"
-                    onClick={handleCreatePlan}
-                  >
-                    <Plus className="h-3.5 w-3.5" />
-                    {t('newPlan') || 'New Plan'}
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </header>
-
-          {/* Main Content */}
-          <main className="flex-1 flex flex-col min-h-0 overflow-hidden">
+          <Button
+            className="gap-2 bg-viridial-600 hover:bg-viridial-700 text-sm h-9 px-4"
+            onClick={handleCreatePlan}
+          >
+            <Plus className="h-3.5 w-3.5" />
+            {t('newPlan') || 'New Plan'}
+          </Button>
+        </>
+      }
+    >
+      <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
             {/* Fixed Top Section */}
             <div className="flex-shrink-0 p-6 pb-4 space-y-4 overflow-hidden">
               {/* Stats Cards */}
@@ -782,9 +766,7 @@ export default function PlansManagementPage() {
                 </div>
               )}
             </div>
-          </main>
-        </div>
       </div>
-    </AuthGuard>
+    </AgencyLayout>
   );
 }

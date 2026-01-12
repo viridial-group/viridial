@@ -6,7 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Feature } from '@/types/admin';
-import { Sparkles, CheckCircle2, XCircle } from 'lucide-react';
+import { Sparkles, CheckCircle2, XCircle, Eye } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface FeatureCardProps {
   feature: Feature;
@@ -96,6 +97,22 @@ export const FeatureCard = memo(function FeatureCard({
         {feature.externalCode && (
           <div className="mt-2 text-xs text-gray-500">
             {t('externalCode') || 'External Code'}: {feature.externalCode}
+          </div>
+        )}
+        {onView && (
+          <div className="mt-3 pt-3 border-t border-gray-100 flex justify-end">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                onView();
+              }}
+              className="h-7 px-2 gap-1.5"
+            >
+              <Eye className="h-3.5 w-3.5" />
+              {t('view') || 'View'}
+            </Button>
           </div>
         )}
       </CardContent>

@@ -90,6 +90,13 @@ export function Header() {
                     {t('common.nav.pricing')}
                   </Link>
                   <Link
+                    href="/subscription"
+                    className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors font-semibold text-viridial-700"
+                    onClick={() => setIsProductMenuOpen(false)}
+                  >
+                    Abonnement
+                  </Link>
+                  <Link
                     href="/about"
                     className="px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
                     onClick={() => setIsProductMenuOpen(false)}

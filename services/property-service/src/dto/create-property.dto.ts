@@ -60,6 +60,13 @@ export class CreatePropertyDto {
   @IsOptional() // userId is optional in DTO - will be set from JWT token
   userId?: string;
 
+  // External code for external system reference (optional)
+  // Note: internalCode is generated automatically by the service and should not be provided
+  @IsString()
+  @IsOptional()
+  @Max(100, { message: 'External code must not exceed 100 characters' })
+  externalCode?: string;
+
   @IsEnum(PropertyType)
   @IsNotEmpty()
   type!: PropertyType;

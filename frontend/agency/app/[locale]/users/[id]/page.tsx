@@ -5,10 +5,9 @@ import { useParams } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { AuthGuard } from '@/middleware/auth-guard';
+import { AgencyLayout } from '@/components/layout/AgencyLayout';
 import { userApi, User as ApiUser } from '@/lib/user-api';
 import { organizationApi } from '@/lib/organization-api';
-import { Sidebar } from '@/components/navigation/Sidebar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -419,44 +418,34 @@ export default function UserDetailPage() {
 
   if (isLoading) {
     return (
-      <AuthGuard>
-        <div className="h-screen bg-gray-50 flex overflow-hidden">
-          <Sidebar />
-          <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-            <div className="flex-1 overflow-y-auto p-6">
-              <Card className="max-w-md border-gray-200 shadow-sm">
-                <CardHeader>
-                  <CardTitle>{tCommon('loading') || 'Loading...'}</CardTitle>
-                </CardHeader>
-              </Card>
-            </div>
-          </div>
+      <AgencyLayout>
+        <div className="p-6">
+          <Card className="max-w-md border-gray-200 shadow-sm bg-white">
+            <CardHeader>
+              <CardTitle>{tCommon('loading') || 'Loading...'}</CardTitle>
+            </CardHeader>
+          </Card>
         </div>
-      </AuthGuard>
+      </AgencyLayout>
     );
   }
 
   if (!user) {
     return (
-      <AuthGuard>
-        <div className="h-screen bg-gray-50 flex overflow-hidden">
-          <Sidebar />
-          <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-            <div className="flex-1 overflow-y-auto p-6">
-              <Card className="max-w-md border-gray-200 shadow-sm">
-                <CardHeader>
-                  <CardTitle>{t('userNotFound') || 'User not found'}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Button onClick={() => router.push('/users')}>
-                    {tCommon('backToHome') || 'Back to users'}
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+      <AgencyLayout>
+        <div className="p-6">
+          <Card className="max-w-md border-gray-200 shadow-sm bg-white">
+            <CardHeader>
+              <CardTitle>{t('userNotFound') || 'User not found'}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button onClick={() => router.push('/users')}>
+                {tCommon('backToHome') || 'Back to users'}
+              </Button>
+            </CardContent>
+          </Card>
         </div>
-      </AuthGuard>
+      </AgencyLayout>
     );
   }
 
@@ -480,31 +469,27 @@ export default function UserDetailPage() {
   }, {} as Record<string, typeof allPermissions>);
 
   return (
-    <AuthGuard>
-      <div className="h-screen bg-gray-50 flex overflow-hidden">
-        <Sidebar />
-
-        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-          <header className="flex-shrink-0 border-b border-gray-200 bg-white z-10">
-            <div className="px-6 py-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Button 
-                    variant="ghost" 
-                    size="icon"
-                    onClick={() => router.back()}
-                    className="h-8 w-8 text-gray-600 hover:text-gray-900"
-                    title={tCommon('back')}
-                  >
-                    <ArrowLeft className="h-4 w-4" />
-                  </Button>
-                  <div>
-                    <h1 className="text-lg font-semibold text-gray-900">{fullName}</h1>
-                    <p className="text-xs text-gray-500">{t('userDetails') || 'User details'}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <DropdownMenu>
+    <AgencyLayout
+      headerContent={
+        <>
+          <Button 
+            variant="ghost" 
+            size="icon"
+            onClick={() => router.back()}
+            className="h-8 w-8 text-gray-600 hover:text-gray-900"
+            title={tCommon('back')}
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div>
+            <h1 className="text-lg font-semibold text-gray-900">{fullName}</h1>
+            <p className="text-xs text-gray-500">{t('userDetails') || 'User details'}</p>
+          </div>
+        </>
+      }
+      headerActions={
+        <>
+          <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
                         variant="outline"
@@ -539,35 +524,33 @@ export default function UserDetailPage() {
                         {t('exportUserData') || 'Export User Data'}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
-                  </DropdownMenu>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-sm h-9 px-4 gap-2"
-                    onClick={() => setIsEditUserModalOpen(true)}
-                    disabled={isProcessing}
-                  >
-                    <Edit className="h-3.5 w-3.5" />
-                    {tCommon('edit')}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-sm h-9 px-4 gap-2 text-red-600 hover:text-red-700 hover:bg-red-50"
-                    onClick={handleRequestDeleteUser}
-                    disabled={isProcessing}
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                    {tCommon('delete')}
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </header>
-
-          <main className="flex-1 overflow-y-auto p-6">
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          </DropdownMenu>
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-sm h-9 px-4 gap-2"
+            onClick={() => setIsEditUserModalOpen(true)}
+            disabled={isProcessing}
+          >
+            <Edit className="h-3.5 w-3.5" />
+            {tCommon('edit')}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-sm h-9 px-4 gap-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+            onClick={handleRequestDeleteUser}
+            disabled={isProcessing}
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+            {tCommon('delete')}
+          </Button>
+        </>
+      }
+    >
+      <div className="p-6">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
               <Card className="border-gray-200 bg-white">
                 <CardContent className="pt-6">
                   <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">{t('status') || 'Status'}</div>
@@ -1002,14 +985,12 @@ export default function UserDetailPage() {
                 )}
               </TabsContent>
             </Tabs>
-          </main>
-        </div>
       </div>
 
       {/* Edit User Modal */}
       {user && (
         <EditUserModal
-          user={user}
+          user={user || undefined}
           organizations={organizations}
           open={isEditUserModalOpen}
           onOpenChange={setIsEditUserModalOpen}
@@ -1020,7 +1001,7 @@ export default function UserDetailPage() {
       {/* Assign Roles Modal */}
       {user && (
         <AssignRolesModal
-          user={user}
+          user={user || undefined}
           open={isAssignRolesModalOpen}
           onOpenChange={setIsAssignRolesModalOpen}
           onAssign={handleAssignRoles}
@@ -1030,7 +1011,7 @@ export default function UserDetailPage() {
       {/* Change Organization Modal */}
       {user && (
         <ChangeOrganizationModal
-          user={user}
+          user={user || undefined}
           open={isChangeOrganizationModalOpen}
           onOpenChange={setIsChangeOrganizationModalOpen}
           onChange={handleChangeOrganization}
@@ -1040,7 +1021,7 @@ export default function UserDetailPage() {
       {/* Reset Password Modal */}
       {user && (
         <ResetPasswordModal
-          user={user}
+          user={user || undefined}
           open={isResetPasswordModalOpen}
           onOpenChange={setIsResetPasswordModalOpen}
           onReset={handleResetPassword}
@@ -1070,7 +1051,7 @@ export default function UserDetailPage() {
         onConfirm={handleConfirmRemoveRole}
         variant="danger"
       />
-    </AuthGuard>
+    </AgencyLayout>
   );
 }
 

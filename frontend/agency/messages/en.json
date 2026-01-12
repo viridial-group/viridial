@@ -45,6 +45,7 @@
     "dashboard": "Dashboard",
     "organizations": "Organizations",
     "users": "Users",
+    "properties": "Properties",
     "roles": "Roles & Permissions",
     "analytics": "Analytics",
     "admin": "Admin",
@@ -573,7 +574,13 @@
     "permissionsHelp": "Select permissions to control what actions users with this role can perform. You can select all permissions or choose specific ones by resource.",
     "searchPermissions": "Search permissions by resource or action...",
     "noPermissionsWarning": "No permissions selected. Users with this role will not have access to any features. Please select at least one permission.",
-    "noPermissionsFound": "No permissions found matching your search"
+    "noPermissionsFound": "No permissions found matching your search",
+    "gridView": "Grid",
+    "tableView": "Table",
+    "gridViewTooltip": "Grid view",
+    "tableViewTooltip": "Table view",
+    "noRolesFiltered": "Try adjusting your filters to see more results",
+    "noPermissions": "No permissions"
   },
   "auth": {
     "title": "Sign in to your account",

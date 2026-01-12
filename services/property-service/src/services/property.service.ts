@@ -18,7 +18,7 @@ import { SearchIndexService } from './search-index.service';
 import { PropertyValidationService } from './property-validation.service';
 import { CustomFieldService } from './custom-field.service';
 import { SearchPropertyDto } from '../dto/search-property.dto';
-import { In } from 'typeorm';
+import { In, Or } from 'typeorm';
 
 @Injectable()
 export class PropertyService {
@@ -39,6 +39,39 @@ export class PropertyService {
     private readonly customFieldService: CustomFieldService,
     private readonly dataSource: DataSource,
   ) {}
+
+  /**
+   * Generate internal code for a property (format: PROP-YYYY-NNNNNN)
+   * This method finds the highest sequence number for the current year and increments it
+   */
+  private async generateInternalCode(): Promise<string> {
+    const currentYear = new Date().getFullYear();
+    const prefix = `PROP-${currentYear}-`;
+
+    // Find the highest internal code for the current year
+    const lastProperty = await this.propertyRepo
+      .createQueryBuilder('property')
+      .where('property.internalCode LIKE :prefix', { prefix: `${prefix}%` })
+      .orderBy('property.internalCode', 'DESC')
+      .getOne();
+
+    let sequenceNumber = 1;
+
+    if (lastProperty && lastProperty.internalCode) {
+      // Extract sequence number from last code (e.g., "PROP-2024-000001" -> 1)
+      const lastSequence = parseInt(
+        lastProperty.internalCode.replace(prefix, ''),
+        10,
+      );
+      if (!isNaN(lastSequence)) {
+        sequenceNumber = lastSequence + 1;
+      }
+    }
+
+    // Format sequence number with leading zeros (6 digits)
+    const formattedSequence = sequenceNumber.toString().padStart(6, '0');
+    return `${prefix}${formattedSequence}`;
+  }
 
   async create(createDto: CreatePropertyDto, userId: string): Promise<Property> {
     // userId is now guaranteed to come from authenticated JWT token
@@ -123,10 +156,15 @@ export class PropertyService {
     await queryRunner.startTransaction();
 
     try {
+      // Generate internal code automatically
+      const internalCode = await this.generateInternalCode();
+
       // Create property
       const property = this.propertyRepo.create({
         userId: userId, // Use authenticated userId
-        type: createDto.type,
+        internalCode: internalCode, // Generated automatically by service
+        externalCode: createDto.externalCode || null, // Optional external code
+        typeCode: createDto.type, // Map enum to code string
         price: createDto.price,
         currency: createDto.currency || 'EUR',
         street: createDto.street,
@@ -137,7 +175,7 @@ export class PropertyService {
         latitude: latitude || null,
         longitude: longitude || null,
         mediaUrls: createDto.mediaUrls || [],
-        status: createDto.status || PropertyStatus.DRAFT,
+        statusCode: createDto.status || PropertyStatus.DRAFT, // Map enum to code string
       });
 
       const savedProperty = await queryRunner.manager.save(Property, property);
@@ -161,7 +199,7 @@ export class PropertyService {
       if (createDto.details) {
         const details = this.detailsRepo.create({
           propertyId: savedProperty.id,
-          ...this.mapDetailsDtoToEntity(createDto.details, createDto.type),
+          ...this.mapDetailsDtoToEntity(createDto.details, createDto.type as PropertyType),
         });
         await queryRunner.manager.save(PropertyDetails, details);
       }
@@ -228,7 +266,7 @@ export class PropertyService {
     }
 
     if (status) {
-      queryBuilder.andWhere('property.status = :status', { status });
+      queryBuilder.andWhere('property.statusCode = :status', { status });
     }
 
     const [properties, total] = await queryBuilder
@@ -238,6 +276,58 @@ export class PropertyService {
       .getManyAndCount();
 
     return { properties, total };
+  }
+
+  /**
+   * Find a property by internal code or external code
+   * @param code - Internal code (PROP-YYYY-NNNNNN) or external code
+   * @param userId - Optional user ID for access control
+   * @param includeTranslations - Whether to load translations (default: true)
+   */
+  async findByCode(
+    code: string,
+    userId?: string,
+    includeTranslations: boolean = true,
+    includeDeleted = false,
+  ): Promise<Property> {
+    const relations = includeTranslations
+      ? ['translations', 'neighborhood', 'details']
+      : ['neighborhood', 'details'];
+
+    // Build query with OR condition for internalCode or externalCode
+    const queryBuilder = this.propertyRepo
+      .createQueryBuilder('property')
+      .leftJoinAndSelect('property.translations', 'translation')
+      .leftJoinAndSelect('property.neighborhood', 'neighborhood')
+      .leftJoinAndSelect('property.details', 'details')
+      .where('(property.internalCode = :code OR property.externalCode = :code)', { code });
+
+    if (!includeDeleted) {
+      queryBuilder.andWhere('property.deletedAt IS NULL');
+    }
+
+    const property = await queryBuilder.getOne();
+
+    if (!property) {
+      throw new NotFoundException(`Property with code ${code} not found`);
+    }
+
+    // Apply same access control as findOne
+    if (userId) {
+      if (property.userId === userId) {
+        return property;
+      }
+      if (property.status !== PropertyStatus.LISTED) {
+        throw new ForbiddenException('You do not have access to this property');
+      }
+      return property;
+    }
+
+    if (property.status !== PropertyStatus.LISTED) {
+      throw new ForbiddenException('This property is not publicly available');
+    }
+
+    return property;
   }
 
   /**
@@ -277,7 +367,7 @@ export class PropertyService {
         return property;
       }
       // If not owner and property is not listed, deny access
-      if (property.status !== PropertyStatus.LISTED) {
+      if (property.statusCode !== PropertyStatus.LISTED) {
         throw new ForbiddenException('You do not have access to this property');
       }
       // If property is listed, allow public access even if not owner
@@ -285,7 +375,7 @@ export class PropertyService {
     }
 
     // No userId provided (public access) - only allow if property is LISTED
-    if (property.status !== PropertyStatus.LISTED) {
+    if (property.statusCode !== PropertyStatus.LISTED) {
       throw new ForbiddenException('This property is not publicly available');
     }
 
@@ -327,7 +417,9 @@ export class PropertyService {
       updateDto.country !== undefined;
 
     // Update property fields
-    if (updateDto.type) property.type = updateDto.type;
+    // Note: internalCode cannot be updated - it's generated automatically by the service
+    if (updateDto.externalCode !== undefined) property.externalCode = updateDto.externalCode || null;
+    if (updateDto.type) property.typeCode = updateDto.type; // Map enum to code string
     if (updateDto.price !== undefined) property.price = updateDto.price;
     if (updateDto.currency) property.currency = updateDto.currency;
     if (updateDto.street !== undefined) property.street = updateDto.street;
@@ -336,7 +428,7 @@ export class PropertyService {
     if (updateDto.region !== undefined) property.region = updateDto.region;
     if (updateDto.country !== undefined) property.country = updateDto.country;
     if (updateDto.mediaUrls !== undefined) property.mediaUrls = updateDto.mediaUrls;
-    if (updateDto.status) property.status = updateDto.status;
+    if (updateDto.status) property.statusCode = updateDto.status; // Map enum to code string
 
     // Auto-geocode if address changed and lat/lon not explicitly provided
     if (
@@ -427,13 +519,13 @@ export class PropertyService {
 
         if (existingDetails) {
           // Update existing details
-          Object.assign(existingDetails, this.mapDetailsDtoToEntity(updateDto.details, property.type));
+          Object.assign(existingDetails, this.mapDetailsDtoToEntity(updateDto.details, property.typeCode as PropertyType));
           await queryRunner.manager.save(PropertyDetails, existingDetails);
         } else {
           // Create new details
           const details = this.detailsRepo.create({
             propertyId: id,
-            ...this.mapDetailsDtoToEntity(updateDto.details, property.type),
+            ...this.mapDetailsDtoToEntity(updateDto.details, property.typeCode as PropertyType),
           });
           await queryRunner.manager.save(PropertyDetails, details);
         }
@@ -467,7 +559,7 @@ export class PropertyService {
     const updatedProperty = await this.findOne(id, userId, true);
 
     // Re-index if property is LISTED (searchable)
-    if (updatedProperty.status === PropertyStatus.LISTED) {
+    if (updatedProperty.statusCode === PropertyStatus.LISTED) {
       await this.searchIndexService.indexProperty(
         updatedProperty,
         updatedProperty.translations,
@@ -823,7 +915,7 @@ export class PropertyService {
           updated++;
 
           // Re-index if listed
-          if (property.status === PropertyStatus.LISTED) {
+          if (property.statusCode === PropertyStatus.LISTED) {
             const propertyWithTranslations = await this.findOne(property.id, userId, true);
             await this.searchIndexService
               .indexProperty(propertyWithTranslations, propertyWithTranslations.translations)
@@ -1030,7 +1122,7 @@ export class PropertyService {
       const savedFlag = await queryRunner.manager.save(PropertyFlag, flag);
 
       // Update property status to FLAGGED
-      property.status = PropertyStatus.FLAGGED;
+      property.statusCode = PropertyStatus.FLAGGED;
       await queryRunner.manager.save(Property, property);
 
       await queryRunner.commitTransaction();
@@ -1148,7 +1240,7 @@ export class PropertyService {
 
       case 'takedown':
         // Remove property from public view
-        property.status = PropertyStatus.ARCHIVED;
+        property.statusCode = PropertyStatus.ARCHIVED;
         await this.propertyRepo.save(property);
         // Remove from search index
         await this.searchIndexService.deleteProperty(propertyId).catch((error) => {

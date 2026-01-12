@@ -8,7 +8,7 @@ const nextConfig = {
   output: 'standalone', // For Docker deployment
           env: {
             NEXT_PUBLIC_AUTH_API_URL: process.env.NEXT_PUBLIC_AUTH_API_URL || 'http://localhost:3002',
-            NEXT_PUBLIC_PROPERTY_API_URL: process.env.NEXT_PUBLIC_PROPERTY_API_URL || 'http://localhost:3001',
+            NEXT_PUBLIC_PROPERTY_API_URL: process.env.NEXT_PUBLIC_PROPERTY_API_URL || 'http://localhost:3003',
             NEXT_AGENCY_ORGANIZATION_API_URL: process.env.NEXT_AGENCY_ORGANIZATION_API_URL || 'http://localhost:3002',
             NEXT_PUBLIC_ORGANIZATION_API_URL: process.env.NEXT_PUBLIC_ORGANIZATION_API_URL || 'http://localhost:3002',
             NEXT_PUBLIC_SEARCH_API_URL: process.env.NEXT_PUBLIC_SEARCH_API_URL || 'http://localhost:3003',

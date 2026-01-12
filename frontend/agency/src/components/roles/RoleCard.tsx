@@ -5,14 +5,16 @@ import { useTranslations } from 'next-intl';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Role } from '@/types/admin';
-import { Shield, CheckCircle2, XCircle, Users, Settings, Edit, Trash2 } from 'lucide-react';
+import { Role } from '@/lib/role-api';
+import { Permission } from '@/lib/permission-api';
+import { Shield, CheckCircle2, XCircle, Users, Settings, Edit, Trash2, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface RoleCardProps {
   role: Role;
   isSelected?: boolean;
   onSelect?: () => void;
+  onView?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
 }
@@ -20,25 +22,31 @@ interface RoleCardProps {
 export const RoleCard = memo(function RoleCard({ 
   role, 
   isSelected = false, 
-  onSelect, 
+  onSelect,
+  onView,
   onEdit,
   onDelete 
 }: RoleCardProps) {
   const t = useTranslations('roles');
 
   const handleCardClick = useCallback((e: React.MouseEvent) => {
-    // If clicking on checkbox, edit, or delete buttons, don't trigger selection
+    // If clicking on checkbox, edit, delete, or view buttons, don't trigger selection
     if ((e.target as HTMLElement).closest('[type="checkbox"]') ||
         (e.target as HTMLElement).closest('button')) {
       return;
     }
-    onSelect?.();
-  }, [onSelect]);
+    onView?.() || onSelect?.();
+  }, [onView, onSelect]);
 
   const handleEditClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
     onEdit?.();
   }, [onEdit]);
+
+  const handleViewClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    onView?.();
+  }, [onView]);
 
   const handleDeleteClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
@@ -115,7 +123,7 @@ export const RoleCard = memo(function RoleCard({
           <div className="flex flex-wrap gap-1.5">
             {role.permissions && role.permissions.length > 0 ? (
               <>
-                {role.permissions.slice(0, 3).map((perm) => (
+                {role.permissions.slice(0, 3).map((perm: Permission) => (
                   <Badge key={perm.id} variant="secondary" className="text-xs font-normal">
                     {perm.resource}:{perm.action}
                   </Badge>
@@ -133,8 +141,19 @@ export const RoleCard = memo(function RoleCard({
         </div>
 
         {/* Actions */}
-        {(onEdit || onDelete) && (
+        {(onView || onEdit || onDelete) && (
           <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+            {onView && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleViewClick}
+                className="h-8 px-2 hover:bg-viridial-50"
+                title={t('view') || 'View role'}
+              >
+                <Eye className="h-4 w-4 text-gray-600" />
+              </Button>
+            )}
             {onEdit && (
               <Button
                 variant="ghost"

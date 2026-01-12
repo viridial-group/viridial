@@ -20,9 +20,9 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY package*.json ./
 
 ENV NODE_ENV=production
-ENV PORT=3002
+ENV PORT=3003
 
-EXPOSE 3002
+EXPOSE 3003
 
 CMD ["node", "dist/main.js"]
 

@@ -8,8 +8,7 @@ import { userApi, UserApiError, User as ApiUser, CreateUserDto, UpdateUserDto } 
 import { organizationApi } from '@/lib/organization-api';
 import { Organization } from '@/types/organization';
 import dynamic from 'next/dynamic';
-import { Sidebar } from '@/components/navigation/Sidebar';
-import { AuthGuard } from '@/middleware/auth-guard';
+import { AgencyLayout } from '@/components/layout/AgencyLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -568,38 +567,23 @@ export default function UsersPage() {
   };
 
   return (
-    <AuthGuard>
-      <div className="h-screen bg-gray-50 flex overflow-hidden">
-        {/* Main Layout */}
-        <div className="flex flex-1 min-w-0">
-          {/* Navigation Sidebar */}
-          <Sidebar />
-
-          <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-            {/* Header */}
-            <header className="flex-shrink-0 border-b border-gray-200 bg-white z-10">
-              <div className="px-6 py-3">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h1 className="text-lg font-semibold text-gray-900">{t('title') || 'Users'}</h1>
-                    <p className="text-xs text-gray-500">{t('description') || 'Manage users in your organization'}</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <LanguageSelector />
-                    <Button 
-                      className="gap-2 bg-viridial-600 hover:bg-viridial-700 text-sm h-9 px-4"
-                      onClick={() => setIsCreateModalOpen(true)}
-                    >
-                      <Plus className="h-3.5 w-3.5" />
-                      {t('create') || 'Create User'}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </header>
-
-            {/* Main Content */}
-            <main className="flex-1 flex flex-col min-h-0 overflow-hidden">
+    <AgencyLayout
+      headerTitle={t('title') || 'Users'}
+      headerSubtitle={t('description') || 'Manage users in your organization'}
+      headerActions={
+        <>
+          <LanguageSelector />
+          <Button 
+            className="gap-2 bg-viridial-600 hover:bg-viridial-700 text-sm h-9 px-4"
+            onClick={() => setIsCreateModalOpen(true)}
+          >
+            <Plus className="h-3.5 w-3.5" />
+            {t('create') || 'Create User'}
+          </Button>
+        </>
+      }
+    >
+      <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
               {/* Fixed Top Section */}
               <div className="flex-shrink-0 p-6 pb-4 space-y-4 overflow-hidden">
                 {/* Stats Cards */}
@@ -1092,11 +1076,8 @@ export default function UsersPage() {
                 isLoading={isProcessing}
                 itemsCount={confirmDelete.ids.length}
               />
-            </main>
-          </div>
-        </div>
       </div>
-    </AuthGuard>
+    </AgencyLayout>
   );
 }
 

@@ -36,25 +36,30 @@ export class Property {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
+  // Internal code generated automatically by service (format: PROP-YYYY-NNNNNN)
+  @Column({ name: 'internal_code', type: 'varchar', length: 50, unique: true })
+  @Index()
+  internalCode!: string;
+
+  // External code for external system reference (optional)
+  @Column({ name: 'external_code', type: 'varchar', length: 100, nullable: true })
+  @Index()
+  externalCode!: string | null;
+
   // Owner/Agent reference (from auth-service)
   @Column({ name: 'user_id' })
   @Index()
   userId!: string;
 
-  // Status workflow: draft → review → listed
-  @Column({
-    type: 'enum',
-    enum: PropertyStatus,
-    default: PropertyStatus.DRAFT,
-  })
-  status!: PropertyStatus;
+  // Status workflow: draft → review → listed (references property_statuses table)
+  @Column({ name: 'status_code', type: 'varchar', length: 50, default: 'draft' })
+  @Index()
+  statusCode!: string;
 
-  // Property type
-  @Column({
-    type: 'enum',
-    enum: PropertyType,
-  })
-  type!: PropertyType;
+  // Property type (references property_types table)
+  @Column({ name: 'type_code', type: 'varchar', length: 50 })
+  @Index()
+  typeCode!: string;
 
   // Pricing
   @Column({ type: 'decimal', precision: 12, scale: 2 })
@@ -135,5 +140,22 @@ export class Property {
     eager: false,
   })
   details!: PropertyDetails | null;
+
+  // Getters for backward compatibility with enum-based code
+  get status(): PropertyStatus {
+    return this.statusCode as PropertyStatus;
+  }
+
+  set status(value: PropertyStatus) {
+    this.statusCode = value;
+  }
+
+  get type(): PropertyType {
+    return this.typeCode as PropertyType;
+  }
+
+  set type(value: PropertyType) {
+    this.typeCode = value;
+  }
 }
 

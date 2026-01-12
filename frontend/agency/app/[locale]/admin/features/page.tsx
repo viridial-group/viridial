@@ -8,8 +8,7 @@ import dynamic from 'next/dynamic';
 import { FeatureCard } from '@/components/features/FeatureCard';
 import { FeaturesStatsCards } from '@/components/features/FeaturesStatsCards';
 import { FeaturesFilterBar } from '@/components/features/FeaturesFilterBar';
-import { Sidebar } from '@/components/navigation/Sidebar';
-import { AuthGuard } from '@/middleware/auth-guard';
+import { AgencyLayout } from '@/components/layout/AgencyLayout';
 import { LanguageSelector } from '@/components/ui/language-selector';
 import { Button } from '@/components/ui/button';
 import { Tooltip } from '@/components/ui/tooltip';
@@ -144,41 +143,26 @@ export default function FeaturesPage() {
   }, [filteredFeatures, rowsPerPage]);
 
   return (
-    <AuthGuard>
-      <div className="h-screen bg-gray-50 flex overflow-hidden">
-        {/* Main Layout */}
-        <div className="flex flex-1 min-w-0">
-          {/* Navigation Sidebar */}
-          <Sidebar />
-
-          <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-            {/* Header */}
-            <header className="flex-shrink-0 border-b border-gray-200 bg-white z-10">
-              <div className="px-6 py-3">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h1 className="text-lg font-semibold text-gray-900">{t('title') || 'Features'}</h1>
-                    <p className="text-xs text-gray-500">{t('subtitle') || 'Manage features for the RBAC system'}</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <LanguageSelector />
-                    <Button 
-                      className="gap-2 bg-viridial-600 hover:bg-viridial-700 text-sm h-9 px-4"
-                      onClick={() => {
-                        setEditingFeature(null);
-                        setIsCreateModalOpen(true);
-                      }}
-                    >
-                      <Plus className="h-3.5 w-3.5" />
-                      {t('newFeature') || 'New Feature'}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </header>
-
-            {/* Main Content */}
-            <main className="flex-1 flex flex-col min-h-0 overflow-hidden">
+    <AgencyLayout
+      headerTitle={t('title') || 'Features'}
+      headerSubtitle={t('subtitle') || 'Manage features for the RBAC system'}
+      headerActions={
+        <>
+          <LanguageSelector />
+          <Button 
+            className="gap-2 bg-viridial-600 hover:bg-viridial-700 text-sm h-9 px-4"
+            onClick={() => {
+              setEditingFeature(null);
+              setIsCreateModalOpen(true);
+            }}
+          >
+            <Plus className="h-3.5 w-3.5" />
+            {t('newFeature') || 'New Feature'}
+          </Button>
+        </>
+      }
+    >
+      <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
               {/* Fixed Top Section */}
               <div className="flex-shrink-0 p-6 pb-4 space-y-4 overflow-hidden">
                 {/* Stats Cards */}
@@ -343,9 +327,6 @@ export default function FeaturesPage() {
                   </div>
                 )}
               </div>
-            </main>
-          </div>
-        </div>
       </div>
 
       {/* Create/Edit Feature Modal */}
@@ -374,7 +355,7 @@ export default function FeaturesPage() {
           }
         }}
       />
-    </AuthGuard>
+    </AgencyLayout>
   );
 }
 

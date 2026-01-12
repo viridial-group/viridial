@@ -28,7 +28,7 @@ echo ""
 
 # 2. Vérifier les services backend
 echo -e "${BLUE}2. Vérification des services backend (ports 3001-3006)...${NC}"
-BACKEND_SERVICES=("auth-service:3001" "property-service:3002" "geolocation-service:3003" "search-service:3004" "marketing-service:3005" "review-service:3006")
+BACKEND_SERVICES=("auth-service:3001" "property-service:3003" "geolocation-service:3003" "search-service:3004" "marketing-service:3005" "review-service:3006")
 
 for service_port in "${BACKEND_SERVICES[@]}"; do
     IFS=':' read -r service port <<< "$service_port"

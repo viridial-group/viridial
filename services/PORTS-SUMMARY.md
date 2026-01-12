@@ -7,7 +7,7 @@ Tous les fichiers de configuration ont été mis à jour avec les ports suivants
 | Service | Port | Fichiers mis à jour |
 |---------|------|---------------------|
 | **auth-service** | **3001** | `.env.local`, `main.ts`, `package.json`, `.env` (racine), `.env.example` |
-| **property-service** | **3002** | `.env.local`, `main.ts`, `package.json`, `.env` (racine), `.env.example` |
+| **property-service** | **3003** | `.env.local`, `main.ts`, `package.json`, `.env` (racine), `.env.example` |
 | **geolocation-service** | **3003** | `.env.local`, `main.ts`, `package.json`, `.env` (racine), `.env.example` |
 | **search-service** | **3004** | `.env.local`, `main.ts`, `package.json`, `.env` (racine), `.env.example` |
 | **marketing-service** | **3005** | `.env.local`, `main.ts`, `package.json`, `.env` (racine), `.env.example` |
@@ -61,7 +61,7 @@ Tous les services ont maintenant une configuration CORS complète pour localhost
 - ✅ `http://localhost` (générique)
 - ✅ `http://localhost:3000` (Frontend Next.js)
 - ✅ `http://localhost:3001` (auth-service)
-- ✅ `http://localhost:3002` (property-service)
+- ✅ `http://localhost:3003` (property-service)
 - ✅ `http://localhost:3003` (geolocation-service)
 - ✅ `http://localhost:3004` (search-service)
 - ✅ `http://localhost:3005` (marketing-service)

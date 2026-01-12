@@ -11,8 +11,7 @@ import { OrganizationTable, SortField, SortDirection } from '@/components/organi
 import { BulkActions } from '@/components/organizations/BulkActions';
 import { FilterBar, FilterState } from '@/components/filters/FilterBar';
 import { StatsCards } from '@/components/organizations/StatsCards';
-import { Sidebar } from '@/components/navigation/Sidebar';
-import { AuthGuard } from '@/middleware/auth-guard';
+import { AgencyLayout } from '@/components/layout/AgencyLayout';
 
 // Lazy load modals to improve initial page load time
 const CreateOrganizationModal = dynamic(() => import('@/components/organizations/CreateOrganizationModal').then(mod => ({ default: mod.CreateOrganizationModal })), {
@@ -328,44 +327,29 @@ export default function HomePage() {
   const sortedFilteredOrganizations = filteredOrganizations;
 
   return (
-    <AuthGuard>
-      <div className="h-screen bg-gray-50 flex overflow-hidden">
-      {/* Main Layout */}
-      <div className="flex flex-1 min-w-0">
-        {/* Navigation Sidebar */}
-        <Sidebar />
-
-        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-          {/* Header */}
-          <header className="flex-shrink-0 border-b border-gray-200 bg-white z-10">
-            <div className="px-6 py-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h1 className="text-lg font-semibold text-gray-900">{t('organizations.title')}</h1>
-                  <p className="text-xs text-gray-500">{t('organizations.subtitle')}</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <LanguageSelector />
-                  <Button variant="ghost" size="sm" className="text-sm text-gray-600 hover:text-gray-900">
-                    Blog
-                  </Button>
-                  <Button variant="ghost" size="sm" className="text-sm text-gray-600 hover:text-gray-900">
-                    {tCommon('whatsNew') || "What's new?"}
-                  </Button>
-                  <Button 
-                    className="gap-2 bg-viridial-600 hover:bg-viridial-700 text-sm h-9 px-4"
-                    onClick={() => setIsCreateModalOpen(true)}
-                  >
-                    <Plus className="h-3.5 w-3.5" />
-                    {t('organizations.newOrganization')}
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </header>
-
-          {/* Main Content */}
-          <main className="flex-1 flex flex-col min-h-0 overflow-hidden">
+    <AgencyLayout
+      headerTitle={t('organizations.title')}
+      headerSubtitle={t('organizations.subtitle')}
+      headerActions={
+        <>
+          <LanguageSelector />
+          <Button variant="ghost" size="sm" className="text-sm text-gray-600 hover:text-gray-900">
+            Blog
+          </Button>
+          <Button variant="ghost" size="sm" className="text-sm text-gray-600 hover:text-gray-900">
+            {tCommon('whatsNew') || "What's new?"}
+          </Button>
+          <Button 
+            className="gap-2 bg-viridial-600 hover:bg-viridial-700 text-sm h-9 px-4"
+            onClick={() => setIsCreateModalOpen(true)}
+          >
+            <Plus className="h-3.5 w-3.5" />
+            {t('organizations.newOrganization')}
+          </Button>
+        </>
+      }
+    >
+      <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
             {/* Fixed Top Section */}
             <div 
               className="flex-shrink-0 p-6 pb-4 space-y-4 overflow-hidden"
@@ -564,8 +548,6 @@ export default function HomePage() {
                 </div>
               </div>
             )}
-          </main>
-        </div>
       </div>
 
       {/* Create Organization Modal */}
@@ -575,7 +557,6 @@ export default function HomePage() {
         onOpenChange={setIsCreateModalOpen}
         onCreate={handleCreateOrganization}
       />
-      </div>
-    </AuthGuard>
+    </AgencyLayout>
   );
 }

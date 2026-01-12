@@ -728,7 +728,7 @@ for service in "${BACKEND_SERVICES[@]}"; do
             PORT=""
             case "$service" in
                 auth-service) PORT="${AUTH_SERVICE_PORT:-3001}" ;;
-                property-service) PORT="${PROPERTY_SERVICE_PORT:-3002}" ;;
+                property-service) PORT="${PROPERTY_SERVICE_PORT:-3003}" ;;
                 geolocation-service) PORT="${GEOLOCATION_SERVICE_PORT:-3003}" ;;
                 search-service) PORT="${SEARCH_SERVICE_PORT:-3004}" ;;
                 marketing-service) PORT="${MARKETING_SERVICE_PORT:-3005}" ;;

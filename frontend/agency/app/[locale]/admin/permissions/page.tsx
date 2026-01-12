@@ -8,8 +8,7 @@ import dynamic from 'next/dynamic';
 import { PermissionCard } from '@/components/permissions/PermissionCard';
 import { PermissionsStatsCards } from '@/components/permissions/PermissionsStatsCards';
 import { PermissionsFilterBar } from '@/components/permissions/PermissionsFilterBar';
-import { Sidebar } from '@/components/navigation/Sidebar';
-import { AuthGuard } from '@/middleware/auth-guard';
+import { AgencyLayout } from '@/components/layout/AgencyLayout';
 import { LanguageSelector } from '@/components/ui/language-selector';
 import { Button } from '@/components/ui/button';
 import { Tooltip } from '@/components/ui/tooltip';
@@ -326,9 +325,6 @@ export default function PermissionsPage() {
                   </div>
                 )}
               </div>
-            </main>
-          </div>
-        </div>
       </div>
 
       {/* Create/Edit Permission Modal */}
@@ -357,7 +353,7 @@ export default function PermissionsPage() {
           }
         }}
       />
-    </AuthGuard>
+    </AgencyLayout>
   );
 }
 

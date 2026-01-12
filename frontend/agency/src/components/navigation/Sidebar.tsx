@@ -20,6 +20,7 @@ import {
   CreditCard,
   Key,
   Sparkles,
+  Building,
 } from 'lucide-react';
 
 interface MenuItem {
@@ -40,7 +41,7 @@ export function Sidebar({ className }: SidebarProps) {
   const t = useTranslations();
   const router = useRouter();
   const pathname = usePathname();
-  const [expandedItems, setExpandedItems] = useState<string[]>(['organizations', 'rbac', 'admin']);
+  const [expandedItems, setExpandedItems] = useState<string[]>(['organizations', 'rbac', 'admin', 'properties']);
 
   // Extract organization ID from pathname if we're on an organization page
   const organizationIdMatch = pathname.match(/\/organizations\/([^\/]+)/);
@@ -78,6 +79,12 @@ export function Sidebar({ className }: SidebarProps) {
       icon: <Building2 className="h-4 w-4" />,
       path: '/',
       children: organizationsChildren,
+    },
+    {
+      id: 'properties',
+      label: t('navigation.properties') || 'Properties',
+      icon: <Building className="h-4 w-4" />,
+      path: '/properties',
     },
     {
       id: 'rbac',
