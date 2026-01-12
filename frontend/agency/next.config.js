@@ -1,12 +1,18 @@
+const createNextIntlPlugin = require('next-intl/plugin');
+
+const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone', // For Docker deployment
-  env: {
-    NEXT_PUBLIC_AUTH_API_URL: process.env.NEXT_PUBLIC_AUTH_API_URL || 'http://localhost:8080',
-    NEXT_PUBLIC_PROPERTY_API_URL: process.env.NEXT_PUBLIC_PROPERTY_API_URL || 'http://localhost:3001',
-    NEXT_PUBLIC_SEARCH_API_URL: process.env.NEXT_PUBLIC_SEARCH_API_URL || 'http://localhost:3003',
-  },
+          env: {
+            NEXT_PUBLIC_AUTH_API_URL: process.env.NEXT_PUBLIC_AUTH_API_URL || 'http://localhost:3002',
+            NEXT_PUBLIC_PROPERTY_API_URL: process.env.NEXT_PUBLIC_PROPERTY_API_URL || 'http://localhost:3001',
+            NEXT_AGENCY_ORGANIZATION_API_URL: process.env.NEXT_AGENCY_ORGANIZATION_API_URL || 'http://localhost:3002',
+            NEXT_PUBLIC_ORGANIZATION_API_URL: process.env.NEXT_PUBLIC_ORGANIZATION_API_URL || 'http://localhost:3002',
+            NEXT_PUBLIC_SEARCH_API_URL: process.env.NEXT_PUBLIC_SEARCH_API_URL || 'http://localhost:3003',
+          },
   images: {
     remotePatterns: [
       {
@@ -41,5 +47,5 @@ const nextConfig = {
   transpilePackages: ['leaflet', 'react-leaflet'],
 }
 
-module.exports = nextConfig
+module.exports = withNextIntl(nextConfig)
 
